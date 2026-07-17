@@ -30,8 +30,14 @@ import '../../features/auth/domain/usecases/signup_usecase.dart' as _i57;
 import '../../features/auth/domain/usecases/verify_email_usecase.dart' as _i30;
 import '../../features/auth/presentation/blocs/auth_bloc/auth_bloc.dart'
     as _i661;
+import '../../features/auth/presentation/blocs/forgot_password_form_bloc/forgot_password_form_bloc.dart'
+    as _i876;
 import '../../features/auth/presentation/blocs/login_form_bloc/login_form_bloc.dart'
     as _i182;
+import '../../features/auth/presentation/blocs/reset_password_form_bloc/reset_password_form_bloc.dart'
+    as _i910;
+import '../../features/auth/presentation/blocs/signup_form_bloc/signup_form_bloc.dart'
+    as _i353;
 import '../../features/posts/data/datasources/posts_remote_data_source.dart'
     as _i538;
 import '../../features/posts/data/repositories/posts_repository_impl.dart'
@@ -58,7 +64,14 @@ extension GetItInjectableX on _i174.GetIt {
     final routerModule = _$RouterModule();
     final serviceModule = _$ServiceModule();
     final networkModule = _$NetworkModule();
+    gh.factory<_i876.ForgotPasswordFormBloc>(
+      () => _i876.ForgotPasswordFormBloc(),
+    );
     gh.factory<_i182.LoginFormBloc>(() => _i182.LoginFormBloc());
+    gh.factory<_i910.ResetPasswordFormBloc>(
+      () => _i910.ResetPasswordFormBloc(),
+    );
+    gh.factory<_i353.SignupFormBloc>(() => _i353.SignupFormBloc());
     gh.singleton<_i583.GoRouter>(() => routerModule.goRouter);
     gh.lazySingleton<_i558.FlutterSecureStorage>(
       () => serviceModule.secureStorage,

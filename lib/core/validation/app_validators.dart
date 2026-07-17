@@ -26,4 +26,10 @@ abstract final class AppValidators {
     }
     return null;
   }
+
+  static String? otp(String? value, {int length = 6}) {
+    if (value == null || value.trim().isEmpty) return 'OTP is required';
+    if (value.trim().length != length) return 'Enter the $length-digit code';
+    return null;
+  }
 }

@@ -1,6 +1,7 @@
 import 'package:co_buy/core/design_system/design_system.dart';
 import 'package:co_buy/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 /// Text input atom built on the design-system tokens.
 ///
@@ -36,6 +37,7 @@ class AppTextField extends StatefulWidget {
     this.readOnly = false,
     this.maxLines = 1,
     this.keyboardType,
+    this.inputFormatters,
     this.textInputAction,
     this.textCapitalization = TextCapitalization.none,
     this.autocorrect = true,
@@ -65,6 +67,7 @@ class AppTextField extends StatefulWidget {
   final bool readOnly;
   final int maxLines;
   final TextInputType? keyboardType;
+  final List<TextInputFormatter>? inputFormatters;
   final TextInputAction? textInputAction;
   final TextCapitalization textCapitalization;
   final bool autocorrect;
@@ -128,6 +131,7 @@ class _AppTextFieldState extends State<AppTextField> {
       readOnly: widget.readOnly,
       maxLines: widget.maxLines,
       keyboardType: widget.keyboardType,
+      inputFormatters: widget.inputFormatters,
       textInputAction: widget.textInputAction,
       textCapitalization: widget.textCapitalization,
       autocorrect: widget.autocorrect,
