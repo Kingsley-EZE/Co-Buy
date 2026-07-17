@@ -56,3 +56,6 @@ app.*.map.json
 
 # Generated envied output (embeds obfuscated secrets — regenerate via build_runner).
 lib/core/config/env/*.g.dart
+
+# Local Dart & Flutter DevTools settings — machine-specific, not part of the app.
+devtools_options.yaml
