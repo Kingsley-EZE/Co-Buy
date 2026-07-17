@@ -10,7 +10,8 @@ build flavors (**Dev** / **Prod**) that can be installed side-by-side.
 | Concern            | Choice                                              |
 | ------------------ | --------------------------------------------------- |
 | State management   | `flutter_bloc`                                      |
-| Dependency injection | `get_it`                                           |
+| Navigation         | `go_router` + `go_router_builder` (type-safe routes)|
+| Dependency injection | `get_it` + `injectable`                            |
 | Networking         | `dio` + `retrofit` (type-safe API client)           |
 | Secure storage     | `flutter_secure_storage`                            |
 | Env config         | `envied` (compile-time, obfuscated, type-safe)      |
@@ -139,6 +140,142 @@ Now read it anywhere via `AppConfig.env.sentryDsn`.
 
 ---
 
+## Navigation
+
+Navigation is **type-safe** and **string-free at call sites**. Routes are
+declared as `GoRouteData` classes and [`go_router_builder`](https://pub.dev/packages/go_router_builder)
+generates the wiring — a missing or wrong-typed route parameter is a **compile
+error**, not a runtime crash.
+
+### How the pieces connect
+
+```
+routes.dart          declares @TypedGoRoute classes  ──▶  routes.g.dart ($appRoutes, generated)
+app_router.dart      createRouter() consumes $appRoutes, adds the 404 errorBuilder
+router_module.dart   registers GoRouter as a get_it singleton
+app.dart             MaterialApp.router(routerConfig: getIt<GoRouter>())
+```
+
+For navigation from **blocs / use cases** (no `BuildContext`), depend on the
+`AppNavigator` interface — never on `GoRouter` directly. It's registered via DI
+and keeps domain/presentation code free of the routing package.
+
+```
+lib/core/navigation/
+├── routes.dart              # @TypedGoRoute route classes (edit this to add routes)
+├── routes.g.dart            # GENERATED — do not edit
+├── app_router.dart          # createRouter(): GoRouter config + 404 errorBuilder
+├── app_navigator.dart       # context-less interface (no Flutter/go_router imports)
+└── go_router_navigator.dart # AppNavigator impl, @LazySingleton(as: AppNavigator)
+lib/core/di/router_module.dart  # @module registering GoRouter with get_it
+lib/core/error/not_found_screen.dart  # 404 fallback (errorBuilder)
+```
+
+### Current routes
+
+| Screen  | URL             | Navigate with                     |
+| ------- | --------------- | --------------------------------- |
+| Login   | `/login`        | `const LoginRoute().go(context)`  |
+| Signup  | `/login/signup` | `const SignupRoute().go(context)` |
+| Home    | `/home`         | `const HomeRoute().go(context)`   |
+
+`.go(context)` **replaces** the current stack; `.push(context)` **stacks on
+top**. Every route also exposes `.location` (the resolved URL string), used for
+`initialLocation` and by `AppNavigator`.
+
+### Adding a new route (no data)
+
+Say you want a `SettingsPage` at `/settings`. Three edits, then regenerate:
+
+1. **Create the screen** — e.g. `lib/features/settings/presentation/pages/settings_page.dart`.
+2. **Declare the route** in `lib/core/navigation/routes.dart`:
+   ```dart
+   @TypedGoRoute<SettingsRoute>(path: '/settings')
+   class SettingsRoute extends GoRouteData with $SettingsRoute {
+     const SettingsRoute();
+
+     @override
+     Widget build(BuildContext context, GoRouterState state) =>
+         const SettingsPage();
+   }
+   ```
+   (Add the `import` for the new page at the top of the file.)
+3. **Regenerate** so `$SettingsRoute` and `$appRoutes` are updated:
+   ```bash
+   fvm dart run build_runner build --delete-conflicting-outputs
+   ```
+
+Navigate to it from anywhere: `const SettingsRoute().go(context)`.
+
+### Adding a new route (with data)
+
+**Rule: pass an ID as a path param — never the whole object via `$extra`.** The
+destination fetches its own data from the ID. This keeps routes deep-link-ready
+and web/state-restoration safe.
+
+Say you want an `OrderDetailsPage` that needs an `int orderId`, nested under
+`/home` so Home stays in the back stack:
+
+1. **Create the screen** taking the typed value:
+   ```dart
+   class OrderDetailsPage extends StatelessWidget {
+     const OrderDetailsPage({super.key, required this.orderId});
+     final int orderId;
+     // …fetch the order from orderId here (bloc/usecase), don't pass the object in.
+   }
+   ```
+2. **Declare the route** in `lib/core/navigation/routes.dart`. Add it as a child
+   of the parent route via the `routes:` list, and put the param in the path with
+   `:name`:
+   ```dart
+   @TypedGoRoute<HomeRoute>(
+     path: '/home',
+     routes: <TypedRoute<RouteData>>[
+       TypedGoRoute<OrderDetailsRoute>(path: 'orders/:orderId'),
+     ],
+   )
+   class HomeRoute extends GoRouteData with $HomeRoute {
+     const HomeRoute();
+
+     @override
+     Widget build(BuildContext context, GoRouterState state) => const HomePage();
+   }
+
+   class OrderDetailsRoute extends GoRouteData with $OrderDetailsRoute {
+     const OrderDetailsRoute({required this.orderId});
+
+     final int orderId; // codegen converts the String <-> int at the URL boundary
+
+     @override
+     Widget build(BuildContext context, GoRouterState state) =>
+         OrderDetailsPage(orderId: orderId);
+   }
+   ```
+3. **Regenerate**:
+   ```bash
+   fvm dart run build_runner build --delete-conflicting-outputs
+   ```
+
+Navigate with the value — checked at compile time:
+```dart
+const OrderDetailsRoute(orderId: 42).push(context); // resolves to /home/orders/42
+// const OrderDetailsRoute().push(context);  // COMPILE ERROR: missing 'orderId'
+```
+
+**Param rules:**
+- **Path params** (`:name` in the path) — non-nullable constructor fields.
+  Supported types: `String`, `int`, `num`, `bool`, `enum`.
+- **Query params** — any *other* constructor field; make it nullable or give it a
+  default, e.g. `const SearchRoute({this.q})` → `/search?q=shoes`.
+- **Full-screen over a shell** (hide bottom bar, if one is added later) — set
+  `static final $parentNavigatorKey = rootNavigatorKey;` on the route class.
+
+> After **any** change to `routes.dart`, re-run `build_runner`. If you see
+> `The method '$SomeRoute' isn't defined` or `$appRoutes` errors, it's stale
+> generated code — regenerate.
+
+---
+
 ## Project structure
 
 ```
@@ -147,16 +284,25 @@ lib/
 ├── main_prod.dart         # prod entrypoint → bootstrap(Flavor.prod)
 ├── bootstrap.dart         # shared startup (binding, config, DI, runApp)
 ├── app/
-│   └── app.dart           # root MyApp widget
+│   └── app.dart           # root MyApp widget (MaterialApp.router)
 └── core/
-    └── config/
-        ├── flavor.dart        # Flavor enum
-        ├── app_config.dart    # active flavor + resolved env values
-        └── env/
-            ├── env.dart       # Env contract (interface)
-            ├── env_dev.dart   # @Envied(path: '.env.dev')
-            ├── env_prod.dart  # @Envied(path: '.env.prod')
-            └── *.g.dart       # generated (gitignored)
+    ├── config/
+    │   ├── flavor.dart        # Flavor enum
+    │   ├── app_config.dart    # active flavor + resolved env values
+    │   └── env/
+    │       ├── env.dart       # Env contract (interface)
+    │       ├── env_dev.dart   # @Envied(path: '.env.dev')
+    │       ├── env_prod.dart  # @Envied(path: '.env.prod')
+    │       └── *.g.dart       # generated (gitignored)
+    ├── navigation/
+    │   ├── routes.dart            # typed route classes (+ routes.g.dart, generated)
+    │   ├── app_router.dart        # createRouter(): GoRouter config
+    │   ├── app_navigator.dart     # context-less navigation interface
+    │   └── go_router_navigator.dart  # AppNavigator implementation
+    ├── di/
+    │   └── router_module.dart     # registers GoRouter with get_it
+    └── error/
+        └── not_found_screen.dart  # 404 fallback
 ```
 
 ---
