@@ -40,10 +40,13 @@ dependencies:
   dartz: ^0.10.1
   retrofit: ^4.9.2
   dio: ^5.10.0
+  dio_smart_retry: ^7.0.1
   get_it: ^9.2.1
+  injectable: ^3.0.0
   flutter_secure_storage: ^10.3.1
   json_annotation: ^4.12.0
   envied: ^1.1.1
+  freezed_annotation: ^3.1.0
 
 dev_dependencies:
   flutter_test:
@@ -59,6 +62,10 @@ dev_dependencies:
   json_serializable: ^6.14.0
   build_runner: ^2.15.1
   envied_generator: ^1.1.1
+  injectable_generator: ^3.1.0
+  mocktail: ^1.0.5
+  http_mock_adapter: ^0.6.1
+  freezed: ^4.0.0-dev.3
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -70,6 +77,28 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+
+  fonts:
+    - family: InstrumentSans
+      fonts:
+        - asset: assets/fonts/InstrumentSans-Regular.ttf
+        - asset: assets/fonts/InstrumentSans-Italic.ttf
+          style: italic
+        - asset: assets/fonts/InstrumentSans-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/InstrumentSans-MediumItalic.ttf
+          weight: 500
+          style: italic
+        - asset: assets/fonts/InstrumentSans-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/InstrumentSans-SemiBoldItalic.ttf
+          weight: 600
+          style: italic
+        - asset: assets/fonts/InstrumentSans-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/InstrumentSans-BoldItalic.ttf
+          weight: 700
+          style: italic
 
   # To add assets to your application, add an assets section, like this:
   # assets:
