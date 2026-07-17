@@ -140,8 +140,7 @@ class _LoginPageState extends State<LoginPage> {
                       const Spacer(),
                       _LinkText(
                         'Forgot Password?',
-                        // TODO: navigate once the forgot-password flow exists.
-                        onTap: () {},
+                        onTap: () => const ForgotPasswordRoute().go(context),
                       ),
                     ],
                   ),
