@@ -1,8 +1,9 @@
-import 'package:co_buy/features/auth/presentation/pages/login_page.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../core/config/app_config.dart';
 import '../core/design_system/design_system.dart';
+import '../core/di/injection.dart';
 
 /// Root widget of the application.
 ///
@@ -13,13 +14,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: AppConfig.appName,
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
       themeMode: ThemeMode.system,
-      home: LoginPage(title: AppConfig.appName),
+      routerConfig: getIt<GoRouter>(),
     );
   }
 }

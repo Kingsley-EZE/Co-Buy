@@ -4,6 +4,7 @@ import 'package:co_buy/app/app.dart';
 import 'package:co_buy/core/config/app_config.dart';
 import 'package:co_buy/core/config/flavor.dart';
 import 'package:co_buy/core/di/injection.dart';
+import 'package:co_buy/core/navigation/app_router.dart';
 import 'package:co_buy/features/auth/domain/usecases/forgot_password_usecase.dart';
 import 'package:co_buy/features/auth/domain/usecases/login_usecase.dart';
 import 'package:co_buy/features/auth/domain/usecases/reset_password_usecase.dart';
@@ -12,6 +13,7 @@ import 'package:co_buy/features/auth/domain/usecases/verify_email_usecase.dart';
 import 'package:co_buy/features/auth/presentation/blocs/auth_bloc/auth_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 
 class _MockLoginUseCase extends Mock implements LoginUseCase {}
@@ -26,6 +28,8 @@ class _MockResetPasswordUseCase extends Mock implements ResetPasswordUseCase {}
 
 void main() {
   setUp(() {
+    // MyApp resolves the router from get_it.
+    getIt.registerSingleton<GoRouter>(createRouter());
     // LoginPage resolves its bloc from get_it; register it with mocked
     // use cases so no real network wiring is needed.
     getIt.registerFactory<AuthBloc>(

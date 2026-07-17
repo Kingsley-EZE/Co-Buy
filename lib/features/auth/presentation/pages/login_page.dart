@@ -3,6 +3,7 @@ import 'package:co_buy/core/components/atoms/app_text_field.dart';
 import 'package:co_buy/core/components/scaffolds/app_scaffold.dart';
 import 'package:co_buy/core/design_system/design_system.dart';
 import 'package:co_buy/core/di/injection.dart';
+import 'package:co_buy/core/navigation/routes.dart';
 import 'package:co_buy/features/auth/presentation/blocs/auth_bloc/auth_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -50,8 +51,7 @@ class _LoginPageState extends State<LoginPage> {
                     .showSnackBar(SnackBar(content: Text(message)));
               }
               if (state case AuthSuccess()) {
-                ScaffoldMessenger.of(context)
-                    .showSnackBar(SnackBar(content: Text("Login Success")));
+                const HomeRoute().go(context);
               }
             },
             builder: (context, state) {
@@ -79,6 +79,11 @@ class _LoginPageState extends State<LoginPage> {
                     label: 'Login',
                     loading: isLoading,
                     onPressed: () => _onLoginPressed(context),
+                  ),
+                  const SizedBox(height: AppSpacing.s16),
+                  TextButton(
+                    onPressed: () => const SignupRoute().go(context),
+                    child: const Text("Don't have an account? Sign up"),
                   ),
                 ],
               );

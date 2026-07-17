@@ -12,6 +12,7 @@
 import 'package:dio/dio.dart' as _i361;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i558;
 import 'package:get_it/get_it.dart' as _i174;
+import 'package:go_router/go_router.dart' as _i583;
 import 'package:injectable/injectable.dart' as _i526;
 
 import '../../features/auth/data/datasources/auth_remote_data_source.dart'
@@ -37,9 +38,12 @@ import '../../features/posts/domain/repositories/posts_repository.dart'
     as _i245;
 import '../../features/posts/domain/usecases/get_posts_usecase.dart' as _i158;
 import '../config/env/env.dart' as _i513;
+import '../navigation/app_navigator.dart' as _i397;
+import '../navigation/go_router_navigator.dart' as _i489;
 import '../network/dio_factory.dart' as _i798;
 import '../network/interceptors/auth_interceptor.dart' as _i745;
 import '../network/storage/token_storage.dart' as _i483;
+import 'router_module.dart' as _i393;
 import 'service_module.dart' as _i180;
 
 extension GetItInjectableX on _i174.GetIt {
@@ -49,14 +53,19 @@ extension GetItInjectableX on _i174.GetIt {
     _i526.EnvironmentFilter? environmentFilter,
   }) {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
+    final routerModule = _$RouterModule();
     final serviceModule = _$ServiceModule();
     final networkModule = _$NetworkModule();
+    gh.singleton<_i583.GoRouter>(() => routerModule.goRouter);
     gh.lazySingleton<_i558.FlutterSecureStorage>(
       () => serviceModule.secureStorage,
     );
     gh.lazySingleton<_i513.Env>(() => serviceModule.env());
     gh.lazySingleton<_i483.TokenStorage>(
       () => _i483.TokenStorage(gh<_i558.FlutterSecureStorage>()),
+    );
+    gh.lazySingleton<_i397.AppNavigator>(
+      () => _i489.GoRouterNavigator(gh<_i583.GoRouter>()),
     );
     gh.lazySingleton<_i361.Dio>(
       () => networkModule.refreshDio(gh<_i513.Env>()),
@@ -124,6 +133,8 @@ extension GetItInjectableX on _i174.GetIt {
     return this;
   }
 }
+
+class _$RouterModule extends _i393.RouterModule {}
 
 class _$ServiceModule extends _i180.ServiceModule {}
 
