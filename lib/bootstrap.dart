@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'app/app.dart';
 import 'core/config/app_config.dart';
 import 'core/config/flavor.dart';
+import 'core/di/injection.dart';
 
 /// Shared startup path for every flavor.
 ///
@@ -15,8 +16,9 @@ Future<void> bootstrap(Flavor flavor) async {
 
   AppConfig.init(flavor);
 
-  // TODO: register dependencies (get_it), set up networking with
-  // AppConfig.env.baseUrl, etc.
+  // Must run after AppConfig.init — the network module reads the active
+  // flavor's Env (base URL) from it.
+  await configureDependencies();
 
   runApp(const MyApp());
 }
