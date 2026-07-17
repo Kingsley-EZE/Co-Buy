@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/auth/presentation/pages/login_page.dart';
+import '../../features/auth/presentation/pages/onboarding_page.dart';
 import '../../features/auth/presentation/pages/signup_page.dart';
 import '../../features/home/presentation/pages/home_page.dart';
 import '../config/app_config.dart';
@@ -11,6 +12,15 @@ part 'routes.g.dart';
 /// Root navigator key — routes that must cover any future shell (dialogs,
 /// full-screen flows) set this as their `$parentNavigatorKey`.
 final rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
+
+@TypedGoRoute<OnboardingRoute>(path: '/onboarding')
+class OnboardingRoute extends GoRouteData with $OnboardingRoute {
+  const OnboardingRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) =>
+      const OnboardingPage();
+}
 
 @TypedGoRoute<LoginRoute>(
   path: '/login',

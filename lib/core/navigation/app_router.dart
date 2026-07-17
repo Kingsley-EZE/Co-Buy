@@ -12,7 +12,7 @@ import 'routes.dart';
 /// to change.
 GoRouter createRouter() => GoRouter(
       navigatorKey: rootNavigatorKey,
-      initialLocation: const LoginRoute().location,
+      initialLocation: const OnboardingRoute().location,
       debugLogDiagnostics: kDebugMode,
       routes: $appRoutes,
       errorBuilder: (context, state) => NotFoundScreen(error: state.error),
