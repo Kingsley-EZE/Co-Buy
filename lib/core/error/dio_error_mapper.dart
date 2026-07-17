@@ -28,9 +28,14 @@ Failure mapDioException(DioException e) {
 }
 
 Failure _mapStatus(int? code, dynamic data) {
-  final msg = (data is Map && data['message'] is String)
-      ? data['message'] as String
-      : 'Server error';
+  String msg = 'Server error';
+
+  if (data case {'message': String m}) {
+    msg = m;
+  } else if (data case {'code': String c}) {
+    msg = c;
+  }
+
   switch (code) {
     case 400:
       return ServerFailure('Bad request: $msg', statusCode: 400);
@@ -49,6 +54,6 @@ Failure _mapStatus(int? code, dynamic data) {
     case 500:
       return const ServerFailure('Internal server error', statusCode: 500);
     default:
-      return ServerFailure(msg, statusCode: code);
+      return ServerFailure(msg, statusCode: code ?? 0);
   }
 }

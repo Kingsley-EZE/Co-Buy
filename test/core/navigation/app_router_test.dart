@@ -6,14 +6,17 @@ import 'package:co_buy/core/error/not_found_screen.dart';
 import 'package:co_buy/core/navigation/routes.dart';
 import 'package:co_buy/features/auth/domain/usecases/forgot_password_usecase.dart';
 import 'package:co_buy/features/auth/domain/usecases/login_usecase.dart';
+import 'package:co_buy/features/auth/domain/usecases/logout_usecase.dart';
 import 'package:co_buy/features/auth/domain/usecases/reset_password_usecase.dart';
 import 'package:co_buy/features/auth/domain/usecases/signup_usecase.dart';
 import 'package:co_buy/features/auth/domain/usecases/verify_email_usecase.dart';
 import 'package:co_buy/features/auth/presentation/blocs/auth_bloc/auth_bloc.dart';
+import 'package:co_buy/features/auth/presentation/blocs/login_form_bloc/login_form_bloc.dart';
 import 'package:co_buy/features/auth/presentation/pages/login_page.dart';
 import 'package:co_buy/features/auth/presentation/pages/signup_page.dart';
 import 'package:co_buy/features/home/presentation/pages/home_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
@@ -29,19 +32,27 @@ class _MockForgotPasswordUseCase extends Mock
 
 class _MockResetPasswordUseCase extends Mock implements ResetPasswordUseCase {}
 
+class _MockLogoutUseCase extends Mock implements LogoutUseCase {}
+
 /// Real router over the generated route tree, without the app-level
 /// navigatorKey so each test gets an independent instance.
 GoRouter buildRouter([String initial = '/login']) => GoRouter(
-      initialLocation: initial,
-      routes: $appRoutes,
-      errorBuilder: (context, state) => NotFoundScreen(error: state.error),
-    );
+  initialLocation: initial,
+  routes: $appRoutes,
+  errorBuilder: (context, state) => NotFoundScreen(error: state.error),
+);
 
-Future<GoRouter> pumpRouter(WidgetTester tester,
-    [String initial = '/login']) async {
+Future<GoRouter> pumpRouter(
+  WidgetTester tester, [
+  String initial = '/login',
+]) async {
   final router = buildRouter(initial);
+  // Mirror MyApp: AuthBloc is provided above the router, not per page.
   await tester.pumpWidget(
-    MaterialApp.router(theme: AppTheme.light, routerConfig: router),
+    BlocProvider.value(
+      value: getIt<AuthBloc>(),
+      child: MaterialApp.router(theme: AppTheme.light, routerConfig: router),
+    ),
   );
   await tester.pumpAndSettle();
   return router;
@@ -51,8 +62,8 @@ void main() {
   setUpAll(() => AppConfig.init(Flavor.dev));
 
   setUp(() {
-    // LoginPage resolves its bloc from get_it; register it with mocked
-    // use cases so no real network wiring is needed.
+    // The blocs resolve from get_it; register AuthBloc with mocked use cases
+    // so no real network wiring is needed.
     getIt.registerFactory<AuthBloc>(
       () => AuthBloc(
         _MockLoginUseCase(),
@@ -60,8 +71,10 @@ void main() {
         _MockVerifyEmailUseCase(),
         _MockForgotPasswordUseCase(),
         _MockResetPasswordUseCase(),
+        _MockLogoutUseCase(),
       ),
     );
+    getIt.registerFactory<LoginFormBloc>(LoginFormBloc.new);
   });
 
   tearDown(() => getIt.reset());
@@ -81,8 +94,9 @@ void main() {
       expect(find.byType(LoginPage), findsOneWidget);
     });
 
-    testWidgets('/login/signup shows SignupPage with login in the back stack',
-        (tester) async {
+    testWidgets('/login/signup shows SignupPage with login in the back stack', (
+      tester,
+    ) async {
       final router = await pumpRouter(tester, '/login/signup');
 
       expect(find.byType(SignupPage), findsOneWidget);
@@ -99,8 +113,9 @@ void main() {
       expect(find.byType(HomePage), findsOneWidget);
     });
 
-    testWidgets('unknown location falls back to NotFoundScreen',
-        (tester) async {
+    testWidgets('unknown location falls back to NotFoundScreen', (
+      tester,
+    ) async {
       await pumpRouter(tester, '/does-not-exist');
 
       expect(find.byType(NotFoundScreen), findsOneWidget);
@@ -108,11 +123,12 @@ void main() {
   });
 
   group('typed navigation', () {
-    testWidgets('sign-up link on LoginPage navigates to SignupPage',
-        (tester) async {
+    testWidgets('sign-up link on LoginPage navigates to SignupPage', (
+      tester,
+    ) async {
       await pumpRouter(tester);
 
-      await tester.tap(find.text("Don't have an account? Sign up"));
+      await tester.tap(find.text('Create Account'));
       await tester.pumpAndSettle();
 
       expect(find.byType(SignupPage), findsOneWidget);
@@ -121,8 +137,7 @@ void main() {
     testWidgets('HomeRoute().go reaches HomePage', (tester) async {
       final router = await pumpRouter(tester);
 
-      const HomeRoute()
-          .go(router.routerDelegate.navigatorKey.currentContext!);
+      const HomeRoute().go(router.routerDelegate.navigatorKey.currentContext!);
       await tester.pumpAndSettle();
 
       expect(find.byType(HomePage), findsOneWidget);

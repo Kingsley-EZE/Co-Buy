@@ -4,15 +4,9 @@ part 'login_request_dto.g.dart';
 
 @JsonSerializable()
 class LoginRequestDto {
-  const LoginRequestDto({
-    required this.username,
-    required this.password,
-    this.expiresInMins,
-  });
+  const LoginRequestDto({required this.email, required this.password});
 
-  final String username, password;
-  @JsonKey(name: 'expires_in_mins')
-  final int? expiresInMins;
+  final String email, password;
 
   factory LoginRequestDto.fromJson(Map<String, dynamic> json) =>
       _$LoginRequestDtoFromJson(json);

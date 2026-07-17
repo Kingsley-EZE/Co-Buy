@@ -12,7 +12,7 @@ get: ## Install dependencies
 	fvm flutter pub get
 
 gen: ## Run code generation (freezed, retrofit, injectable, ...)
-	fvm dart run build_runner build
+	fvm dart run build_runner build --delete-conflicting-outputs
 
 watch: ## Run code generation continuously on file changes
 	fvm dart run build_runner watch

@@ -18,12 +18,29 @@ void main() {
   late MockTokenStorage tokenStorage;
   late AuthRepositoryImpl repo;
 
-  const request = LoginRequest(username: 'kingsley', password: 'secret');
+  const request = LoginRequest(
+    email: 'kingsley@example.com',
+    password: 'secret',
+  );
+
+  const user = UserDto(
+    id: 'u1',
+    firstName: 'Kingsley',
+    lastName: 'Eze',
+    email: 'kingsley@example.com',
+    name: 'Kingsley Eze',
+    isVerified: true,
+    role: 'User',
+  );
+
+  const response = LoginResponseDto(
+    success: true,
+    data: LoginDataDto(user: user, accessToken: 'a1'),
+    message: 'Login successful',
+  );
 
   setUpAll(() {
-    registerFallbackValue(
-      const LoginRequestDto(username: '', password: ''),
-    );
+    registerFallbackValue(const LoginRequestDto(email: '', password: ''));
   });
 
   setUp(() {
@@ -32,43 +49,60 @@ void main() {
     repo = AuthRepositoryImpl(remote, tokenStorage);
   });
 
-  test('login persists tokens and returns Right', () async {
-    when(() => remote.loginUser(body: any(named: 'body'))).thenAnswer(
-      (_) async =>
-          const LoginResponseDto(accessToken: 'a1', refreshToken: 'r1'),
-    );
-    when(() => tokenStorage.saveTokens(
-        access: any(named: 'access'),
-        refresh: any(named: 'refresh'))).thenAnswer((_) async {});
+  test(
+    'login persists the access token and returns the signed-in user',
+    () async {
+      when(
+        () => remote.loginUser(body: any(named: 'body')),
+      ).thenAnswer((_) async => response);
+      when(
+        () => tokenStorage.saveTokens(
+          access: any(named: 'access'),
+          refresh: any(named: 'refresh'),
+        ),
+      ).thenAnswer((_) async {});
 
-    final result = await repo.login(request);
+      final result = await repo.login(request);
 
-    expect(result.isRight(), true);
-    verify(() => tokenStorage.saveTokens(access: 'a1', refresh: 'r1'))
-        .called(1);
-  });
+      result.fold((f) => fail('expected Right, got $f'), (u) {
+        expect(u.id, 'u1');
+        expect(u.email, 'kingsley@example.com');
+        expect(u.name, 'Kingsley Eze');
+      });
+      // No refresh token in the login response yet, so none is persisted.
+      verify(
+        () => tokenStorage.saveTokens(access: 'a1', refresh: null),
+      ).called(1);
+    },
+  );
 
-  test('login maps 401 badResponse to UnauthorizedFailure and skips saving',
-      () async {
-    final opts = RequestOptions(path: '/auth/login');
-    when(() => remote.loginUser(body: any(named: 'body'))).thenThrow(
-      DioException(
-        requestOptions: opts,
-        type: DioExceptionType.badResponse,
-        response: Response(requestOptions: opts, statusCode: 401),
-      ),
-    );
+  test(
+    'login maps 401 badResponse to UnauthorizedFailure and skips saving',
+    () async {
+      final opts = RequestOptions(path: '/auth/login');
+      when(() => remote.loginUser(body: any(named: 'body'))).thenThrow(
+        DioException(
+          requestOptions: opts,
+          type: DioExceptionType.badResponse,
+          response: Response(requestOptions: opts, statusCode: 401),
+        ),
+      );
 
-    final result = await repo.login(request);
+      final result = await repo.login(request);
 
-    expect(result.isLeft(), true);
-    result.fold(
-      (f) => expect(f, isA<UnauthorizedFailure>()),
-      (_) => fail('expected Left'),
-    );
-    verifyNever(() => tokenStorage.saveTokens(
-        access: any(named: 'access'), refresh: any(named: 'refresh')));
-  });
+      expect(result.isLeft(), true);
+      result.fold(
+        (f) => expect(f, isA<UnauthorizedFailure>()),
+        (_) => fail('expected Left'),
+      );
+      verifyNever(
+        () => tokenStorage.saveTokens(
+          access: any(named: 'access'),
+          refresh: any(named: 'refresh'),
+        ),
+      );
+    },
+  );
 
   test('logout clears stored tokens', () async {
     when(() => tokenStorage.clear()).thenAnswer((_) async {});

@@ -8,6 +8,7 @@ import '../../../../core/error/result.dart';
 import '../../../../core/network/storage/token_storage.dart';
 import '../../domain/entities/login_request.dart';
 import '../../domain/entities/signup_request.dart';
+import '../../domain/entities/user.dart';
 import '../../domain/entities/forgot_password_request.dart';
 import '../../domain/entities/reset_password_request.dart';
 import '../../domain/entities/verify_email_request.dart';
@@ -17,6 +18,7 @@ import '../mappers/forgot_password_request_mapper.dart';
 import '../mappers/login_request_mapper.dart';
 import '../mappers/reset_password_request_mapper.dart';
 import '../mappers/signup_request_mapper.dart';
+import '../mappers/user_mapper.dart';
 import '../mappers/verify_email_request_mapper.dart';
 
 @LazySingleton(as: AuthRepository)
@@ -27,16 +29,14 @@ class AuthRepositoryImpl implements AuthRepository {
   final TokenStorage _tokenStorage;
 
   @override
-  FutureResult<void> login(LoginRequest request) async {
+  FutureResult<User> login(LoginRequest request) async {
     try {
       final dto = await _remote.loginUser(body: request.toDto());
       // Persist so AuthInterceptor attaches the token to every subsequent
       // request — the tokens never leave this layer.
-      await _tokenStorage.saveTokens(
-        access: dto.accessToken,
-        refresh: dto.refreshToken,
-      );
-      return const Right(null);
+      // TODO: pass refresh once the backend adds refreshToken to the response.
+      await _tokenStorage.saveTokens(access: dto.data.accessToken);
+      return Right(dto.data.user.toEntity());
     } on DioException catch (e) {
       return Left(mapDioException(e));
     } catch (_) {

@@ -56,7 +56,7 @@ extension AuthEventPatterns on AuthEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( AuthLoginRequested value)?  loginRequested,TResult Function( AuthSignupRequested value)?  signupRequested,TResult Function( AuthVerifyEmailRequested value)?  verifyEmailRequested,TResult Function( AuthForgotPasswordRequested value)?  forgotPasswordRequested,TResult Function( AuthResetPasswordRequested value)?  resetPasswordRequested,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( AuthLoginRequested value)?  loginRequested,TResult Function( AuthSignupRequested value)?  signupRequested,TResult Function( AuthVerifyEmailRequested value)?  verifyEmailRequested,TResult Function( AuthForgotPasswordRequested value)?  forgotPasswordRequested,TResult Function( AuthResetPasswordRequested value)?  resetPasswordRequested,TResult Function( AuthLogoutRequested value)?  logoutRequested,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case AuthLoginRequested() when loginRequested != null:
@@ -64,7 +64,8 @@ return loginRequested(_that);case AuthSignupRequested() when signupRequested != 
 return signupRequested(_that);case AuthVerifyEmailRequested() when verifyEmailRequested != null:
 return verifyEmailRequested(_that);case AuthForgotPasswordRequested() when forgotPasswordRequested != null:
 return forgotPasswordRequested(_that);case AuthResetPasswordRequested() when resetPasswordRequested != null:
-return resetPasswordRequested(_that);case _:
+return resetPasswordRequested(_that);case AuthLogoutRequested() when logoutRequested != null:
+return logoutRequested(_that);case _:
   return orElse();
 
 }
@@ -82,7 +83,7 @@ return resetPasswordRequested(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( AuthLoginRequested value)  loginRequested,required TResult Function( AuthSignupRequested value)  signupRequested,required TResult Function( AuthVerifyEmailRequested value)  verifyEmailRequested,required TResult Function( AuthForgotPasswordRequested value)  forgotPasswordRequested,required TResult Function( AuthResetPasswordRequested value)  resetPasswordRequested,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( AuthLoginRequested value)  loginRequested,required TResult Function( AuthSignupRequested value)  signupRequested,required TResult Function( AuthVerifyEmailRequested value)  verifyEmailRequested,required TResult Function( AuthForgotPasswordRequested value)  forgotPasswordRequested,required TResult Function( AuthResetPasswordRequested value)  resetPasswordRequested,required TResult Function( AuthLogoutRequested value)  logoutRequested,}){
 final _that = this;
 switch (_that) {
 case AuthLoginRequested():
@@ -90,7 +91,8 @@ return loginRequested(_that);case AuthSignupRequested():
 return signupRequested(_that);case AuthVerifyEmailRequested():
 return verifyEmailRequested(_that);case AuthForgotPasswordRequested():
 return forgotPasswordRequested(_that);case AuthResetPasswordRequested():
-return resetPasswordRequested(_that);}
+return resetPasswordRequested(_that);case AuthLogoutRequested():
+return logoutRequested(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -104,7 +106,7 @@ return resetPasswordRequested(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( AuthLoginRequested value)?  loginRequested,TResult? Function( AuthSignupRequested value)?  signupRequested,TResult? Function( AuthVerifyEmailRequested value)?  verifyEmailRequested,TResult? Function( AuthForgotPasswordRequested value)?  forgotPasswordRequested,TResult? Function( AuthResetPasswordRequested value)?  resetPasswordRequested,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( AuthLoginRequested value)?  loginRequested,TResult? Function( AuthSignupRequested value)?  signupRequested,TResult? Function( AuthVerifyEmailRequested value)?  verifyEmailRequested,TResult? Function( AuthForgotPasswordRequested value)?  forgotPasswordRequested,TResult? Function( AuthResetPasswordRequested value)?  resetPasswordRequested,TResult? Function( AuthLogoutRequested value)?  logoutRequested,}){
 final _that = this;
 switch (_that) {
 case AuthLoginRequested() when loginRequested != null:
@@ -112,7 +114,8 @@ return loginRequested(_that);case AuthSignupRequested() when signupRequested != 
 return signupRequested(_that);case AuthVerifyEmailRequested() when verifyEmailRequested != null:
 return verifyEmailRequested(_that);case AuthForgotPasswordRequested() when forgotPasswordRequested != null:
 return forgotPasswordRequested(_that);case AuthResetPasswordRequested() when resetPasswordRequested != null:
-return resetPasswordRequested(_that);case _:
+return resetPasswordRequested(_that);case AuthLogoutRequested() when logoutRequested != null:
+return logoutRequested(_that);case _:
   return null;
 
 }
@@ -129,14 +132,15 @@ return resetPasswordRequested(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String username,  String password)?  loginRequested,TResult Function( String firstName,  String lastName,  String email,  String password)?  signupRequested,TResult Function( String email,  String otp)?  verifyEmailRequested,TResult Function( String email)?  forgotPasswordRequested,TResult Function( String email,  String otp,  String newPassword)?  resetPasswordRequested,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String email,  String password)?  loginRequested,TResult Function( String firstName,  String lastName,  String email,  String password)?  signupRequested,TResult Function( String email,  String otp)?  verifyEmailRequested,TResult Function( String email)?  forgotPasswordRequested,TResult Function( String email,  String otp,  String newPassword)?  resetPasswordRequested,TResult Function()?  logoutRequested,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case AuthLoginRequested() when loginRequested != null:
-return loginRequested(_that.username,_that.password);case AuthSignupRequested() when signupRequested != null:
+return loginRequested(_that.email,_that.password);case AuthSignupRequested() when signupRequested != null:
 return signupRequested(_that.firstName,_that.lastName,_that.email,_that.password);case AuthVerifyEmailRequested() when verifyEmailRequested != null:
 return verifyEmailRequested(_that.email,_that.otp);case AuthForgotPasswordRequested() when forgotPasswordRequested != null:
 return forgotPasswordRequested(_that.email);case AuthResetPasswordRequested() when resetPasswordRequested != null:
-return resetPasswordRequested(_that.email,_that.otp,_that.newPassword);case _:
+return resetPasswordRequested(_that.email,_that.otp,_that.newPassword);case AuthLogoutRequested() when logoutRequested != null:
+return logoutRequested();case _:
   return orElse();
 
 }
@@ -154,14 +158,15 @@ return resetPasswordRequested(_that.email,_that.otp,_that.newPassword);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String username,  String password)  loginRequested,required TResult Function( String firstName,  String lastName,  String email,  String password)  signupRequested,required TResult Function( String email,  String otp)  verifyEmailRequested,required TResult Function( String email)  forgotPasswordRequested,required TResult Function( String email,  String otp,  String newPassword)  resetPasswordRequested,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String email,  String password)  loginRequested,required TResult Function( String firstName,  String lastName,  String email,  String password)  signupRequested,required TResult Function( String email,  String otp)  verifyEmailRequested,required TResult Function( String email)  forgotPasswordRequested,required TResult Function( String email,  String otp,  String newPassword)  resetPasswordRequested,required TResult Function()  logoutRequested,}) {final _that = this;
 switch (_that) {
 case AuthLoginRequested():
-return loginRequested(_that.username,_that.password);case AuthSignupRequested():
+return loginRequested(_that.email,_that.password);case AuthSignupRequested():
 return signupRequested(_that.firstName,_that.lastName,_that.email,_that.password);case AuthVerifyEmailRequested():
 return verifyEmailRequested(_that.email,_that.otp);case AuthForgotPasswordRequested():
 return forgotPasswordRequested(_that.email);case AuthResetPasswordRequested():
-return resetPasswordRequested(_that.email,_that.otp,_that.newPassword);}
+return resetPasswordRequested(_that.email,_that.otp,_that.newPassword);case AuthLogoutRequested():
+return logoutRequested();}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -175,14 +180,15 @@ return resetPasswordRequested(_that.email,_that.otp,_that.newPassword);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String username,  String password)?  loginRequested,TResult? Function( String firstName,  String lastName,  String email,  String password)?  signupRequested,TResult? Function( String email,  String otp)?  verifyEmailRequested,TResult? Function( String email)?  forgotPasswordRequested,TResult? Function( String email,  String otp,  String newPassword)?  resetPasswordRequested,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String email,  String password)?  loginRequested,TResult? Function( String firstName,  String lastName,  String email,  String password)?  signupRequested,TResult? Function( String email,  String otp)?  verifyEmailRequested,TResult? Function( String email)?  forgotPasswordRequested,TResult? Function( String email,  String otp,  String newPassword)?  resetPasswordRequested,TResult? Function()?  logoutRequested,}) {final _that = this;
 switch (_that) {
 case AuthLoginRequested() when loginRequested != null:
-return loginRequested(_that.username,_that.password);case AuthSignupRequested() when signupRequested != null:
+return loginRequested(_that.email,_that.password);case AuthSignupRequested() when signupRequested != null:
 return signupRequested(_that.firstName,_that.lastName,_that.email,_that.password);case AuthVerifyEmailRequested() when verifyEmailRequested != null:
 return verifyEmailRequested(_that.email,_that.otp);case AuthForgotPasswordRequested() when forgotPasswordRequested != null:
 return forgotPasswordRequested(_that.email);case AuthResetPasswordRequested() when resetPasswordRequested != null:
-return resetPasswordRequested(_that.email,_that.otp,_that.newPassword);case _:
+return resetPasswordRequested(_that.email,_that.otp,_that.newPassword);case AuthLogoutRequested() when logoutRequested != null:
+return logoutRequested();case _:
   return null;
 
 }
@@ -194,10 +200,10 @@ return resetPasswordRequested(_that.email,_that.otp,_that.newPassword);case _:
 
 
 class AuthLoginRequested implements AuthEvent {
-  const AuthLoginRequested({required this.username, required this.password});
+  const AuthLoginRequested({required this.email, required this.password});
   
 
- final  String username;
+ final  String email;
  final  String password;
 
 /// Create a copy of AuthEvent
@@ -210,16 +216,16 @@ $AuthLoginRequestedCopyWith<AuthLoginRequested> get copyWith => _$AuthLoginReque
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthLoginRequested&&(identical(other.username, username) || other.username == username)&&(identical(other.password, password) || other.password == password));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthLoginRequested&&(identical(other.email, email) || other.email == email)&&(identical(other.password, password) || other.password == password));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,username,password);
+int get hashCode => Object.hash(runtimeType,email,password);
 
 @override
 String toString() {
-  return 'AuthEvent.loginRequested(username: $username, password: $password)';
+  return 'AuthEvent.loginRequested(email: $email, password: $password)';
 }
 
 
@@ -230,7 +236,7 @@ abstract mixin class $AuthLoginRequestedCopyWith<$Res> implements $AuthEventCopy
   factory $AuthLoginRequestedCopyWith(AuthLoginRequested value, $Res Function(AuthLoginRequested) _then) = _$AuthLoginRequestedCopyWithImpl;
 @useResult
 $Res call({
- String username, String password
+ String email, String password
 });
 
 
@@ -247,9 +253,9 @@ class _$AuthLoginRequestedCopyWithImpl<$Res>
 
 /// Create a copy of AuthEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? username = null,Object? password = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? email = null,Object? password = null,}) {
   return _then(AuthLoginRequested(
-username: null == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
+email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
 as String,password: null == password ? _self.password : password // ignore: cast_nullable_to_non_nullable
 as String,
   ));
@@ -535,6 +541,38 @@ as String,
 }
 
 /// @nodoc
+
+
+class AuthLogoutRequested implements AuthEvent {
+  const AuthLogoutRequested();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthLogoutRequested);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'AuthEvent.logoutRequested()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
 mixin _$AuthState {
 
 
@@ -578,12 +616,13 @@ extension AuthStatePatterns on AuthState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( AuthInitial value)?  initial,TResult Function( AuthLoading value)?  loading,TResult Function( AuthSuccess value)?  success,TResult Function( AuthFailure value)?  failure,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( AuthInitial value)?  initial,TResult Function( AuthLoading value)?  loading,TResult Function( AuthAuthenticated value)?  authenticated,TResult Function( AuthSuccess value)?  success,TResult Function( AuthFailure value)?  failure,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case AuthInitial() when initial != null:
 return initial(_that);case AuthLoading() when loading != null:
-return loading(_that);case AuthSuccess() when success != null:
+return loading(_that);case AuthAuthenticated() when authenticated != null:
+return authenticated(_that);case AuthSuccess() when success != null:
 return success(_that);case AuthFailure() when failure != null:
 return failure(_that);case _:
   return orElse();
@@ -603,12 +642,13 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( AuthInitial value)  initial,required TResult Function( AuthLoading value)  loading,required TResult Function( AuthSuccess value)  success,required TResult Function( AuthFailure value)  failure,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( AuthInitial value)  initial,required TResult Function( AuthLoading value)  loading,required TResult Function( AuthAuthenticated value)  authenticated,required TResult Function( AuthSuccess value)  success,required TResult Function( AuthFailure value)  failure,}){
 final _that = this;
 switch (_that) {
 case AuthInitial():
 return initial(_that);case AuthLoading():
-return loading(_that);case AuthSuccess():
+return loading(_that);case AuthAuthenticated():
+return authenticated(_that);case AuthSuccess():
 return success(_that);case AuthFailure():
 return failure(_that);}
 }
@@ -624,12 +664,13 @@ return failure(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( AuthInitial value)?  initial,TResult? Function( AuthLoading value)?  loading,TResult? Function( AuthSuccess value)?  success,TResult? Function( AuthFailure value)?  failure,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( AuthInitial value)?  initial,TResult? Function( AuthLoading value)?  loading,TResult? Function( AuthAuthenticated value)?  authenticated,TResult? Function( AuthSuccess value)?  success,TResult? Function( AuthFailure value)?  failure,}){
 final _that = this;
 switch (_that) {
 case AuthInitial() when initial != null:
 return initial(_that);case AuthLoading() when loading != null:
-return loading(_that);case AuthSuccess() when success != null:
+return loading(_that);case AuthAuthenticated() when authenticated != null:
+return authenticated(_that);case AuthSuccess() when success != null:
 return success(_that);case AuthFailure() when failure != null:
 return failure(_that);case _:
   return null;
@@ -648,11 +689,12 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function()?  success,TResult Function( String message)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( User user)?  authenticated,TResult Function()?  success,TResult Function( String message)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case AuthInitial() when initial != null:
 return initial();case AuthLoading() when loading != null:
-return loading();case AuthSuccess() when success != null:
+return loading();case AuthAuthenticated() when authenticated != null:
+return authenticated(_that.user);case AuthSuccess() when success != null:
 return success();case AuthFailure() when failure != null:
 return failure(_that.message);case _:
   return orElse();
@@ -672,11 +714,12 @@ return failure(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function()  success,required TResult Function( String message)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( User user)  authenticated,required TResult Function()  success,required TResult Function( String message)  failure,}) {final _that = this;
 switch (_that) {
 case AuthInitial():
 return initial();case AuthLoading():
-return loading();case AuthSuccess():
+return loading();case AuthAuthenticated():
+return authenticated(_that.user);case AuthSuccess():
 return success();case AuthFailure():
 return failure(_that.message);}
 }
@@ -692,11 +735,12 @@ return failure(_that.message);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function()?  success,TResult? Function( String message)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( User user)?  authenticated,TResult? Function()?  success,TResult? Function( String message)?  failure,}) {final _that = this;
 switch (_that) {
 case AuthInitial() when initial != null:
 return initial();case AuthLoading() when loading != null:
-return loading();case AuthSuccess() when success != null:
+return loading();case AuthAuthenticated() when authenticated != null:
+return authenticated(_that.user);case AuthSuccess() when success != null:
 return success();case AuthFailure() when failure != null:
 return failure(_that.message);case _:
   return null;
@@ -769,6 +813,72 @@ String toString() {
 
 
 
+
+/// @nodoc
+
+
+class AuthAuthenticated implements AuthState {
+  const AuthAuthenticated(this.user);
+  
+
+ final  User user;
+
+/// Create a copy of AuthState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$AuthAuthenticatedCopyWith<AuthAuthenticated> get copyWith => _$AuthAuthenticatedCopyWithImpl<AuthAuthenticated>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthAuthenticated&&(identical(other.user, user) || other.user == user));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,user);
+
+@override
+String toString() {
+  return 'AuthState.authenticated(user: $user)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $AuthAuthenticatedCopyWith<$Res> implements $AuthStateCopyWith<$Res> {
+  factory $AuthAuthenticatedCopyWith(AuthAuthenticated value, $Res Function(AuthAuthenticated) _then) = _$AuthAuthenticatedCopyWithImpl;
+@useResult
+$Res call({
+ User user
+});
+
+
+
+
+}
+/// @nodoc
+class _$AuthAuthenticatedCopyWithImpl<$Res>
+    implements $AuthAuthenticatedCopyWith<$Res> {
+  _$AuthAuthenticatedCopyWithImpl(this._self, this._then);
+
+  final AuthAuthenticated _self;
+  final $Res Function(AuthAuthenticated) _then;
+
+/// Create a copy of AuthState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? user = null,}) {
+  return _then(AuthAuthenticated(
+null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
+as User,
+  ));
+}
+
+
+}
 
 /// @nodoc
 

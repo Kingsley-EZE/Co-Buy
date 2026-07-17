@@ -1,94 +1,241 @@
 import 'package:co_buy/core/components/atoms/app_button.dart';
 import 'package:co_buy/core/components/atoms/app_text_field.dart';
+import 'package:co_buy/core/components/feedback/app_snackbar.dart';
 import 'package:co_buy/core/components/scaffolds/app_scaffold.dart';
 import 'package:co_buy/core/design_system/design_system.dart';
 import 'package:co_buy/core/di/injection.dart';
 import 'package:co_buy/core/navigation/routes.dart';
+import 'package:co_buy/core/validation/app_validators.dart';
 import 'package:co_buy/features/auth/presentation/blocs/auth_bloc/auth_bloc.dart';
+import 'package:co_buy/features/auth/presentation/blocs/login_form_bloc/login_form_bloc.dart';
+import 'package:co_buy/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key, required this.title});
-  final String title;
+  const LoginPage({super.key});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final _usernameController = TextEditingController();
+  final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
   @override
   void dispose() {
-    _usernameController.dispose();
+    _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
 
   void _onLoginPressed(BuildContext context) {
+    final form = context.read<LoginFormBloc>().state;
+    if (!form.canSubmit) return;
     context.read<AuthBloc>().add(
-          AuthEvent.loginRequested(
-            username: _usernameController.text.trim(),
-            password: _passwordController.text,
-          ),
-        );
+      AuthEvent.loginRequested(
+        email: form.email.trim(),
+        password: form.password,
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    // AuthBloc is provided app-wide (see MyApp); only the page-scoped form
+    // bloc is created here.
     return BlocProvider(
-      create: (_) => getIt<AuthBloc>(),
+      create: (_) => getIt<LoginFormBloc>(),
       child: AppScaffold(
-        appBar: AppBar(title: Text(widget.title)),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.screenH),
-          child: BlocConsumer<AuthBloc, AuthState>(
-            listener: (context, state) {
-              if (state case AuthFailure(:final message)) {
-                ScaffoldMessenger.of(context)
-                    .showSnackBar(SnackBar(content: Text(message)));
-              }
-              if (state case AuthSuccess()) {
-                const HomeRoute().go(context);
-              }
-            },
-            builder: (context, state) {
-              final isLoading = state is AuthLoading;
+        body: BlocConsumer<AuthBloc, AuthState>(
+          listener: (context, state) {
+            if (state case AuthFailure(:final message)) {
+              AppSnackBar.showError(context, message);
+            }
+            if (state case AuthAuthenticated()) {
+              const HomeRoute().go(context);
+            }
+          },
+          builder: (context, state) {
+            final isLoading = state is AuthLoading;
 
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+            return SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.screenH,
+              ),
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  const SizedBox(height: AppSpacing.s48),
+                  Center(
+                    child: Assets.icons.icPageLogo.svg(height: AppSpacing.s64),
+                  ),
+                  const SizedBox(height: AppSpacing.s16),
+                  Text(
+                    'Welcome back',
+                    style: context.styles.h4,
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: AppSpacing.s8),
+                  Text(
+                    'Pick up right where you left off.',
+                    style: context.styles.bodyL,
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: AppSpacing.s32),
                   AppTextField(
-                    label: 'Username',
-                    controller: _usernameController,
+                    label: 'Email',
+                    controller: _emailController,
+                    validator: AppValidators.email,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    onChanged: (value) => context.read<LoginFormBloc>().add(
+                      LoginFormEvent.emailChanged(value),
+                    ),
+                    keyboardType: TextInputType.emailAddress,
                     textInputAction: TextInputAction.next,
                     autocorrect: false,
+                    autofillHints: const [AutofillHints.email],
                   ),
                   const SizedBox(height: AppSpacing.s16),
                   AppTextField(
                     label: 'Password',
                     controller: _passwordController,
+                    validator: (value) => AppValidators.required(
+                      value,
+                      message: 'Password is required',
+                    ),
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    onChanged: (value) => context.read<LoginFormBloc>().add(
+                      LoginFormEvent.passwordChanged(value),
+                    ),
                     obscureText: true,
                     textInputAction: TextInputAction.done,
+                    autofillHints: const [AutofillHints.password],
                     onFieldSubmitted: (_) => _onLoginPressed(context),
                   ),
-                  const SizedBox(height: AppSpacing.s24),
-                  AppButton(
-                    label: 'Login',
-                    loading: isLoading,
-                    onPressed: () => _onLoginPressed(context),
+                  const SizedBox(height: AppSpacing.s20),
+                  Row(
+                    children: [
+                      BlocSelector<LoginFormBloc, LoginFormState, bool>(
+                        selector: (state) => state.rememberMe,
+                        builder: (context, rememberMe) => GestureDetector(
+                          onTap: () => context.read<LoginFormBloc>().add(
+                            const LoginFormEvent.rememberMeToggled(),
+                          ),
+                          behavior: HitTestBehavior.opaque,
+                          child: Row(
+                            children: [
+                              _CheckBox(checked: rememberMe),
+                              const SizedBox(width: AppSpacing.s12),
+                              Text(
+                                'Remember me',
+                                style: context.styles.bodyM.semibold,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const Spacer(),
+                      _LinkText(
+                        'Forgot Password?',
+                        // TODO: navigate once the forgot-password flow exists.
+                        onTap: () {},
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: AppSpacing.s40),
+                  // Rebuilds only when validity flips, not per keystroke.
+                  BlocSelector<LoginFormBloc, LoginFormState, bool>(
+                    selector: (state) => state.canSubmit,
+                    builder: (context, canSubmit) => AppButton(
+                      label: 'Sign In',
+                      loading: isLoading,
+                      onPressed: canSubmit
+                          ? () => _onLoginPressed(context)
+                          : null,
+                    ),
                   ),
                   const SizedBox(height: AppSpacing.s16),
-                  TextButton(
-                    onPressed: () => const SignupRoute().go(context),
-                    child: const Text("Don't have an account? Sign up"),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Don't have an account? ",
+                        style: context.styles.bodyM.copyWith(
+                          color: context.colors.text.subtle,
+                        ),
+                      ),
+                      _LinkText(
+                        'Create Account',
+                        onTap: () => const SignupRoute().go(context),
+                      ),
+                    ],
                   ),
+                  const SizedBox(height: AppSpacing.s24),
                 ],
-              );
-            },
-          ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+/// Design checkbox: brand-purple squircle with a thick rounded check —
+/// Material's [Checkbox] can't match the corner radius or check weight.
+class _CheckBox extends StatelessWidget {
+  const _CheckBox({required this.checked});
+
+  final bool checked;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      checked: checked,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        width: AppSpacing.s20,
+        height: AppSpacing.s20,
+        decoration: BoxDecoration(
+          color: checked ? context.colors.button.primary : Colors.transparent,
+          borderRadius: AppRadius.br6,
+          border: checked
+              ? null
+              : Border.all(color: context.colors.stroke.primary, width: 1.5),
+        ),
+        child: checked
+            ? Icon(
+                Icons.check_rounded,
+                size: AppSpacing.s16,
+                color: context.colors.text.neutral,
+              )
+            : null,
+      ),
+    );
+  }
+}
+
+/// Underlined brand-coloured inline link ("Forgot Password?",
+/// "Create Account"). Links stay `primary.base` in both modes.
+class _LinkText extends StatelessWidget {
+  const _LinkText(this.label, {required this.onTap});
+
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Text(
+        label,
+        style: context.styles.bodyM.semibold.copyWith(
+          color: AppPalette.primaryBase,
+          decoration: TextDecoration.underline,
+          decorationColor: AppPalette.primaryBase,
         ),
       ),
     );

@@ -11,9 +11,9 @@ import 'routes.dart';
 /// (a GoRouterRefreshStream over its state stream) here — nothing else needs
 /// to change.
 GoRouter createRouter() => GoRouter(
-      navigatorKey: rootNavigatorKey,
-      initialLocation: const OnboardingRoute().location,
-      debugLogDiagnostics: kDebugMode,
-      routes: $appRoutes,
-      errorBuilder: (context, state) => NotFoundScreen(error: state.error),
-    );
+  navigatorKey: rootNavigatorKey,
+  initialLocation: const OnboardingRoute().location,
+  debugLogDiagnostics: kDebugMode,
+  routes: $appRoutes,
+  errorBuilder: (context, state) => NotFoundScreen(error: state.error),
+);

@@ -53,14 +53,11 @@ abstract class NetworkModule {
   }
 
   static BaseOptions _baseOptions(Env env) => BaseOptions(
-        baseUrl: env.baseUrl,
-        connectTimeout: const Duration(seconds: 15),
-        receiveTimeout: const Duration(seconds: 20),
-        sendTimeout: const Duration(seconds: 20),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        responseType: ResponseType.json,
-      );
+    baseUrl: env.baseUrl,
+    connectTimeout: const Duration(seconds: 15),
+    receiveTimeout: const Duration(seconds: 20),
+    sendTimeout: const Duration(seconds: 20),
+    headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+    responseType: ResponseType.json,
+  );
 }

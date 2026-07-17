@@ -117,17 +117,13 @@ class AppButton extends StatelessWidget {
     final Widget child = loading
         ? SizedBox.square(
             dimension: AppSpacing.s20,
-            child: CircularProgressIndicator(
-              strokeWidth: 2,
-              color: foreground,
-            ),
+            child: CircularProgressIndicator(strokeWidth: 2, color: foreground),
           )
         : Row(
             mainAxisSize: MainAxisSize.min,
             spacing: AppSpacing.s8,
             children: [
-              if (leadingIcon != null)
-                Icon(leadingIcon, size: AppSpacing.s20),
+              if (leadingIcon != null) Icon(leadingIcon, size: AppSpacing.s20),
               Flexible(child: Text(label, overflow: TextOverflow.ellipsis)),
               if (trailingIcon != null)
                 Icon(trailingIcon, size: AppSpacing.s20),

@@ -5,7 +5,6 @@ import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/auth/presentation/pages/onboarding_page.dart';
 import '../../features/auth/presentation/pages/signup_page.dart';
 import '../../features/home/presentation/pages/home_page.dart';
-import '../config/app_config.dart';
 
 part 'routes.g.dart';
 
@@ -24,16 +23,13 @@ class OnboardingRoute extends GoRouteData with $OnboardingRoute {
 
 @TypedGoRoute<LoginRoute>(
   path: '/login',
-  routes: <TypedRoute<RouteData>>[
-    TypedGoRoute<SignupRoute>(path: 'signup'),
-  ],
+  routes: <TypedRoute<RouteData>>[TypedGoRoute<SignupRoute>(path: 'signup')],
 )
 class LoginRoute extends GoRouteData with $LoginRoute {
   const LoginRoute();
 
   @override
-  Widget build(BuildContext context, GoRouterState state) =>
-      LoginPage(title: AppConfig.appName);
+  Widget build(BuildContext context, GoRouterState state) => const LoginPage();
 }
 
 /// Nested under login so `/login/signup` keeps the login screen in the back
@@ -42,8 +38,7 @@ class SignupRoute extends GoRouteData with $SignupRoute {
   const SignupRoute();
 
   @override
-  Widget build(BuildContext context, GoRouterState state) =>
-      const SignupPage();
+  Widget build(BuildContext context, GoRouterState state) => const SignupPage();
 }
 
 @TypedGoRoute<HomeRoute>(path: '/home')

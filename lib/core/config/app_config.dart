@@ -30,9 +30,9 @@ abstract final class AppConfig {
 
   /// User-facing app name for the active flavor.
   static String get appName => switch (_flavor) {
-        Flavor.dev => 'Co Buy Dev',
-        Flavor.prod => 'Co Buy',
-      };
+    Flavor.dev => 'Co Buy Dev',
+    Flavor.prod => 'Co Buy',
+  };
 
   /// Whether the app is running the development flavor.
   static bool get isDev => _flavor == Flavor.dev;

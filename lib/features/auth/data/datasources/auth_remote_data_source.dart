@@ -12,7 +12,7 @@ part 'auth_remote_data_source.g.dart';
 @RestApi()
 abstract class AuthRemoteDataSource {
   factory AuthRemoteDataSource(Dio dio, {String? baseUrl}) =
-  _AuthRemoteDataSource;
+      _AuthRemoteDataSource;
 
   @POST('/auth/login')
   Future<LoginResponseDto> loginUser({@Body() required LoginRequestDto body});
@@ -24,9 +24,7 @@ abstract class AuthRemoteDataSource {
   Future<void> verifyEmail({@Body() required VerifyEmailRequestDto body});
 
   @POST('/auth/forgot-password')
-  Future<void> forgotPassword({
-    @Body() required ForgotPasswordRequestDto body,
-  });
+  Future<void> forgotPassword({@Body() required ForgotPasswordRequestDto body});
 
   @POST('/auth/reset-password')
   Future<void> resetPassword({@Body() required ResetPasswordRequestDto body});

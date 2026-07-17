@@ -3,7 +3,7 @@ part of 'auth_bloc.dart';
 @freezed
 sealed class AuthEvent with _$AuthEvent {
   const factory AuthEvent.loginRequested({
-    required String username,
+    required String email,
     required String password,
   }) = AuthLoginRequested;
 
@@ -19,13 +19,14 @@ sealed class AuthEvent with _$AuthEvent {
     required String otp,
   }) = AuthVerifyEmailRequested;
 
-  const factory AuthEvent.forgotPasswordRequested({
-    required String email,
-  }) = AuthForgotPasswordRequested;
+  const factory AuthEvent.forgotPasswordRequested({required String email}) =
+      AuthForgotPasswordRequested;
 
   const factory AuthEvent.resetPasswordRequested({
     required String email,
     required String otp,
     required String newPassword,
   }) = AuthResetPasswordRequested;
+
+  const factory AuthEvent.logoutRequested() = AuthLogoutRequested;
 }

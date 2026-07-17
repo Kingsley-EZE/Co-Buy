@@ -30,6 +30,8 @@ import '../../features/auth/domain/usecases/signup_usecase.dart' as _i57;
 import '../../features/auth/domain/usecases/verify_email_usecase.dart' as _i30;
 import '../../features/auth/presentation/blocs/auth_bloc/auth_bloc.dart'
     as _i661;
+import '../../features/auth/presentation/blocs/login_form_bloc/login_form_bloc.dart'
+    as _i182;
 import '../../features/posts/data/datasources/posts_remote_data_source.dart'
     as _i538;
 import '../../features/posts/data/repositories/posts_repository_impl.dart'
@@ -56,6 +58,7 @@ extension GetItInjectableX on _i174.GetIt {
     final routerModule = _$RouterModule();
     final serviceModule = _$ServiceModule();
     final networkModule = _$NetworkModule();
+    gh.factory<_i182.LoginFormBloc>(() => _i182.LoginFormBloc());
     gh.singleton<_i583.GoRouter>(() => routerModule.goRouter);
     gh.lazySingleton<_i558.FlutterSecureStorage>(
       () => serviceModule.secureStorage,
@@ -118,17 +121,19 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i30.VerifyEmailUseCase>(
       () => _i30.VerifyEmailUseCase(gh<_i787.AuthRepository>()),
     );
-    gh.factory<_i661.AuthBloc>(
+    gh.factory<_i158.GetPostsUseCase>(
+      () => _i158.GetPostsUseCase(gh<_i245.PostsRepository>()),
+    );
+    gh.lazySingleton<_i661.AuthBloc>(
       () => _i661.AuthBloc(
         gh<_i188.LoginUseCase>(),
         gh<_i57.SignupUseCase>(),
         gh<_i30.VerifyEmailUseCase>(),
         gh<_i560.ForgotPasswordUseCase>(),
         gh<_i474.ResetPasswordUseCase>(),
+        gh<_i48.LogoutUseCase>(),
       ),
-    );
-    gh.factory<_i158.GetPostsUseCase>(
-      () => _i158.GetPostsUseCase(gh<_i245.PostsRepository>()),
+      dispose: _i661.disposeAuthBloc,
     );
     return this;
   }

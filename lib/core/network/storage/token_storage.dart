@@ -18,9 +18,11 @@ class TokenStorage {
 
   Future<String?> readRefreshToken() => _storage.read(key: _kRefresh);
 
-  Future<void> saveTokens({required String access, required String refresh}) async {
+  /// [refresh] is optional while the login API ships without a refresh
+  /// token; when absent, any stored refresh token is left untouched.
+  Future<void> saveTokens({required String access, String? refresh}) async {
     await _storage.write(key: _kAccess, value: access);
-    await _storage.write(key: _kRefresh, value: refresh);
+    if (refresh != null) await _storage.write(key: _kRefresh, value: refresh);
   }
 
   Future<void> clear() => _storage.deleteAll();

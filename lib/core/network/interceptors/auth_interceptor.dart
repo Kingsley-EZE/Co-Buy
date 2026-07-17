@@ -67,9 +67,12 @@ class AuthInterceptor extends QueuedInterceptorsWrapper {
     if (_refreshLock != null) return _refreshLock!.future;
     final lock = Completer<bool>();
     _refreshLock = lock;
-    _refresh().then(lock.complete).catchError((Object e, StackTrace s) {
-      lock.completeError(e, s);
-    }).whenComplete(() => _refreshLock = null);
+    _refresh()
+        .then(lock.complete)
+        .catchError((Object e, StackTrace s) {
+          lock.completeError(e, s);
+        })
+        .whenComplete(() => _refreshLock = null);
     return lock.future;
   }
 
@@ -79,7 +82,7 @@ class AuthInterceptor extends QueuedInterceptorsWrapper {
     // TODO: adjust the path/payload/response shape to the real auth API.
     final res = await _refreshDio.post(
       '/auth/refresh',
-      data: { 'refreshToken': refreshToken, "expiresInMins": 30 },
+      data: {'refreshToken': refreshToken, "expiresInMins": 30},
     );
     if (res.statusCode == 200) {
       await _tokenStorage.saveTokens(
