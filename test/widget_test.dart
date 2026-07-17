@@ -7,16 +7,19 @@ import 'package:co_buy/core/di/injection.dart';
 import 'package:co_buy/core/navigation/app_router.dart';
 import 'package:co_buy/features/auth/domain/usecases/forgot_password_usecase.dart';
 import 'package:co_buy/features/auth/domain/usecases/login_usecase.dart';
+import 'package:co_buy/features/auth/domain/usecases/logout_usecase.dart';
 import 'package:co_buy/features/auth/domain/usecases/reset_password_usecase.dart';
 import 'package:co_buy/features/auth/domain/usecases/signup_usecase.dart';
 import 'package:co_buy/features/auth/domain/usecases/verify_email_usecase.dart';
 import 'package:co_buy/features/auth/presentation/blocs/auth_bloc/auth_bloc.dart';
-import 'package:flutter/material.dart';
+import 'package:co_buy/features/auth/presentation/blocs/login_form_bloc/login_form_bloc.dart';
+import 'package:co_buy/features/auth/presentation/pages/onboarding_page.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 
 class _MockLoginUseCase extends Mock implements LoginUseCase {}
+
 class _MockSignupUseCase extends Mock implements SignupUseCase {}
 
 class _MockVerifyEmailUseCase extends Mock implements VerifyEmailUseCase {}
@@ -26,12 +29,14 @@ class _MockForgotPasswordUseCase extends Mock
 
 class _MockResetPasswordUseCase extends Mock implements ResetPasswordUseCase {}
 
+class _MockLogoutUseCase extends Mock implements LogoutUseCase {}
+
 void main() {
   setUp(() {
     // MyApp resolves the router from get_it.
     getIt.registerSingleton<GoRouter>(createRouter());
-    // LoginPage resolves its bloc from get_it; register it with mocked
-    // use cases so no real network wiring is needed.
+    // The blocs resolve from get_it; register AuthBloc with mocked use cases
+    // so no real network wiring is needed.
     getIt.registerFactory<AuthBloc>(
       () => AuthBloc(
         _MockLoginUseCase(),
@@ -39,19 +44,22 @@ void main() {
         _MockVerifyEmailUseCase(),
         _MockForgotPasswordUseCase(),
         _MockResetPasswordUseCase(),
+        _MockLogoutUseCase(),
       ),
     );
+    getIt.registerFactory<LoginFormBloc>(LoginFormBloc.new);
   });
 
   tearDown(() => getIt.reset());
 
-  testWidgets('renders the login page', (WidgetTester tester) async {
+  testWidgets('renders the onboarding page as the initial route', (
+    WidgetTester tester,
+  ) async {
     // Configuration must be initialised before the app widget is built.
     AppConfig.init(Flavor.prod);
 
     await tester.pumpWidget(const MyApp());
 
-    expect(find.byType(TextField), findsNWidgets(2));
-    expect(find.text('Login'), findsOneWidget);
+    expect(find.byType(OnboardingPage), findsOneWidget);
   });
 }

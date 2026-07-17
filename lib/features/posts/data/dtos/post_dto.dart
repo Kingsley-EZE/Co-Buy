@@ -27,7 +27,11 @@ class PostDto {
 /// Generic paginated wrapper for list endpoints.
 @JsonSerializable(genericArgumentFactories: true, createToJson: false)
 class PaginatedDto<T> {
-  const PaginatedDto({required this.items, required this.total, this.nextCursor});
+  const PaginatedDto({
+    required this.items,
+    required this.total,
+    this.nextCursor,
+  });
 
   final List<T> items;
   final int total;
@@ -37,6 +41,5 @@ class PaginatedDto<T> {
   factory PaginatedDto.fromJson(
     Map<String, dynamic> json,
     T Function(Object? json) fromJsonT,
-  ) =>
-      _$PaginatedDtoFromJson(json, fromJsonT);
+  ) => _$PaginatedDtoFromJson(json, fromJsonT);
 }

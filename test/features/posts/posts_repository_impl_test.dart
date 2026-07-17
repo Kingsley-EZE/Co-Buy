@@ -18,9 +18,9 @@ void main() {
   });
 
   test('maps success to Right<List<Post>>', () async {
-    when(() => remote.getPosts(any(), any())).thenAnswer(
-      (_) async => const [PostDto(id: 1, title: 't', body: 'b')],
-    );
+    when(
+      () => remote.getPosts(any(), any()),
+    ).thenAnswer((_) async => const [PostDto(id: 1, title: 't', body: 'b')]);
 
     final result = await repo.getPosts();
 

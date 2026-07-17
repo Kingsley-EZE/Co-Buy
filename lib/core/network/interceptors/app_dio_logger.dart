@@ -66,8 +66,8 @@ class AppDioLogger extends Interceptor {
     final color = status >= 400
         ? _red
         : status >= 300
-            ? _yellow
-            : _green;
+        ? _yellow
+        : _green;
 
     final buffer = StringBuffer()
       ..writeln(
@@ -115,8 +115,9 @@ class AppDioLogger extends Interceptor {
   void _writeBody(StringBuffer buffer, Object? data) {
     if (data == null) return;
     final rendered = switch (data) {
-      FormData() => 'FormData(fields: ${data.fields.length}, '
-          'files: ${data.files.length})',
+      FormData() =>
+        'FormData(fields: ${data.fields.length}, '
+            'files: ${data.files.length})',
       Map() || List() => _prettyJson(data),
       _ => data.toString(),
     };

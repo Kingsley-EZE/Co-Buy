@@ -4,10 +4,7 @@ part 'verify_email_request_dto.g.dart';
 
 @JsonSerializable()
 class VerifyEmailRequestDto {
-  const VerifyEmailRequestDto({
-    required this.email,
-    required this.otp,
-  });
+  const VerifyEmailRequestDto({required this.email, required this.otp});
 
   final String email, otp;
 

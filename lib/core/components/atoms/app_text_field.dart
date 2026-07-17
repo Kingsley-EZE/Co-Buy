@@ -1,4 +1,5 @@
 import 'package:co_buy/core/design_system/design_system.dart';
+import 'package:co_buy/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
 
 /// Text input atom built on the design-system tokens.
@@ -42,6 +43,7 @@ class AppTextField extends StatefulWidget {
     this.focusNode,
     this.prefixIcon,
     this.suffix,
+    this.autovalidateMode,
   });
 
   final String? label;
@@ -74,6 +76,11 @@ class AppTextField extends StatefulWidget {
   /// visibility toggle takes the slot.
   final Widget? suffix;
 
+  /// Set on the field (not an enclosing [Form]) so interaction tracking is
+  /// per-field: with `onUserInteraction`, only fields the user has actually
+  /// edited show validation errors.
+  final AutovalidateMode? autovalidateMode;
+
   @override
   State<AppTextField> createState() => _AppTextFieldState();
 }
@@ -96,11 +103,15 @@ class _AppTextFieldState extends State<AppTextField> {
     final Widget? suffixIcon = widget.obscureText
         ? IconButton(
             onPressed: () => setState(() => _obscured = !_obscured),
-            icon: Icon(
-              _obscured ? Icons.visibility_outlined : Icons.visibility_off_outlined,
-              size: AppSpacing.s20,
-              color: colors.text.subtle,
-            ),
+            icon: (_obscured ? Assets.icons.icEyeClose : Assets.icons.icEyeOpen)
+                .svg(
+                  width: AppSpacing.s20,
+                  height: AppSpacing.s20,
+                  colorFilter: ColorFilter.mode(
+                    colors.text.subtle,
+                    BlendMode.srcIn,
+                  ),
+                ),
             tooltip: _obscured ? 'Show' : 'Hide',
           )
         : widget.suffix;
@@ -122,6 +133,7 @@ class _AppTextFieldState extends State<AppTextField> {
       autocorrect: widget.autocorrect,
       autofillHints: widget.autofillHints,
       focusNode: widget.focusNode,
+      autovalidateMode: widget.autovalidateMode,
       style: styles.bodyL.copyWith(
         color: widget.enabled ? colors.text.body : colors.text.disabled,
       ),

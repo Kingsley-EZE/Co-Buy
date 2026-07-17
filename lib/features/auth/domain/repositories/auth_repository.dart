@@ -3,16 +3,18 @@ import '../entities/forgot_password_request.dart';
 import '../entities/login_request.dart';
 import '../entities/reset_password_request.dart';
 import '../entities/signup_request.dart';
+import '../entities/user.dart';
 import '../entities/verify_email_request.dart';
 
 /// Domain contract for authentication.
 ///
 /// Tokens are an infrastructure detail: [login] persists them to secure
 /// storage (where `AuthInterceptor` picks them up) rather than returning them,
-/// so callers only see success or a [Failure].
+/// so callers only see the signed-in [User] or a [Failure].
 abstract class AuthRepository {
-  /// Signs the user in and persists the session tokens on success.
-  FutureResult<void> login(LoginRequest request);
+  /// Signs the user in, persists the session tokens and returns the
+  /// signed-in [User].
+  FutureResult<User> login(LoginRequest request);
 
   /// Registers a new account. Callers only see success or a [Failure].
   FutureResult<void> signup(SignupRequest request);

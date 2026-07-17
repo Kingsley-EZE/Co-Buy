@@ -65,9 +65,6 @@ void main() {
     final button = tester.widget<ElevatedButton>(find.byType(ElevatedButton));
     final style = button.style!;
     expect(style.backgroundColor!.resolve({}), Colors.transparent);
-    expect(
-      style.side!.resolve({})!.color,
-      AppColors.light.button.outline,
-    );
+    expect(style.side!.resolve({})!.color, AppColors.light.button.outline);
   });
 }

@@ -15,7 +15,11 @@ void main() {
     String? value;
     await tester.pumpWidget(
       _wrap(
-        AppTextField(label: 'Email', hint: 'you@example.com', onChanged: (v) => value = v),
+        AppTextField(
+          label: 'Email',
+          hint: 'you@example.com',
+          onChanged: (v) => value = v,
+        ),
       ),
     );
 
@@ -35,11 +39,12 @@ void main() {
         tester.widget<EditableText>(find.byType(EditableText));
     expect(editable().obscureText, isTrue);
 
-    await tester.tap(find.byIcon(Icons.visibility_outlined));
+    // The toggle renders SVG assets, so locate it by tooltip.
+    await tester.tap(find.byTooltip('Show'));
     await tester.pump();
     expect(editable().obscureText, isFalse);
 
-    await tester.tap(find.byIcon(Icons.visibility_off_outlined));
+    await tester.tap(find.byTooltip('Hide'));
     await tester.pump();
     expect(editable().obscureText, isTrue);
   });

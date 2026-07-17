@@ -25,8 +25,12 @@ class $AssetsIconsGen {
   SvgGenImage get icEyeOpen =>
       const SvgGenImage('assets/icons/ic_eye_open.svg');
 
+  /// File path: assets/icons/ic_page_logo.svg
+  SvgGenImage get icPageLogo =>
+      const SvgGenImage('assets/icons/ic_page_logo.svg');
+
   /// List of all assets
-  List<SvgGenImage> get values => [icEyeClose, icEyeOpen];
+  List<SvgGenImage> get values => [icEyeClose, icEyeOpen, icPageLogo];
 }
 
 class $AssetsImagesGen {

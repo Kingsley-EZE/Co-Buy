@@ -7,6 +7,7 @@ import 'package:flutter/widgets.dart';
 /// `borderRadius: AppRadius.br12`.
 abstract final class AppRadius {
   static const double r4 = 4;
+  static const double r6 = 6;
   static const double r8 = 8;
   static const double r12 = 12;
   static const double r16 = 16;
@@ -16,6 +17,7 @@ abstract final class AppRadius {
   static const double rFull = 999;
 
   static const BorderRadius br4 = BorderRadius.all(Radius.circular(r4));
+  static const BorderRadius br6 = BorderRadius.all(Radius.circular(r6));
   static const BorderRadius br8 = BorderRadius.all(Radius.circular(r8));
   static const BorderRadius br12 = BorderRadius.all(Radius.circular(r12));
   static const BorderRadius br16 = BorderRadius.all(Radius.circular(r16));

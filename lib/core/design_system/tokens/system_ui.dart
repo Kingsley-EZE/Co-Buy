@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-SystemUiOverlayStyle coBuySystemUiOverlayStyle(Brightness backgroundBrightness) {
+SystemUiOverlayStyle coBuySystemUiOverlayStyle(
+  Brightness backgroundBrightness,
+) {
   final Brightness iconBrightness = backgroundBrightness == Brightness.light
       ? Brightness.dark
       : Brightness.light;
