@@ -1,0 +1,15 @@
+import 'package:co_buy/core/components/scaffolds/app_scaffold.dart';
+import 'package:flutter/material.dart';
+
+/// Alerts tab. Placeholder until the real alerts feature lands.
+class AlertsPage extends StatelessWidget {
+  const AlertsPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return AppScaffold(
+      appBar: AppBar(title: const Text('Alerts')),
+      body: const Center(child: Text('Alerts')),
+    );
+  }
+}

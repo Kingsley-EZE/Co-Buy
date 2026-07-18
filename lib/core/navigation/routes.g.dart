@@ -6,7 +6,11 @@ part of 'routes.dart';
 // GoRouterGenerator
 // **************************************************************************
 
-List<RouteBase> get $appRoutes => [$onboardingRoute, $loginRoute, $homeRoute];
+List<RouteBase> get $appRoutes => [
+  $onboardingRoute,
+  $loginRoute,
+  $dashboardShellRoute,
+];
 
 RouteBase get $onboardingRoute => GoRouteData.$route(
   path: '/onboarding',
@@ -139,14 +143,106 @@ mixin $ResetPasswordRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-RouteBase get $homeRoute =>
-    GoRouteData.$route(path: '/home', factory: $HomeRoute._fromState);
+RouteBase get $dashboardShellRoute => StatefulShellRouteData.$route(
+  factory: $DashboardShellRouteExtension._fromState,
+  branches: [
+    StatefulShellBranchData.$branch(
+      navigatorKey: HomeBranch.$navigatorKey,
+      routes: [
+        GoRouteData.$route(path: '/home', factory: $HomeRoute._fromState),
+      ],
+    ),
+    StatefulShellBranchData.$branch(
+      navigatorKey: MyPoolsBranch.$navigatorKey,
+      routes: [
+        GoRouteData.$route(path: '/pools', factory: $MyPoolsRoute._fromState),
+      ],
+    ),
+    StatefulShellBranchData.$branch(
+      navigatorKey: AlertsBranch.$navigatorKey,
+      routes: [
+        GoRouteData.$route(path: '/alerts', factory: $AlertsRoute._fromState),
+      ],
+    ),
+    StatefulShellBranchData.$branch(
+      navigatorKey: ProfileBranch.$navigatorKey,
+      routes: [
+        GoRouteData.$route(path: '/profile', factory: $ProfileRoute._fromState),
+      ],
+    ),
+  ],
+);
+
+extension $DashboardShellRouteExtension on DashboardShellRoute {
+  static DashboardShellRoute _fromState(GoRouterState state) =>
+      const DashboardShellRoute();
+}
 
 mixin $HomeRoute on GoRouteData {
   static HomeRoute _fromState(GoRouterState state) => const HomeRoute();
 
   @override
   String get location => GoRouteData.$location('/home');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+mixin $MyPoolsRoute on GoRouteData {
+  static MyPoolsRoute _fromState(GoRouterState state) => const MyPoolsRoute();
+
+  @override
+  String get location => GoRouteData.$location('/pools');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+mixin $AlertsRoute on GoRouteData {
+  static AlertsRoute _fromState(GoRouterState state) => const AlertsRoute();
+
+  @override
+  String get location => GoRouteData.$location('/alerts');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+mixin $ProfileRoute on GoRouteData {
+  static ProfileRoute _fromState(GoRouterState state) => const ProfileRoute();
+
+  @override
+  String get location => GoRouteData.$location('/profile');
 
   @override
   void go(BuildContext context) => context.go(location);
