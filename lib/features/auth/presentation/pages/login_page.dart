@@ -54,7 +54,7 @@ class _LoginPageState extends State<LoginPage> {
               AppSnackBar.showError(context, message);
             }
             if (state case AuthAuthenticated()) {
-              const HomeRoute().go(context);
+              DashboardShellRoute.go(context);
             }
           },
           builder: (context, state) {

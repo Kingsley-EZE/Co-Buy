@@ -25,12 +25,36 @@ class $AssetsIconsGen {
   SvgGenImage get icEyeOpen =>
       const SvgGenImage('assets/icons/ic_eye_open.svg');
 
+  /// File path: assets/icons/ic_nav_alert.svg
+  SvgGenImage get icNavAlert =>
+      const SvgGenImage('assets/icons/ic_nav_alert.svg');
+
+  /// File path: assets/icons/ic_nav_home.svg
+  SvgGenImage get icNavHome =>
+      const SvgGenImage('assets/icons/ic_nav_home.svg');
+
+  /// File path: assets/icons/ic_nav_pools.svg
+  SvgGenImage get icNavPools =>
+      const SvgGenImage('assets/icons/ic_nav_pools.svg');
+
+  /// File path: assets/icons/ic_nav_profile.svg
+  SvgGenImage get icNavProfile =>
+      const SvgGenImage('assets/icons/ic_nav_profile.svg');
+
   /// File path: assets/icons/ic_page_logo.svg
   SvgGenImage get icPageLogo =>
       const SvgGenImage('assets/icons/ic_page_logo.svg');
 
   /// List of all assets
-  List<SvgGenImage> get values => [icEyeClose, icEyeOpen, icPageLogo];
+  List<SvgGenImage> get values => [
+    icEyeClose,
+    icEyeOpen,
+    icNavAlert,
+    icNavHome,
+    icNavPools,
+    icNavProfile,
+    icPageLogo,
+  ];
 }
 
 class $AssetsImagesGen {
