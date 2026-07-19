@@ -2,30 +2,42 @@ import 'package:co_buy/core/components/atoms/app_button.dart';
 import 'package:co_buy/core/components/common/app_sheet_close_button.dart';
 import 'package:co_buy/core/design_system/design_system.dart';
 import 'package:co_buy/core/formatting/app_formatters.dart';
-import 'package:co_buy/features/home/presentation/blocs/create_pool_form_bloc/create_pool_form_bloc.dart';
+import 'package:co_buy/features/pools/domain/entities/pool_details.dart';
+import 'package:co_buy/features/pools/presentation/blocs/join_pool_form_bloc/join_pool_form_bloc.dart';
+import 'package:co_buy/features/pools/presentation/widgets/account_verified_card.dart';
 import 'package:flutter/material.dart';
 
-/// Bottom sheet recapping everything entered on the create-pool form before
-/// the pool is actually created.
+/// Bottom sheet recapping the pool and the contributor's verified account
+/// before the payment step.
 ///
-/// Purely presentational: it renders a [CreatePoolFormState] snapshot and
-/// reports the choice — "Create pool" pops the sheet then calls
-/// [onCreatePool]; "Edit details" and the close button just pop back to the
-/// form. Show it with [PoolSummarySheet.show].
-class PoolSummarySheet extends StatelessWidget {
-  const PoolSummarySheet({
+/// Purely presentational: it renders the fetched [PoolDetails] and a
+/// [JoinPoolFormState] snapshot and reports the choice — "Continue to
+/// payment" pops the sheet then calls [onContinue]; the close button just
+/// pops back to the form. Show it with [JoinPoolReviewSheet.show].
+class JoinPoolReviewSheet extends StatelessWidget {
+  const JoinPoolReviewSheet({
     super.key,
+    required this.details,
+    required this.leaderName,
     required this.formState,
-    required this.onCreatePool,
+    required this.onContinue,
   });
 
-  final CreatePoolFormState formState;
-  final VoidCallback onCreatePool;
+  final PoolDetails details;
+
+  /// Resolved from the members list by the page; null when the leader isn't
+  /// among the fetched members.
+  final String? leaderName;
+
+  final JoinPoolFormState formState;
+  final VoidCallback onContinue;
 
   static Future<void> show(
     BuildContext context, {
-    required CreatePoolFormState formState,
-    required VoidCallback onCreatePool,
+    required PoolDetails details,
+    required String? leaderName,
+    required JoinPoolFormState formState,
+    required VoidCallback onContinue,
   }) {
     return showModalBottomSheet<void>(
       context: context,
@@ -33,41 +45,33 @@ class PoolSummarySheet extends StatelessWidget {
       // The sheet paints its own themed surface; a transparent modal keeps
       // the default Material from poking out behind the rounded corners.
       backgroundColor: Colors.transparent,
-      builder: (_) =>
-          PoolSummarySheet(formState: formState, onCreatePool: onCreatePool),
+      builder: (_) => JoinPoolReviewSheet(
+        details: details,
+        leaderName: leaderName,
+        formState: formState,
+        onContinue: onContinue,
+      ),
     );
   }
-
-  String _naira(double? amount) =>
-      amount == null ? '—' : AppFormatters.naira(amount);
 
   @override
   Widget build(BuildContext context) {
     final AppColors colors = context.colors;
     final AppTextStyles styles = context.styles;
 
-    final String feePercent = (kPoolFeeRate * 100).toStringAsFixed(0);
-    final double? targetAmount = double.tryParse(formState.targetAmount);
-
+    final String? description = details.description;
     final List<(String, String)> rows = [
-      ('Category', formState.category?.displayName ?? '—'),
+      ('Led by', leaderName ?? '—'),
+      ('Your Slot', '1 slot'),
       (
-        'Contribution Type',
-        // Null means the user left the "defaults to Equal slot" hint as-is.
-        (formState.evenContribution ?? true) ? 'Equal slot' : 'Custom',
+        'Your Share',
+        // Zero means the pool doesn't split evenly — the member's amount is
+        // chosen at payment, so there is no fixed share to preview.
+        details.amountPerSlot > 0
+            ? AppFormatters.naira(details.amountPerSlot)
+            : '—',
       ),
-      ('Target Amount', _naira(targetAmount)),
-      ('Number of Slots', formState.slots),
-      ('Platform fee ($feePercent%)', _naira(formState.platformFeeAmount)),
-      (
-        'Deadline',
-        formState.deadline == null
-            ? '—'
-            : AppFormatters.deadline(formState.deadline!),
-      ),
-      ("Beneficiary's bank", formState.bank?.name ?? '—'),
-      ('Account Number', formState.accountNumber),
-      ('Recipient receives', _naira(formState.recipientReceivesAmount)),
+      ('Deadline', AppFormatters.deadline(details.deadlineAt)),
     ];
 
     // The widget owns its background (theme-aware, so dark mode gets the
@@ -95,16 +99,16 @@ class PoolSummarySheet extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Expanded(child: Text('Pool Summary', style: styles.h4)),
+                  Expanded(child: Text('Review & Confirm', style: styles.h4)),
                   AppSheetCloseButton(onTap: () => Navigator.of(context).pop()),
                 ],
               ),
               const SizedBox(height: AppSpacing.s8),
-              Text(formState.title, style: styles.bodyL.semibold),
-              if (formState.description.isNotEmpty) ...[
+              Text(details.name, style: styles.bodyL.semibold),
+              if (description != null && description.isNotEmpty) ...[
                 const SizedBox(height: AppSpacing.s4),
                 Text(
-                  formState.description,
+                  description,
                   style: styles.bodyM.copyWith(color: colors.text.subtle),
                 ),
               ],
@@ -123,24 +127,25 @@ class PoolSummarySheet extends StatelessWidget {
                           thickness: 1,
                           color: colors.bg.primary,
                         ),
-                      _SummaryRow(label: label, value: value),
+                      _ReviewRow(label: label, value: value),
                     ],
                   ],
                 ),
               ),
+              const SizedBox(height: AppSpacing.s16),
+              AccountVerifiedCard(
+                accountName: formState.resolvedAccount?.accountName ?? '',
+                bankName: formState.bank?.name,
+              ),
+              const SizedBox(height: AppSpacing.s16),
+              const _EscrowNote(),
               const SizedBox(height: AppSpacing.s24),
               AppButton(
-                label: 'Create pool',
+                label: 'Continue to payment',
                 onPressed: () {
                   Navigator.of(context).pop();
-                  onCreatePool();
+                  onContinue();
                 },
-              ),
-              const SizedBox(height: AppSpacing.s12),
-              AppButton(
-                label: 'Edit details',
-                variant: AppButtonVariant.outline,
-                onPressed: () => Navigator.of(context).pop(),
               ),
             ],
           ),
@@ -150,8 +155,8 @@ class PoolSummarySheet extends StatelessWidget {
   }
 }
 
-class _SummaryRow extends StatelessWidget {
-  const _SummaryRow({required this.label, required this.value});
+class _ReviewRow extends StatelessWidget {
+  const _ReviewRow({required this.label, required this.value});
 
   final String label;
   final String value;
@@ -183,6 +188,32 @@ class _SummaryRow extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// The reassurance line under the verified card: contributions sit in
+/// escrow with the payment provider, not with the pool leader.
+class _EscrowNote extends StatelessWidget {
+  const _EscrowNote();
+
+  @override
+  Widget build(BuildContext context) {
+    final Color color = context.colors.state.warningDark;
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(Icons.gpp_maybe_outlined, size: AppSpacing.s20, color: color),
+        const SizedBox(width: AppSpacing.s8),
+        Expanded(
+          child: Text(
+            'Your money is being held by monnify, not the pool leader. It '
+            'moves only when target is met or be refunded back to you.',
+            style: context.styles.bodyM.copyWith(color: color),
+          ),
+        ),
+      ],
     );
   }
 }

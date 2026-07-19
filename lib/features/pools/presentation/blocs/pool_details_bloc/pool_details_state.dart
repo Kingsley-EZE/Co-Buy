@@ -51,4 +51,14 @@ abstract class PoolDetailsState with _$PoolDetailsState {
     final membership = members.where((m) => m.userId == userId);
     return membership.isEmpty || !membership.first.hasPaid;
   }
+
+  /// Whether [userId] already holds a slot they haven't paid for — the CTA
+  /// reads "Continue to payment" instead of "Join pool" then, since joining
+  /// again would be rejected by the server.
+  bool hasUnpaidSlot(String? userId) {
+    if (userId == null) return false;
+    if (membersStatus != PoolDetailsRequestStatus.success) return false;
+    final membership = members.where((m) => m.userId == userId);
+    return membership.isNotEmpty && !membership.first.hasPaid;
+  }
 }

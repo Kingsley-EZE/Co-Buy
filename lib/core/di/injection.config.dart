@@ -62,16 +62,27 @@ import '../../features/home/presentation/blocs/create_pool_form_bloc/create_pool
     as _i832;
 import '../../features/home/presentation/blocs/pools_bloc/pools_bloc.dart'
     as _i148;
+import '../../features/pools/data/datasources/join_pool_data_source.dart'
+    as _i1065;
 import '../../features/pools/data/datasources/pool_details_data_source.dart'
     as _i313;
+import '../../features/pools/data/repositories/join_pool_repository_impl.dart'
+    as _i283;
 import '../../features/pools/data/repositories/pool_details_repository_impl.dart'
     as _i1035;
+import '../../features/pools/domain/repositories/join_pool_repository.dart'
+    as _i274;
 import '../../features/pools/domain/repositories/pool_details_repository.dart'
     as _i402;
 import '../../features/pools/domain/usecases/get_pool_details_usecase.dart'
     as _i547;
 import '../../features/pools/domain/usecases/get_pool_members_usecase.dart'
     as _i410;
+import '../../features/pools/domain/usecases/join_pool_usecase.dart' as _i370;
+import '../../features/pools/presentation/blocs/join_pool_bloc/join_pool_bloc.dart'
+    as _i778;
+import '../../features/pools/presentation/blocs/join_pool_form_bloc/join_pool_form_bloc.dart'
+    as _i575;
 import '../../features/pools/presentation/blocs/pool_details_bloc/pool_details_bloc.dart'
     as _i1015;
 import '../config/env/env.dart' as _i513;
@@ -102,6 +113,7 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i353.SignupFormBloc>(() => _i353.SignupFormBloc());
     gh.factory<_i832.CreatePoolFormBloc>(() => _i832.CreatePoolFormBloc());
+    gh.factory<_i575.JoinPoolFormBloc>(() => _i575.JoinPoolFormBloc());
     gh.singleton<_i583.GoRouter>(() => routerModule.goRouter);
     gh.lazySingleton<_i558.FlutterSecureStorage>(
       () => serviceModule.secureStorage,
@@ -146,6 +158,11 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i361.Dio>(instanceName: 'appDio'),
       ),
     );
+    gh.lazySingleton<_i1065.JoinPoolDataSource>(
+      () => serviceModule.joinPoolDataSource(
+        gh<_i361.Dio>(instanceName: 'appDio'),
+      ),
+    );
     gh.lazySingleton<_i787.AuthRepository>(
       () => _i153.AuthRepositoryImpl(
         gh<_i107.AuthRemoteDataSource>(),
@@ -154,6 +171,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i1062.PoolsRepository>(
       () => _i590.PoolsRepositoryImpl(gh<_i694.PoolsDataSource>()),
+    );
+    gh.lazySingleton<_i274.JoinPoolRepository>(
+      () => _i283.JoinPoolRepositoryImpl(gh<_i1065.JoinPoolDataSource>()),
     );
     gh.factory<_i560.ForgotPasswordUseCase>(
       () => _i560.ForgotPasswordUseCase(gh<_i787.AuthRepository>()),
@@ -175,6 +195,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i162.GetPoolsUseCase>(
       () => _i162.GetPoolsUseCase(gh<_i1062.PoolsRepository>()),
+    );
+    gh.factory<_i370.JoinPoolUseCase>(
+      () => _i370.JoinPoolUseCase(gh<_i274.JoinPoolRepository>()),
     );
     gh.lazySingleton<_i742.CreatePoolRepository>(
       () => _i866.CreatePoolRepositoryImpl(gh<_i736.CreatePoolDataSource>()),
@@ -228,6 +251,14 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i971.CreatePoolUseCase>(),
       ),
       dispose: _i350.disposeCreatePoolBloc,
+    );
+    gh.lazySingleton<_i778.JoinPoolBloc>(
+      () => _i778.JoinPoolBloc(
+        gh<_i813.GetBanksUseCase>(),
+        gh<_i922.LookupAccountNameUseCase>(),
+        gh<_i370.JoinPoolUseCase>(),
+      ),
+      dispose: _i778.disposeJoinPoolBloc,
     );
     return this;
   }
