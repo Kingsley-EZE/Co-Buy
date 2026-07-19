@@ -93,10 +93,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     controller: _emailController,
                     validator: AppValidators.email,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
-                    onChanged: (value) =>
-                        context.read<ForgotPasswordFormBloc>().add(
-                          ForgotPasswordFormEvent.emailChanged(value),
-                        ),
+                    onChanged: (value) => context
+                        .read<ForgotPasswordFormBloc>()
+                        .add(ForgotPasswordFormEvent.emailChanged(value)),
                     keyboardType: TextInputType.emailAddress,
                     textInputAction: TextInputAction.done,
                     autocorrect: false,
@@ -105,8 +104,11 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   ),
                   const SizedBox(height: AppSpacing.s40),
                   // Rebuilds only when validity flips, not per keystroke.
-                  BlocSelector<ForgotPasswordFormBloc, ForgotPasswordFormState,
-                      bool>(
+                  BlocSelector<
+                    ForgotPasswordFormBloc,
+                    ForgotPasswordFormState,
+                    bool
+                  >(
                     selector: (state) => state.canSubmit,
                     builder: (context, canSubmit) => AppButton(
                       label: 'Send Code',

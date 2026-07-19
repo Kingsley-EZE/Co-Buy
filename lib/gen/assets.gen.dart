@@ -17,6 +17,10 @@ import 'package:vector_graphics/vector_graphics.dart' as _vg;
 class $AssetsIconsGen {
   const $AssetsIconsGen();
 
+  /// File path: assets/icons/ic_back_arrow.svg
+  SvgGenImage get icBackArrow =>
+      const SvgGenImage('assets/icons/ic_back_arrow.svg');
+
   /// File path: assets/icons/ic_eye_close.svg
   SvgGenImage get icEyeClose =>
       const SvgGenImage('assets/icons/ic_eye_close.svg');
@@ -24,6 +28,10 @@ class $AssetsIconsGen {
   /// File path: assets/icons/ic_eye_open.svg
   SvgGenImage get icEyeOpen =>
       const SvgGenImage('assets/icons/ic_eye_open.svg');
+
+  /// File path: assets/icons/ic_mini_calendar.svg
+  SvgGenImage get icMiniCalendar =>
+      const SvgGenImage('assets/icons/ic_mini_calendar.svg');
 
   /// File path: assets/icons/ic_nav_alert.svg
   SvgGenImage get icNavAlert =>
@@ -41,24 +49,35 @@ class $AssetsIconsGen {
   SvgGenImage get icNavProfile =>
       const SvgGenImage('assets/icons/ic_nav_profile.svg');
 
+  /// File path: assets/icons/ic_notification.svg
+  SvgGenImage get icNotification =>
+      const SvgGenImage('assets/icons/ic_notification.svg');
+
   /// File path: assets/icons/ic_page_logo.svg
   SvgGenImage get icPageLogo =>
       const SvgGenImage('assets/icons/ic_page_logo.svg');
 
   /// List of all assets
   List<SvgGenImage> get values => [
+    icBackArrow,
     icEyeClose,
     icEyeOpen,
+    icMiniCalendar,
     icNavAlert,
     icNavHome,
     icNavPools,
     icNavProfile,
+    icNotification,
     icPageLogo,
   ];
 }
 
 class $AssetsImagesGen {
   const $AssetsImagesGen();
+
+  /// File path: assets/images/img_empty_pool.png
+  AssetGenImage get imgEmptyPool =>
+      const AssetGenImage('assets/images/img_empty_pool.png');
 
   /// File path: assets/images/img_onboard_one.png
   AssetGenImage get imgOnboardOne =>
@@ -74,6 +93,7 @@ class $AssetsImagesGen {
 
   /// List of all assets
   List<AssetGenImage> get values => [
+    imgEmptyPool,
     imgOnboardOne,
     imgOnboardThree,
     imgOnboardTwo,

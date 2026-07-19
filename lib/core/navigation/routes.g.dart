@@ -9,6 +9,7 @@ part of 'routes.dart';
 List<RouteBase> get $appRoutes => [
   $onboardingRoute,
   $loginRoute,
+  $createPoolRoute,
   $dashboardShellRoute,
 ];
 
@@ -128,6 +129,33 @@ mixin $ResetPasswordRoute on GoRouteData {
     '/login/forgot-password/reset-password',
     queryParams: {'email': _self.email},
   );
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $createPoolRoute => GoRouteData.$route(
+  path: '/create-pool',
+  parentNavigatorKey: CreatePoolRoute.$parentNavigatorKey,
+  factory: $CreatePoolRoute._fromState,
+);
+
+mixin $CreatePoolRoute on GoRouteData {
+  static CreatePoolRoute _fromState(GoRouterState state) =>
+      const CreatePoolRoute();
+
+  @override
+  String get location => GoRouteData.$location('/create-pool');
 
   @override
   void go(BuildContext context) => context.go(location);

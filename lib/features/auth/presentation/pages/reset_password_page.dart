@@ -97,10 +97,9 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                     controller: _otpController,
                     validator: AppValidators.otp,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
-                    onChanged: (value) =>
-                        context.read<ResetPasswordFormBloc>().add(
-                          ResetPasswordFormEvent.otpChanged(value),
-                        ),
+                    onChanged: (value) => context
+                        .read<ResetPasswordFormBloc>()
+                        .add(ResetPasswordFormEvent.otpChanged(value)),
                     keyboardType: TextInputType.number,
                     inputFormatters: [
                       FilteringTextInputFormatter.digitsOnly,
@@ -119,10 +118,9 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                       message: 'New password is required',
                     ),
                     autovalidateMode: AutovalidateMode.onUserInteraction,
-                    onChanged: (value) =>
-                        context.read<ResetPasswordFormBloc>().add(
-                          ResetPasswordFormEvent.newPasswordChanged(value),
-                        ),
+                    onChanged: (value) => context
+                        .read<ResetPasswordFormBloc>()
+                        .add(ResetPasswordFormEvent.newPasswordChanged(value)),
                     obscureText: true,
                     textInputAction: TextInputAction.done,
                     autofillHints: const [AutofillHints.newPassword],
@@ -130,8 +128,11 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                   ),
                   const SizedBox(height: AppSpacing.s40),
                   // Rebuilds only when validity flips, not per keystroke.
-                  BlocSelector<ResetPasswordFormBloc, ResetPasswordFormState,
-                      bool>(
+                  BlocSelector<
+                    ResetPasswordFormBloc,
+                    ResetPasswordFormState,
+                    bool
+                  >(
                     selector: (state) => state.canSubmit,
                     builder: (context, canSubmit) => AppButton(
                       label: 'Reset Password',

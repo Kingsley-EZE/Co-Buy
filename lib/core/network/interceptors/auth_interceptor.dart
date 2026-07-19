@@ -79,15 +79,14 @@ class AuthInterceptor extends QueuedInterceptorsWrapper {
   Future<bool> _refresh() async {
     final refreshToken = await _tokenStorage.readRefreshToken();
     if (refreshToken == null) return false;
-    // TODO: adjust the path/payload/response shape to the real auth API.
     final res = await _refreshDio.post(
-      '/auth/refresh',
-      data: {'refreshToken': refreshToken, "expiresInMins": 30},
+      '/auth/refresh-token',
+      data: {'refreshToken': refreshToken},
     );
     if (res.statusCode == 200) {
       await _tokenStorage.saveTokens(
-        access: res.data['accessToken'] as String,
-        refresh: res.data['refreshToken'] as String,
+        access: res.data['data']['accessToken'] as String,
+        refresh: res.data['data']['refreshToken'] as String,
       );
       return true;
     }

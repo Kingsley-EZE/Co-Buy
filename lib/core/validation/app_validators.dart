@@ -32,4 +32,24 @@ abstract final class AppValidators {
     if (value.trim().length != length) return 'Enter the $length-digit code';
     return null;
   }
+
+  /// A whole number greater than zero, as produced by a digits-only field.
+  static String? positiveNumber(
+    String? value, {
+    String message = 'Enter a number greater than zero',
+  }) {
+    final int? number = int.tryParse(value?.trim() ?? '');
+    if (number == null || number <= 0) return message;
+    return null;
+  }
+
+  /// Nigerian NUBAN account number: exactly 10 digits.
+  static String? accountNumber(String? value) {
+    final String trimmed = value?.trim() ?? '';
+    if (trimmed.isEmpty) return 'Account number is required';
+    if (trimmed.length != 10 || int.tryParse(trimmed) == null) {
+      return 'Enter the 10-digit account number';
+    }
+    return null;
+  }
 }
