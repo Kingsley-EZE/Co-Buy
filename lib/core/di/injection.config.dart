@@ -40,20 +40,28 @@ import '../../features/auth/presentation/blocs/signup_form_bloc/signup_form_bloc
     as _i353;
 import '../../features/home/data/datasources/create_pool_data_source.dart'
     as _i736;
+import '../../features/home/data/datasources/pools_data_source.dart' as _i694;
 import '../../features/home/data/repositories/create_pool_repository_impl.dart'
     as _i866;
+import '../../features/home/data/repositories/pools_repository_impl.dart'
+    as _i590;
 import '../../features/home/domain/repositories/create_pool_repository.dart'
     as _i742;
+import '../../features/home/domain/repositories/pools_repository.dart'
+    as _i1062;
 import '../../features/home/domain/usecases/create_pool_usecase.dart' as _i971;
 import '../../features/home/domain/usecases/get_banks_usecase.dart' as _i813;
 import '../../features/home/domain/usecases/get_categories_usecase.dart'
     as _i967;
+import '../../features/home/domain/usecases/get_pools_usecase.dart' as _i162;
 import '../../features/home/domain/usecases/lookup_account_name_usecase.dart'
     as _i922;
 import '../../features/home/presentation/blocs/create_pool_bloc/create_pool_bloc.dart'
     as _i350;
 import '../../features/home/presentation/blocs/create_pool_form_bloc/create_pool_form_bloc.dart'
     as _i832;
+import '../../features/home/presentation/blocs/pools_bloc/pools_bloc.dart'
+    as _i148;
 import '../config/env/env.dart' as _i513;
 import '../navigation/app_navigator.dart' as _i397;
 import '../navigation/go_router_navigator.dart' as _i489;
@@ -117,11 +125,18 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i361.Dio>(instanceName: 'appDio'),
       ),
     );
+    gh.lazySingleton<_i694.PoolsDataSource>(
+      () =>
+          serviceModule.poolsDataSource(gh<_i361.Dio>(instanceName: 'appDio')),
+    );
     gh.lazySingleton<_i787.AuthRepository>(
       () => _i153.AuthRepositoryImpl(
         gh<_i107.AuthRemoteDataSource>(),
         gh<_i483.TokenStorage>(),
       ),
+    );
+    gh.lazySingleton<_i1062.PoolsRepository>(
+      () => _i590.PoolsRepositoryImpl(gh<_i694.PoolsDataSource>()),
     );
     gh.factory<_i560.ForgotPasswordUseCase>(
       () => _i560.ForgotPasswordUseCase(gh<_i787.AuthRepository>()),
@@ -141,8 +156,14 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i30.VerifyEmailUseCase>(
       () => _i30.VerifyEmailUseCase(gh<_i787.AuthRepository>()),
     );
+    gh.factory<_i162.GetPoolsUseCase>(
+      () => _i162.GetPoolsUseCase(gh<_i1062.PoolsRepository>()),
+    );
     gh.lazySingleton<_i742.CreatePoolRepository>(
       () => _i866.CreatePoolRepositoryImpl(gh<_i736.CreatePoolDataSource>()),
+    );
+    gh.factory<_i148.PoolsBloc>(
+      () => _i148.PoolsBloc(gh<_i162.GetPoolsUseCase>()),
     );
     gh.lazySingleton<_i661.AuthBloc>(
       () => _i661.AuthBloc(

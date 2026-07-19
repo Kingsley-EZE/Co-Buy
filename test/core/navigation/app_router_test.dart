@@ -15,7 +15,11 @@ import 'package:co_buy/features/auth/presentation/blocs/login_form_bloc/login_fo
 import 'package:co_buy/features/auth/presentation/blocs/signup_form_bloc/signup_form_bloc.dart';
 import 'package:co_buy/features/auth/presentation/pages/login_page.dart';
 import 'package:co_buy/features/auth/presentation/pages/signup_page.dart';
+import 'package:co_buy/features/home/domain/entities/pool.dart';
+import 'package:co_buy/features/home/domain/usecases/get_pools_usecase.dart';
+import 'package:co_buy/features/home/presentation/blocs/pools_bloc/pools_bloc.dart';
 import 'package:co_buy/features/home/presentation/pages/home_page.dart';
+import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -34,6 +38,8 @@ class _MockForgotPasswordUseCase extends Mock
 class _MockResetPasswordUseCase extends Mock implements ResetPasswordUseCase {}
 
 class _MockLogoutUseCase extends Mock implements LogoutUseCase {}
+
+class _MockGetPoolsUseCase extends Mock implements GetPoolsUseCase {}
 
 /// Real router over the generated route tree. Needs the app's
 /// [rootNavigatorKey]: routes parented to the root navigator (e.g.
@@ -62,7 +68,10 @@ Future<GoRouter> pumpRouter(
 }
 
 void main() {
-  setUpAll(() => AppConfig.init(Flavor.dev));
+  setUpAll(() {
+    AppConfig.init(Flavor.dev);
+    registerFallbackValue(const GetPoolsParams());
+  });
 
   setUp(() {
     // The blocs resolve from get_it; register AuthBloc with mocked use cases
@@ -79,6 +88,13 @@ void main() {
     );
     getIt.registerFactory<LoginFormBloc>(LoginFormBloc.new);
     getIt.registerFactory<SignupFormBloc>(SignupFormBloc.new);
+
+    // HomePage fetches the feed on provide; resolve to an empty feed so the
+    // page settles on the (static) empty state instead of a spinner, which
+    // would make pumpAndSettle time out.
+    final getPools = _MockGetPoolsUseCase();
+    when(() => getPools(any())).thenAnswer((_) async => const Right(<Pool>[]));
+    getIt.registerFactory<PoolsBloc>(() => PoolsBloc(getPools));
   });
 
   tearDown(() => getIt.reset());
