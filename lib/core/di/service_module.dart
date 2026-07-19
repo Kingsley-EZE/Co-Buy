@@ -5,6 +5,7 @@ import 'package:injectable/injectable.dart';
 import '../../features/auth/data/datasources/auth_remote_data_source.dart';
 import '../../features/home/data/datasources/create_pool_data_source.dart';
 import '../../features/home/data/datasources/pools_data_source.dart';
+import '../../features/pools/data/datasources/join_pool_data_source.dart';
 import '../../features/pools/data/datasources/pool_details_data_source.dart';
 import '../config/app_config.dart';
 import '../config/env/env.dart';
@@ -35,4 +36,8 @@ abstract class ServiceModule {
   @lazySingleton
   PoolDetailsDataSource poolDetailsDataSource(@Named('appDio') Dio dio) =>
       PoolDetailsDataSource(dio);
+
+  @lazySingleton
+  JoinPoolDataSource joinPoolDataSource(@Named('appDio') Dio dio) =>
+      JoinPoolDataSource(dio);
 }

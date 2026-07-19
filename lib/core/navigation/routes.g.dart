@@ -185,6 +185,13 @@ RouteBase get $dashboardShellRoute => StatefulShellRouteData.$route(
               path: 'pool/:poolId',
               parentNavigatorKey: PoolDetailsRoute.$parentNavigatorKey,
               factory: $PoolDetailsRoute._fromState,
+              routes: [
+                GoRouteData.$route(
+                  path: 'join',
+                  parentNavigatorKey: JoinPoolRoute.$parentNavigatorKey,
+                  factory: $JoinPoolRoute._fromState,
+                ),
+              ],
             ),
           ],
         ),
@@ -245,6 +252,31 @@ mixin $PoolDetailsRoute on GoRouteData {
   @override
   String get location =>
       GoRouteData.$location('/home/pool/${Uri.encodeComponent(_self.poolId)}');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+mixin $JoinPoolRoute on GoRouteData {
+  static JoinPoolRoute _fromState(GoRouterState state) =>
+      JoinPoolRoute(poolId: state.pathParameters['poolId']!);
+
+  JoinPoolRoute get _self => this as JoinPoolRoute;
+
+  @override
+  String get location => GoRouteData.$location(
+    '/home/pool/${Uri.encodeComponent(_self.poolId)}/join',
+  );
 
   @override
   void go(BuildContext context) => context.go(location);

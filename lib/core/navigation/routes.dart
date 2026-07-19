@@ -10,6 +10,7 @@ import '../../features/auth/presentation/pages/signup_page.dart';
 import '../../features/home/presentation/pages/create_pool_page.dart';
 import '../../features/home/presentation/pages/dashboard_page.dart';
 import '../../features/home/presentation/pages/home_page.dart';
+import '../../features/pools/presentation/pages/join_pool_page.dart';
 import '../../features/pools/presentation/pages/my_pools_page.dart';
 import '../../features/pools/presentation/pages/pool_details_page.dart';
 import '../../features/profile/presentation/pages/profile_page.dart';
@@ -108,7 +109,12 @@ class CreatePoolRoute extends GoRouteData with $CreatePoolRoute {
         TypedGoRoute<HomeRoute>(
           path: '/home',
           routes: <TypedRoute<RouteData>>[
-            TypedGoRoute<PoolDetailsRoute>(path: 'pool/:poolId'),
+            TypedGoRoute<PoolDetailsRoute>(
+              path: 'pool/:poolId',
+              routes: <TypedRoute<RouteData>>[
+                TypedGoRoute<JoinPoolRoute>(path: 'join'),
+              ],
+            ),
           ],
         ),
       ],
@@ -189,6 +195,21 @@ class PoolDetailsRoute extends GoRouteData with $PoolDetailsRoute {
   @override
   Widget build(BuildContext context, GoRouterState state) =>
       PoolDetailsPage(poolId: poolId);
+}
+
+/// Join-pool form, nested under pool details so the pool stays in the back
+/// stack when deep-linked. Parented to the root navigator so it covers the
+/// dashboard shell (no bottom bar).
+class JoinPoolRoute extends GoRouteData with $JoinPoolRoute {
+  const JoinPoolRoute({required this.poolId});
+
+  final String poolId;
+
+  static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) =>
+      JoinPoolPage(poolId: poolId);
 }
 
 class MyPoolsRoute extends GoRouteData with $MyPoolsRoute {

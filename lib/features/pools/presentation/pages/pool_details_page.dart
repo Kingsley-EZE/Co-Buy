@@ -4,6 +4,7 @@ import 'package:co_buy/core/components/feedback/app_snackbar.dart';
 import 'package:co_buy/core/components/scaffolds/app_scaffold.dart';
 import 'package:co_buy/core/design_system/design_system.dart';
 import 'package:co_buy/core/di/injection.dart';
+import 'package:co_buy/core/navigation/routes.dart';
 import 'package:co_buy/features/auth/presentation/blocs/auth_bloc/auth_bloc.dart';
 import 'package:co_buy/features/pools/domain/entities/pool_details.dart';
 import 'package:co_buy/features/pools/presentation/blocs/pool_details_bloc/pool_details_bloc.dart';
@@ -109,11 +110,13 @@ class _DetailsContent extends StatelessWidget {
           ),
         ),
         // Join CTA for signed-in non-members (or members who haven't paid),
-        // only while the pool is still OPEN.
+        // only while the pool is still OPEN. A member with an unpaid slot has
+        // already joined, so their CTA continues to payment instead.
         BlocSelector<AuthBloc, AuthState, String?>(
           selector: (auth) => auth is AuthAuthenticated ? auth.user.id : null,
           builder: (context, userId) {
             if (!state.canJoin(userId)) return const SizedBox.shrink();
+            final hasUnpaidSlot = state.hasUnpaidSlot(userId);
             return Padding(
               padding: const EdgeInsets.fromLTRB(
                 AppSpacing.screenH,
@@ -122,14 +125,28 @@ class _DetailsContent extends StatelessWidget {
                 AppSpacing.s16,
               ),
               child: AppButton(
-                label: 'Join pool',
+                label: hasUnpaidSlot ? 'Continue to payment' : 'Join pool',
                 size: AppButtonSize.large,
-                // TODO(join-pool): replace with the join flow once its
-                // endpoint exists.
-                onPressed: () => AppSnackBar.showSuccess(
-                  context,
-                  'Joining pools is coming soon.',
-                ),
+                onPressed: hasUnpaidSlot
+                    // TODO(join-pool): start the payment flow once its
+                    // endpoint exists.
+                    ? () => AppSnackBar.showSuccess(
+                        context,
+                        'Payment is coming soon.',
+                      )
+                    : () async {
+                        // The join page pops with `true` after a successful
+                        // join — refetch so the raised amount, slots, and
+                        // members reflect the new membership.
+                        final joined = await JoinPoolRoute(
+                          poolId: poolId,
+                        ).push<bool>(context);
+                        if (joined == true && context.mounted) {
+                          context.read<PoolDetailsBloc>().add(
+                            PoolDetailsEvent.fetchRequested(poolId),
+                          );
+                        }
+                      },
               ),
             );
           },
