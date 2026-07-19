@@ -74,6 +74,14 @@ abstract class CreatePoolFormState with _$CreatePoolFormState {
     return amount * (1 - kPoolFeeRate);
   }
 
+  /// The [kPoolFeeRate] cut of the target amount. Null until a valid target
+  /// amount is entered.
+  double? get platformFeeAmount {
+    final double? amount = double.tryParse(targetAmount);
+    if (amount == null || amount <= 0) return null;
+    return amount * kPoolFeeRate;
+  }
+
   /// The enquiry result applies to what's currently typed — guards the gap
   /// where inputs changed but the cleared/re-resolved result hasn't
   /// round-tripped through [CreatePoolBloc] yet.

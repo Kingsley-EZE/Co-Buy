@@ -21,6 +21,9 @@ class $AssetsIconsGen {
   SvgGenImage get icBackArrow =>
       const SvgGenImage('assets/icons/ic_back_arrow.svg');
 
+  /// File path: assets/icons/ic_close.svg
+  SvgGenImage get icClose => const SvgGenImage('assets/icons/ic_close.svg');
+
   /// File path: assets/icons/ic_eye_close.svg
   SvgGenImage get icEyeClose =>
       const SvgGenImage('assets/icons/ic_eye_close.svg');
@@ -60,6 +63,7 @@ class $AssetsIconsGen {
   /// List of all assets
   List<SvgGenImage> get values => [
     icBackArrow,
+    icClose,
     icEyeClose,
     icEyeOpen,
     icMiniCalendar,
