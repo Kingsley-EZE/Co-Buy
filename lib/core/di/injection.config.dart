@@ -62,6 +62,18 @@ import '../../features/home/presentation/blocs/create_pool_form_bloc/create_pool
     as _i832;
 import '../../features/home/presentation/blocs/pools_bloc/pools_bloc.dart'
     as _i148;
+import '../../features/pools/data/datasources/pool_details_data_source.dart'
+    as _i313;
+import '../../features/pools/data/repositories/pool_details_repository_impl.dart'
+    as _i1035;
+import '../../features/pools/domain/repositories/pool_details_repository.dart'
+    as _i402;
+import '../../features/pools/domain/usecases/get_pool_details_usecase.dart'
+    as _i547;
+import '../../features/pools/domain/usecases/get_pool_members_usecase.dart'
+    as _i410;
+import '../../features/pools/presentation/blocs/pool_details_bloc/pool_details_bloc.dart'
+    as _i1015;
 import '../config/env/env.dart' as _i513;
 import '../navigation/app_navigator.dart' as _i397;
 import '../navigation/go_router_navigator.dart' as _i489;
@@ -129,6 +141,11 @@ extension GetItInjectableX on _i174.GetIt {
       () =>
           serviceModule.poolsDataSource(gh<_i361.Dio>(instanceName: 'appDio')),
     );
+    gh.lazySingleton<_i313.PoolDetailsDataSource>(
+      () => serviceModule.poolDetailsDataSource(
+        gh<_i361.Dio>(instanceName: 'appDio'),
+      ),
+    );
     gh.lazySingleton<_i787.AuthRepository>(
       () => _i153.AuthRepositoryImpl(
         gh<_i107.AuthRemoteDataSource>(),
@@ -162,6 +179,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i742.CreatePoolRepository>(
       () => _i866.CreatePoolRepositoryImpl(gh<_i736.CreatePoolDataSource>()),
     );
+    gh.lazySingleton<_i402.PoolDetailsRepository>(
+      () => _i1035.PoolDetailsRepositoryImpl(gh<_i313.PoolDetailsDataSource>()),
+    );
     gh.factory<_i148.PoolsBloc>(
       () => _i148.PoolsBloc(gh<_i162.GetPoolsUseCase>()),
     );
@@ -187,6 +207,18 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i922.LookupAccountNameUseCase>(
       () => _i922.LookupAccountNameUseCase(gh<_i742.CreatePoolRepository>()),
+    );
+    gh.factory<_i547.GetPoolDetailsUseCase>(
+      () => _i547.GetPoolDetailsUseCase(gh<_i402.PoolDetailsRepository>()),
+    );
+    gh.factory<_i410.GetPoolMembersUseCase>(
+      () => _i410.GetPoolMembersUseCase(gh<_i402.PoolDetailsRepository>()),
+    );
+    gh.factory<_i1015.PoolDetailsBloc>(
+      () => _i1015.PoolDetailsBloc(
+        gh<_i547.GetPoolDetailsUseCase>(),
+        gh<_i410.GetPoolMembersUseCase>(),
+      ),
     );
     gh.lazySingleton<_i350.CreatePoolBloc>(
       () => _i350.CreatePoolBloc(

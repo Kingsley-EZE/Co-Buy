@@ -55,6 +55,8 @@ class HomePage extends StatelessWidget {
                     const PoolsEvent.fetchRequested(),
                   ),
                   onStartPool: () => const CreatePoolRoute().push(context),
+                  onPoolTap: (pool) =>
+                      PoolDetailsRoute(poolId: pool.id).push(context),
                 ),
               ),
             ),

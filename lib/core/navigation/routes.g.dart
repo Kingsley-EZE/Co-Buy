@@ -177,7 +177,17 @@ RouteBase get $dashboardShellRoute => StatefulShellRouteData.$route(
     StatefulShellBranchData.$branch(
       navigatorKey: HomeBranch.$navigatorKey,
       routes: [
-        GoRouteData.$route(path: '/home', factory: $HomeRoute._fromState),
+        GoRouteData.$route(
+          path: '/home',
+          factory: $HomeRoute._fromState,
+          routes: [
+            GoRouteData.$route(
+              path: 'pool/:poolId',
+              parentNavigatorKey: PoolDetailsRoute.$parentNavigatorKey,
+              factory: $PoolDetailsRoute._fromState,
+            ),
+          ],
+        ),
       ],
     ),
     StatefulShellBranchData.$branch(
@@ -211,6 +221,30 @@ mixin $HomeRoute on GoRouteData {
 
   @override
   String get location => GoRouteData.$location('/home');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+mixin $PoolDetailsRoute on GoRouteData {
+  static PoolDetailsRoute _fromState(GoRouterState state) =>
+      PoolDetailsRoute(poolId: state.pathParameters['poolId']!);
+
+  PoolDetailsRoute get _self => this as PoolDetailsRoute;
+
+  @override
+  String get location =>
+      GoRouteData.$location('/home/pool/${Uri.encodeComponent(_self.poolId)}');
 
   @override
   void go(BuildContext context) => context.go(location);

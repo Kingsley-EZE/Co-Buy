@@ -11,6 +11,7 @@ import '../../features/home/presentation/pages/create_pool_page.dart';
 import '../../features/home/presentation/pages/dashboard_page.dart';
 import '../../features/home/presentation/pages/home_page.dart';
 import '../../features/pools/presentation/pages/my_pools_page.dart';
+import '../../features/pools/presentation/pages/pool_details_page.dart';
 import '../../features/profile/presentation/pages/profile_page.dart';
 
 part 'routes.g.dart';
@@ -103,7 +104,14 @@ class CreatePoolRoute extends GoRouteData with $CreatePoolRoute {
 @TypedStatefulShellRoute<DashboardShellRoute>(
   branches: <TypedStatefulShellBranch<StatefulShellBranchData>>[
     TypedStatefulShellBranch<HomeBranch>(
-      routes: <TypedRoute<RouteData>>[TypedGoRoute<HomeRoute>(path: '/home')],
+      routes: <TypedRoute<RouteData>>[
+        TypedGoRoute<HomeRoute>(
+          path: '/home',
+          routes: <TypedRoute<RouteData>>[
+            TypedGoRoute<PoolDetailsRoute>(path: 'pool/:poolId'),
+          ],
+        ),
+      ],
     ),
     TypedStatefulShellBranch<MyPoolsBranch>(
       routes: <TypedRoute<RouteData>>[
@@ -166,6 +174,21 @@ class HomeRoute extends GoRouteData with $HomeRoute {
 
   @override
   Widget build(BuildContext context, GoRouterState state) => const HomePage();
+}
+
+/// Pool details, nested under home so `/home/pool/:poolId` keeps the feed in
+/// the back stack when deep-linked. Parented to the root navigator so it
+/// covers the dashboard shell (no bottom bar).
+class PoolDetailsRoute extends GoRouteData with $PoolDetailsRoute {
+  const PoolDetailsRoute({required this.poolId});
+
+  final String poolId;
+
+  static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) =>
+      PoolDetailsPage(poolId: poolId);
 }
 
 class MyPoolsRoute extends GoRouteData with $MyPoolsRoute {
