@@ -3,12 +3,14 @@ import 'package:co_buy/core/components/atoms/app_dropdown_field.dart';
 import 'package:co_buy/core/components/atoms/app_text_field.dart';
 import 'package:co_buy/core/components/common/app_back_button.dart';
 import 'package:co_buy/core/components/common/app_text_area.dart';
+import 'package:co_buy/core/components/feedback/app_snackbar.dart';
 import 'package:co_buy/core/components/scaffolds/app_scaffold.dart';
 import 'package:co_buy/core/design_system/design_system.dart';
 import 'package:co_buy/core/di/injection.dart';
 import 'package:co_buy/core/formatting/app_formatters.dart';
 import 'package:co_buy/core/validation/app_validators.dart';
 import 'package:co_buy/features/home/domain/entities/bank.dart';
+import 'package:co_buy/features/home/domain/entities/pool_category.dart';
 import 'package:co_buy/features/home/presentation/blocs/create_pool_bloc/create_pool_bloc.dart';
 import 'package:co_buy/features/home/presentation/blocs/create_pool_form_bloc/create_pool_form_bloc.dart';
 import 'package:co_buy/features/home/presentation/widgets/pool_summary_sheet.dart';
@@ -16,6 +18,7 @@ import 'package:co_buy/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 /// Full-screen form to start a new pool.
 class CreatePoolPage extends StatefulWidget {
@@ -37,11 +40,13 @@ class _CreatePoolPageState extends State<CreatePoolPage> {
   void initState() {
     super.initState();
     final createPoolBloc = getIt<CreatePoolBloc>();
-    // No-op when the singleton already holds the cached list.
+    // No-ops when the singleton already holds the cached lists.
     createPoolBloc.add(const CreatePoolEvent.banksFetchRequested());
+    createPoolBloc.add(const CreatePoolEvent.categoriesFetchRequested());
     // The singleton outlives the page — drop a previous visit's resolution
-    // so a fresh, empty form doesn't show (or count) a stale account.
+    // and submission outcome so a fresh, empty form starts clean.
     createPoolBloc.add(const CreatePoolEvent.accountLookupCleared());
+    createPoolBloc.add(const CreatePoolEvent.submitStateCleared());
   }
 
   @override
@@ -91,13 +96,15 @@ class _CreatePoolPageState extends State<CreatePoolPage> {
   }
 
   void _onStartPool(BuildContext context) {
+    final formBloc = context.read<CreatePoolFormBloc>();
+    final createPoolBloc = context.read<CreatePoolBloc>();
+
     PoolSummarySheet.show(
       context,
-      formState: context.read<CreatePoolFormBloc>().state,
-      onCreatePool: () {
-        // TODO(create-pool): dispatch to the pools feature bloc once the
-        // create-pool use case lands; the form state carries every field.
-      },
+      formState: formBloc.state,
+      onCreatePool: () => createPoolBloc.add(
+        CreatePoolEvent.submitRequested(formBloc.state.toCreatePoolRequest()),
+      ),
     );
   }
 
@@ -146,6 +153,25 @@ class _CreatePoolPageState extends State<CreatePoolPage> {
                   ),
                 ),
           ),
+          BlocListener<CreatePoolBloc, CreatePoolState>(
+            listenWhen: (previous, current) =>
+                previous.createPoolStatus != current.createPoolStatus,
+            listener: (context, state) {
+              switch (state.createPoolStatus) {
+                case CreatePoolRequestStatus.success:
+                  AppSnackBar.showSuccess(context, 'Pool created successfully');
+                  context.pop();
+                case CreatePoolRequestStatus.failure:
+                  AppSnackBar.showError(
+                    context,
+                    state.createPoolError ?? 'Could not create the pool',
+                  );
+                case CreatePoolRequestStatus.initial:
+                case CreatePoolRequestStatus.loading:
+                  break;
+              }
+            },
+          ),
         ],
         child: AppScaffold(
           body: Builder(
@@ -191,25 +217,39 @@ class _CreatePoolPageState extends State<CreatePoolPage> {
                         .add(CreatePoolFormEvent.descriptionChanged(value)),
                   ),
                   const SizedBox(height: AppSpacing.s24),
-                  BlocSelector<
-                    CreatePoolFormBloc,
-                    CreatePoolFormState,
-                    PoolCategory?
-                  >(
-                    selector: (state) => state.category,
-                    builder: (context, category) =>
-                        AppDropdownField<PoolCategory>(
-                          label: 'Category',
-                          hint: 'Select a category',
-                          items: PoolCategory.values,
-                          itemLabel: (c) => c.displayName,
-                          value: category,
-                          onChanged: (value) {
-                            if (value == null) return;
-                            context.read<CreatePoolFormBloc>().add(
-                              CreatePoolFormEvent.categoryChanged(value),
-                            );
-                          },
+                  BlocBuilder<CreatePoolBloc, CreatePoolState>(
+                    buildWhen: (previous, current) =>
+                        previous.categoriesStatus != current.categoriesStatus,
+                    builder: (context, categoriesState) =>
+                        BlocSelector<
+                          CreatePoolFormBloc,
+                          CreatePoolFormState,
+                          PoolCategory?
+                        >(
+                          selector: (state) => state.category,
+                          builder: (context, category) =>
+                              AppDropdownField<PoolCategory>(
+                                label: 'Category',
+                                hint:
+                                    categoriesState.categoriesStatus ==
+                                        CreatePoolRequestStatus.loading
+                                    ? 'Loading categories…'
+                                    : 'Select a category',
+                                items: categoriesState.categories,
+                                itemLabel: (c) => c.displayName,
+                                value: category,
+                                errorText:
+                                    categoriesState.categoriesStatus ==
+                                        CreatePoolRequestStatus.failure
+                                    ? categoriesState.categoriesError
+                                    : null,
+                                onChanged: (value) {
+                                  if (value == null) return;
+                                  context.read<CreatePoolFormBloc>().add(
+                                    CreatePoolFormEvent.categoryChanged(value),
+                                  );
+                                },
+                              ),
                         ),
                   ),
                   const SizedBox(height: AppSpacing.s24),
@@ -350,12 +390,25 @@ class _CreatePoolPageState extends State<CreatePoolPage> {
                   const _AccountLookupStatusLine(),
                   const _RecipientReceivesField(),
                   const SizedBox(height: AppSpacing.s32),
-                  BlocSelector<CreatePoolFormBloc, CreatePoolFormState, bool>(
-                    selector: (state) => state.canSubmit,
-                    builder: (context, canSubmit) => AppButton(
-                      label: 'Start pool',
-                      onPressed: canSubmit ? () => _onStartPool(context) : null,
-                    ),
+                  BlocSelector<CreatePoolBloc, CreatePoolState, bool>(
+                    selector: (state) =>
+                        state.createPoolStatus ==
+                        CreatePoolRequestStatus.loading,
+                    builder: (context, isSubmitting) =>
+                        BlocSelector<
+                          CreatePoolFormBloc,
+                          CreatePoolFormState,
+                          bool
+                        >(
+                          selector: (state) => state.canSubmit,
+                          builder: (context, canSubmit) => AppButton(
+                            label: 'Start pool',
+                            loading: isSubmitting,
+                            onPressed: canSubmit
+                                ? () => _onStartPool(context)
+                                : null,
+                          ),
+                        ),
                   ),
                   const SizedBox(height: AppSpacing.s24),
                 ],
