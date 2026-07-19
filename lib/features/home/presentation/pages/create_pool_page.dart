@@ -11,6 +11,7 @@ import 'package:co_buy/core/validation/app_validators.dart';
 import 'package:co_buy/features/home/domain/entities/bank.dart';
 import 'package:co_buy/features/home/presentation/blocs/create_pool_bloc/create_pool_bloc.dart';
 import 'package:co_buy/features/home/presentation/blocs/create_pool_form_bloc/create_pool_form_bloc.dart';
+import 'package:co_buy/features/home/presentation/widgets/pool_summary_sheet.dart';
 import 'package:co_buy/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -90,8 +91,14 @@ class _CreatePoolPageState extends State<CreatePoolPage> {
   }
 
   void _onStartPool(BuildContext context) {
-    // TODO(create-pool): dispatch to the pools feature bloc once the
-    // create-pool use case lands; the form state carries every field.
+    PoolSummarySheet.show(
+      context,
+      formState: context.read<CreatePoolFormBloc>().state,
+      onCreatePool: () {
+        // TODO(create-pool): dispatch to the pools feature bloc once the
+        // create-pool use case lands; the form state carries every field.
+      },
+    );
   }
 
   @override

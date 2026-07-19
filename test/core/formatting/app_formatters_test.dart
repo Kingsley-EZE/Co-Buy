@@ -18,4 +18,28 @@ void main() {
       expect(AppFormatters.naira(4900.5), '₦4,900.50');
     });
   });
+
+  group('AppFormatters.deadline', () {
+    test('formats weekday, day, month and 12-hour time', () {
+      expect(
+        AppFormatters.deadline(DateTime(2026, 7, 20, 18)),
+        'Mon. 20 July 6pm',
+      );
+    });
+
+    test('keeps minutes when non-zero and handles am/noon/midnight', () {
+      expect(
+        AppFormatters.deadline(DateTime(2026, 7, 25, 6, 30)),
+        'Sat. 25 July 6:30am',
+      );
+      expect(
+        AppFormatters.deadline(DateTime(2026, 1, 1, 0)),
+        'Thu. 1 January 12am',
+      );
+      expect(
+        AppFormatters.deadline(DateTime(2026, 1, 1, 12)),
+        'Thu. 1 January 12pm',
+      );
+    });
+  });
 }

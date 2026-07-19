@@ -19,4 +19,41 @@ class AppFormatters {
     );
     return '₦$grouped$decimals';
   }
+
+  static const List<String> _weekdays = [
+    'Mon',
+    'Tue',
+    'Wed',
+    'Thu',
+    'Fri',
+    'Sat',
+    'Sun',
+  ];
+
+  static const List<String> _months = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ];
+
+  /// Compact deadline display: `Sun. 20 July 6pm` (minutes only when
+  /// non-zero: `Sun. 20 July 6:30pm`).
+  static String deadline(DateTime dateTime) {
+    final int hour12 = dateTime.hour % 12 == 0 ? 12 : dateTime.hour % 12;
+    final String period = dateTime.hour < 12 ? 'am' : 'pm';
+    final String minutes = dateTime.minute == 0
+        ? ''
+        : ':${dateTime.minute.toString().padLeft(2, '0')}';
+    return '${_weekdays[dateTime.weekday - 1]}. ${dateTime.day} '
+        '${_months[dateTime.month - 1]} $hour12$minutes$period';
+  }
 }
