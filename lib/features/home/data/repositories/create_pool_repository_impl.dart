@@ -8,10 +8,14 @@ import '../../../../core/error/result.dart';
 import '../../domain/entities/account_lookup_request.dart';
 import '../../domain/entities/bank.dart';
 import '../../domain/entities/bank_account.dart';
+import '../../domain/entities/create_pool_request.dart';
+import '../../domain/entities/pool_category.dart';
 import '../../domain/repositories/create_pool_repository.dart';
 import '../datasources/create_pool_data_source.dart';
 import '../mappers/bank_account_mapper.dart';
 import '../mappers/bank_mapper.dart';
+import '../mappers/create_pool_request_mapper.dart';
+import '../mappers/pool_category_mapper.dart';
 
 @LazySingleton(as: CreatePoolRepository)
 class CreatePoolRepositoryImpl implements CreatePoolRepository {
@@ -20,10 +24,39 @@ class CreatePoolRepositoryImpl implements CreatePoolRepository {
   final CreatePoolDataSource _remote;
 
   @override
+  FutureResult<void> createPool(CreatePoolRequest request) async {
+    try {
+      await _remote.createPool(body: request.toDto());
+      return const Right(null);
+    } on DioException catch (e) {
+      return Left(mapDioException(e));
+    } catch (_) {
+      return const Left(UnknownFailure());
+    }
+  }
+
+  @override
   FutureResult<List<Bank>> getBanks() async {
     try {
       final dto = await _remote.getBanks();
       return Right(dto.data.map((bank) => bank.toEntity()).toList());
+    } on DioException catch (e) {
+      return Left(mapDioException(e));
+    } catch (_) {
+      return const Left(UnknownFailure());
+    }
+  }
+
+  @override
+  FutureResult<List<PoolCategory>> getCategories() async {
+    try {
+      final dto = await _remote.getCategories();
+      return Right(
+        dto.data
+            .where((category) => category.isActive)
+            .map((category) => category.toEntity())
+            .toList(),
+      );
     } on DioException catch (e) {
       return Left(mapDioException(e));
     } catch (_) {

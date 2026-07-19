@@ -1,5 +1,6 @@
 import 'package:co_buy/core/design_system/design_system.dart';
 import 'package:co_buy/features/home/domain/entities/bank.dart';
+import 'package:co_buy/features/home/domain/entities/pool_category.dart';
 import 'package:co_buy/features/home/presentation/blocs/create_pool_form_bloc/create_pool_form_bloc.dart';
 import 'package:co_buy/features/home/presentation/widgets/pool_summary_sheet.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +11,11 @@ void main() {
   final filledState = CreatePoolFormState(
     title: 'Mama Gold rice 50kg — 10 bags',
     description: "Landlord's 80th birthday is coming up.",
-    category: PoolCategory.groceries,
+    category: const PoolCategory(
+      id: '1e9d8011-cb58-4e96-a568-547c763413df',
+      name: 'BulkPurchase',
+      description: 'Bulk purchase — rice, gas, building materials, groceries',
+    ),
     evenContribution: true,
     targetAmount: '500000',
     slots: '10',
@@ -53,7 +58,7 @@ void main() {
     expect(find.text('Pool Summary'), findsOneWidget);
     expect(find.text('Mama Gold rice 50kg — 10 bags'), findsOneWidget);
     expect(find.text("Landlord's 80th birthday is coming up."), findsOneWidget);
-    expect(find.text('Groceries'), findsOneWidget);
+    expect(find.text('Bulk Purchase'), findsOneWidget);
     expect(find.text('Equal slot'), findsOneWidget);
     expect(find.text('₦500,000'), findsOneWidget);
     expect(find.text('10'), findsOneWidget);

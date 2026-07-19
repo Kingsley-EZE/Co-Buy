@@ -6,21 +6,6 @@ const int kPoolDescriptionMaxLength = 200;
 /// Fee taken off the target amount before the beneficiary payout.
 const double kPoolFeeRate = 0.02;
 
-/// Categories a pool can belong to. Presentation-only until the pools domain
-/// lands with server-driven categories.
-enum PoolCategory {
-  groceries('Groceries'),
-  electronics('Electronics'),
-  fashion('Fashion'),
-  homeAndKitchen('Home & Kitchen'),
-  utilities('Utilities'),
-  other('Other');
-
-  const PoolCategory(this.displayName);
-
-  final String displayName;
-}
-
 @freezed
 abstract class CreatePoolFormState with _$CreatePoolFormState {
   const CreatePoolFormState._();
@@ -28,6 +13,9 @@ abstract class CreatePoolFormState with _$CreatePoolFormState {
   const factory CreatePoolFormState({
     @Default('') String title,
     @Default('') String description,
+
+    /// The whole entity (not just a display name) so the category id is on
+    /// hand for submission.
     PoolCategory? category,
 
     /// Whether every member contributes the same amount. Null renders the
@@ -99,4 +87,32 @@ abstract class CreatePoolFormState with _$CreatePoolFormState {
       bank != null &&
       accountNumberError == null &&
       accountVerified;
+
+  /// The submission payload derived from the current inputs. Only call once
+  /// [canSubmit] is true — the non-null assertions rely on it.
+  CreatePoolRequest toCreatePoolRequest() {
+    final double amount = double.parse(targetAmount);
+    final int members = int.parse(slots);
+    // Null means the user left the "defaults to Equal slot" hint as-is.
+    final bool splitEven = evenContribution ?? true;
+
+    return CreatePoolRequest(
+      name: title,
+      description: description.isEmpty ? null : description,
+      categoryId: category!.id,
+      targetAmount: amount,
+      maxMembers: members,
+      splitEven: splitEven,
+      // The form only collects per-member shares for an even split; uneven
+      // pools let each member pick their own amount, so no share is sent.
+      memberShareAmount: splitEven ? amount / members : 0,
+      beneficiaryAccountNumber: accountNumber,
+      // canSubmit implies accountVerified, so the resolved account is the
+      // enquiry result for exactly this account number and bank.
+      beneficiaryAccountName: resolvedAccount!.accountName,
+      beneficiaryBankName: bank!.name,
+      beneficiaryBankCode: bank!.code,
+      deadlineAt: deadline!,
+    );
+  }
 }

@@ -1,6 +1,8 @@
 import 'package:co_buy/core/validation/app_validators.dart';
 import 'package:co_buy/features/home/domain/entities/bank.dart';
 import 'package:co_buy/features/home/domain/entities/bank_account.dart';
+import 'package:co_buy/features/home/domain/entities/create_pool_request.dart';
+import 'package:co_buy/features/home/domain/entities/pool_category.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';

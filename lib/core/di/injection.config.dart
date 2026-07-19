@@ -44,7 +44,10 @@ import '../../features/home/data/repositories/create_pool_repository_impl.dart'
     as _i866;
 import '../../features/home/domain/repositories/create_pool_repository.dart'
     as _i742;
+import '../../features/home/domain/usecases/create_pool_usecase.dart' as _i971;
 import '../../features/home/domain/usecases/get_banks_usecase.dart' as _i813;
+import '../../features/home/domain/usecases/get_categories_usecase.dart'
+    as _i967;
 import '../../features/home/domain/usecases/lookup_account_name_usecase.dart'
     as _i922;
 import '../../features/home/presentation/blocs/create_pool_bloc/create_pool_bloc.dart'
@@ -152,8 +155,14 @@ extension GetItInjectableX on _i174.GetIt {
       ),
       dispose: _i661.disposeAuthBloc,
     );
+    gh.factory<_i971.CreatePoolUseCase>(
+      () => _i971.CreatePoolUseCase(gh<_i742.CreatePoolRepository>()),
+    );
     gh.factory<_i813.GetBanksUseCase>(
       () => _i813.GetBanksUseCase(gh<_i742.CreatePoolRepository>()),
+    );
+    gh.factory<_i967.GetCategoriesUseCase>(
+      () => _i967.GetCategoriesUseCase(gh<_i742.CreatePoolRepository>()),
     );
     gh.factory<_i922.LookupAccountNameUseCase>(
       () => _i922.LookupAccountNameUseCase(gh<_i742.CreatePoolRepository>()),
@@ -161,7 +170,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i350.CreatePoolBloc>(
       () => _i350.CreatePoolBloc(
         gh<_i813.GetBanksUseCase>(),
+        gh<_i967.GetCategoriesUseCase>(),
         gh<_i922.LookupAccountNameUseCase>(),
+        gh<_i971.CreatePoolUseCase>(),
       ),
       dispose: _i350.disposeCreatePoolBloc,
     );

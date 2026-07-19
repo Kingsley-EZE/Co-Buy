@@ -19,11 +19,22 @@ abstract class CreatePoolState with _$CreatePoolState {
     String? banksError,
 
     @Default(CreatePoolRequestStatus.initial)
+    CreatePoolRequestStatus categoriesStatus,
+
+    /// The in-memory category cache — once loaded, fetch events are no-ops.
+    @Default(<PoolCategory>[]) List<PoolCategory> categories,
+    String? categoriesError,
+
+    @Default(CreatePoolRequestStatus.initial)
     CreatePoolRequestStatus accountLookupStatus,
 
     /// The account resolved by the last name enquiry, cleared when a new
     /// lookup starts so a stale name is never shown against fresh input.
     BankAccount? resolvedAccount,
     String? accountLookupError,
+
+    @Default(CreatePoolRequestStatus.initial)
+    CreatePoolRequestStatus createPoolStatus,
+    String? createPoolError,
   }) = _CreatePoolState;
 }

@@ -883,7 +883,9 @@ as BankAccount?,
 /// @nodoc
 mixin _$CreatePoolFormState {
 
- String get title; String get description; PoolCategory? get category;/// Whether every member contributes the same amount. Null renders the
+ String get title; String get description;/// The whole entity (not just a display name) so the category id is on
+/// hand for submission.
+ PoolCategory? get category;/// Whether every member contributes the same amount. Null renders the
 /// "defaults to Equal slot" hint; treat null as `true` at submission.
  bool? get evenContribution; String get targetAmount; String get slots; DateTime? get deadline;/// The whole entity (not just a display name) so the bank code is on hand
 /// for the account name enquiry and submission.
@@ -1095,6 +1097,8 @@ class _CreatePoolFormState extends CreatePoolFormState {
 
 @override@JsonKey() final  String title;
 @override@JsonKey() final  String description;
+/// The whole entity (not just a display name) so the category id is on
+/// hand for submission.
 @override final  PoolCategory? category;
 /// Whether every member contributes the same amount. Null renders the
 /// "defaults to Equal slot" hint; treat null as `true` at submission.
