@@ -7,6 +7,7 @@ import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/auth/presentation/pages/onboarding_page.dart';
 import '../../features/auth/presentation/pages/reset_password_page.dart';
 import '../../features/auth/presentation/pages/signup_page.dart';
+import '../../features/home/presentation/pages/create_pool_page.dart';
 import '../../features/home/presentation/pages/dashboard_page.dart';
 import '../../features/home/presentation/pages/home_page.dart';
 import '../../features/pools/presentation/pages/my_pools_page.dart';
@@ -81,6 +82,19 @@ class ResetPasswordRoute extends GoRouteData with $ResetPasswordRoute {
   @override
   Widget build(BuildContext context, GoRouterState state) =>
       ResetPasswordPage(email: email);
+}
+
+/// Full-screen create-pool form. Parented to the root navigator so it covers
+/// the dashboard shell (no bottom bar) when pushed from a tab.
+@TypedGoRoute<CreatePoolRoute>(path: '/create-pool')
+class CreatePoolRoute extends GoRouteData with $CreatePoolRoute {
+  const CreatePoolRoute();
+
+  static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) =>
+      const CreatePoolPage();
 }
 
 /// Dashboard shell: an indexed stack of the four bottom-nav tabs. The shell

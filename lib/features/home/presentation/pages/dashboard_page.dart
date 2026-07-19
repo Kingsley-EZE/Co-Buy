@@ -1,4 +1,5 @@
 import 'package:co_buy/core/components/scaffolds/app_scaffold.dart';
+import 'package:co_buy/core/navigation/routes.dart';
 import 'package:co_buy/features/home/presentation/widgets/dashboard_nav_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -24,8 +25,7 @@ class DashboardPage extends StatelessWidget {
           // Tapping the already-active tab pops it to its root.
           initialLocation: index == navigationShell.currentIndex,
         ),
-        // TODO(create-pool): wire up once the create-pool flow exists.
-        onCreatePool: () {},
+        onCreatePool: () => const CreatePoolRoute().push(context),
       ),
     );
   }

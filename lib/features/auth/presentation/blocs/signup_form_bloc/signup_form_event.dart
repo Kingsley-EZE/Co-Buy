@@ -8,8 +8,7 @@ sealed class SignupFormEvent with _$SignupFormEvent {
   const factory SignupFormEvent.lastNameChanged(String lastName) =
       SignupLastNameChanged;
 
-  const factory SignupFormEvent.emailChanged(String email) =
-      SignupEmailChanged;
+  const factory SignupFormEvent.emailChanged(String email) = SignupEmailChanged;
 
   const factory SignupFormEvent.passwordChanged(String password) =
       SignupPasswordChanged;

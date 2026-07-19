@@ -51,9 +51,8 @@ class _SignupPageState extends State<SignupPage> {
     final code = await ConfirmOtpSheet.show(
       context,
       subtitle: 'Type one time code we sent to your email',
-      onSubmit: (otp) => authBloc.add(
-        AuthEvent.verifyEmailRequested(email: email, otp: otp),
-      ),
+      onSubmit: (otp) =>
+          authBloc.add(AuthEvent.verifyEmailRequested(email: email, otp: otp)),
     );
     _isOtpSheetOpen = false;
 

@@ -12,6 +12,7 @@ import 'package:co_buy/features/auth/domain/usecases/signup_usecase.dart';
 import 'package:co_buy/features/auth/domain/usecases/verify_email_usecase.dart';
 import 'package:co_buy/features/auth/presentation/blocs/auth_bloc/auth_bloc.dart';
 import 'package:co_buy/features/auth/presentation/blocs/login_form_bloc/login_form_bloc.dart';
+import 'package:co_buy/features/auth/presentation/blocs/signup_form_bloc/signup_form_bloc.dart';
 import 'package:co_buy/features/auth/presentation/pages/login_page.dart';
 import 'package:co_buy/features/auth/presentation/pages/signup_page.dart';
 import 'package:co_buy/features/home/presentation/pages/home_page.dart';
@@ -34,9 +35,11 @@ class _MockResetPasswordUseCase extends Mock implements ResetPasswordUseCase {}
 
 class _MockLogoutUseCase extends Mock implements LogoutUseCase {}
 
-/// Real router over the generated route tree, without the app-level
-/// navigatorKey so each test gets an independent instance.
+/// Real router over the generated route tree. Needs the app's
+/// [rootNavigatorKey]: routes parented to the root navigator (e.g.
+/// CreatePoolRoute) assert that their key belongs to the router.
 GoRouter buildRouter([String initial = '/login']) => GoRouter(
+  navigatorKey: rootNavigatorKey,
   initialLocation: initial,
   routes: $appRoutes,
   errorBuilder: (context, state) => NotFoundScreen(error: state.error),
@@ -75,6 +78,7 @@ void main() {
       ),
     );
     getIt.registerFactory<LoginFormBloc>(LoginFormBloc.new);
+    getIt.registerFactory<SignupFormBloc>(SignupFormBloc.new);
   });
 
   tearDown(() => getIt.reset());

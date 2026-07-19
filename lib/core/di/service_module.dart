@@ -3,7 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../features/auth/data/datasources/auth_remote_data_source.dart';
-import '../../features/posts/data/datasources/posts_remote_data_source.dart';
+import '../../features/home/data/datasources/create_pool_data_source.dart';
 import '../config/app_config.dart';
 import '../config/env/env.dart';
 
@@ -19,10 +19,10 @@ abstract class ServiceModule {
   FlutterSecureStorage get secureStorage => const FlutterSecureStorage();
 
   @lazySingleton
-  PostsRemoteDataSource postsRemoteDataSource(@Named('appDio') Dio dio) =>
-      PostsRemoteDataSource(dio);
-
-  @lazySingleton
   AuthRemoteDataSource authRemoteDataSource(@Named('appDio') Dio dio) =>
       AuthRemoteDataSource(dio);
+
+  @lazySingleton
+  CreatePoolDataSource createPoolDataSource(@Named('appDio') Dio dio) =>
+      CreatePoolDataSource(dio);
 }

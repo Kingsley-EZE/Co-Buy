@@ -74,7 +74,9 @@ class ConfirmOtpSheet extends StatefulWidget {
       isDismissible: false,
       backgroundColor: context.colors.bg.primary,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.r24)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(AppRadius.r24),
+        ),
       ),
       builder: (_) => ConfirmOtpSheet(
         length: length,
@@ -406,9 +408,7 @@ class _ResendText extends StatelessWidget {
     if (secondsLeft > 0) {
       return Text(
         'Resend in ${secondsLeft}s.',
-        style: context.styles.bodyM.copyWith(
-          color: context.colors.text.subtle,
-        ),
+        style: context.styles.bodyM.copyWith(color: context.colors.text.subtle),
       );
     }
 

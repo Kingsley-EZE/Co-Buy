@@ -38,13 +38,19 @@ import '../../features/auth/presentation/blocs/reset_password_form_bloc/reset_pa
     as _i910;
 import '../../features/auth/presentation/blocs/signup_form_bloc/signup_form_bloc.dart'
     as _i353;
-import '../../features/posts/data/datasources/posts_remote_data_source.dart'
-    as _i538;
-import '../../features/posts/data/repositories/posts_repository_impl.dart'
-    as _i675;
-import '../../features/posts/domain/repositories/posts_repository.dart'
-    as _i245;
-import '../../features/posts/domain/usecases/get_posts_usecase.dart' as _i158;
+import '../../features/home/data/datasources/create_pool_data_source.dart'
+    as _i736;
+import '../../features/home/data/repositories/create_pool_repository_impl.dart'
+    as _i866;
+import '../../features/home/domain/repositories/create_pool_repository.dart'
+    as _i742;
+import '../../features/home/domain/usecases/get_banks_usecase.dart' as _i813;
+import '../../features/home/domain/usecases/lookup_account_name_usecase.dart'
+    as _i922;
+import '../../features/home/presentation/blocs/create_pool_bloc/create_pool_bloc.dart'
+    as _i350;
+import '../../features/home/presentation/blocs/create_pool_form_bloc/create_pool_form_bloc.dart'
+    as _i832;
 import '../config/env/env.dart' as _i513;
 import '../navigation/app_navigator.dart' as _i397;
 import '../navigation/go_router_navigator.dart' as _i489;
@@ -72,6 +78,7 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i910.ResetPasswordFormBloc(),
     );
     gh.factory<_i353.SignupFormBloc>(() => _i353.SignupFormBloc());
+    gh.factory<_i832.CreatePoolFormBloc>(() => _i832.CreatePoolFormBloc());
     gh.singleton<_i583.GoRouter>(() => routerModule.goRouter);
     gh.lazySingleton<_i558.FlutterSecureStorage>(
       () => serviceModule.secureStorage,
@@ -97,13 +104,13 @@ extension GetItInjectableX on _i174.GetIt {
       () => networkModule.appDio(gh<_i513.Env>(), gh<_i745.AuthInterceptor>()),
       instanceName: 'appDio',
     );
-    gh.lazySingleton<_i538.PostsRemoteDataSource>(
-      () => serviceModule.postsRemoteDataSource(
+    gh.lazySingleton<_i107.AuthRemoteDataSource>(
+      () => serviceModule.authRemoteDataSource(
         gh<_i361.Dio>(instanceName: 'appDio'),
       ),
     );
-    gh.lazySingleton<_i107.AuthRemoteDataSource>(
-      () => serviceModule.authRemoteDataSource(
+    gh.lazySingleton<_i736.CreatePoolDataSource>(
+      () => serviceModule.createPoolDataSource(
         gh<_i361.Dio>(instanceName: 'appDio'),
       ),
     );
@@ -112,9 +119,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i107.AuthRemoteDataSource>(),
         gh<_i483.TokenStorage>(),
       ),
-    );
-    gh.lazySingleton<_i245.PostsRepository>(
-      () => _i675.PostsRepositoryImpl(gh<_i538.PostsRemoteDataSource>()),
     );
     gh.factory<_i560.ForgotPasswordUseCase>(
       () => _i560.ForgotPasswordUseCase(gh<_i787.AuthRepository>()),
@@ -134,8 +138,8 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i30.VerifyEmailUseCase>(
       () => _i30.VerifyEmailUseCase(gh<_i787.AuthRepository>()),
     );
-    gh.factory<_i158.GetPostsUseCase>(
-      () => _i158.GetPostsUseCase(gh<_i245.PostsRepository>()),
+    gh.lazySingleton<_i742.CreatePoolRepository>(
+      () => _i866.CreatePoolRepositoryImpl(gh<_i736.CreatePoolDataSource>()),
     );
     gh.lazySingleton<_i661.AuthBloc>(
       () => _i661.AuthBloc(
@@ -147,6 +151,19 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i48.LogoutUseCase>(),
       ),
       dispose: _i661.disposeAuthBloc,
+    );
+    gh.factory<_i813.GetBanksUseCase>(
+      () => _i813.GetBanksUseCase(gh<_i742.CreatePoolRepository>()),
+    );
+    gh.factory<_i922.LookupAccountNameUseCase>(
+      () => _i922.LookupAccountNameUseCase(gh<_i742.CreatePoolRepository>()),
+    );
+    gh.lazySingleton<_i350.CreatePoolBloc>(
+      () => _i350.CreatePoolBloc(
+        gh<_i813.GetBanksUseCase>(),
+        gh<_i922.LookupAccountNameUseCase>(),
+      ),
+      dispose: _i350.disposeCreatePoolBloc,
     );
     return this;
   }
