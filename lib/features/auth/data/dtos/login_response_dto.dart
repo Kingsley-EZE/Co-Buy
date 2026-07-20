@@ -22,11 +22,18 @@ class LoginResponseDto {
 
 @JsonSerializable(explicitToJson: true)
 class LoginDataDto {
-  // TODO: add refreshToken once the backend ships it.
-  const LoginDataDto({required this.user, required this.accessToken});
+  const LoginDataDto({
+    required this.user,
+    required this.accessToken,
+    this.refreshToken,
+  });
 
   final UserDto user;
   final String accessToken;
+
+  /// Nullable until the backend ships it; when present it lets
+  /// [AuthInterceptor] refresh the session on a 401 instead of logging out.
+  final String? refreshToken;
 
   factory LoginDataDto.fromJson(Map<String, dynamic> json) =>
       _$LoginDataDtoFromJson(json);

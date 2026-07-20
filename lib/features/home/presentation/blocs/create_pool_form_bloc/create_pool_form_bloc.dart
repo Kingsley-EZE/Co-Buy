@@ -27,10 +27,6 @@ class CreatePoolFormBloc
     on<CreatePoolCategoryChanged>(
       (event, emit) => emit(state.copyWith(category: event.category)),
     );
-    on<CreatePoolEvenContributionChanged>(
-      (event, emit) =>
-          emit(state.copyWith(evenContribution: event.evenContribution)),
-    );
     on<CreatePoolTargetAmountChanged>(
       (event, emit) => emit(state.copyWith(targetAmount: event.amount)),
     );

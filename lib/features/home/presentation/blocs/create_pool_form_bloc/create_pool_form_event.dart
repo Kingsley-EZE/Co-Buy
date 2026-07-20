@@ -11,10 +11,6 @@ sealed class CreatePoolFormEvent with _$CreatePoolFormEvent {
   const factory CreatePoolFormEvent.categoryChanged(PoolCategory category) =
       CreatePoolCategoryChanged;
 
-  const factory CreatePoolFormEvent.evenContributionChanged(
-    bool evenContribution,
-  ) = CreatePoolEvenContributionChanged;
-
   const factory CreatePoolFormEvent.targetAmountChanged(String amount) =
       CreatePoolTargetAmountChanged;
 

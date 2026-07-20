@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 /// Visual variants from the Figma button tokens: a filled brand button and
 /// an outlined one.
-enum AppButtonVariant { primary, outline }
+enum AppButtonVariant { primary, outline, danger }
 
 enum AppButtonSize {
   small(40),
@@ -48,7 +48,8 @@ class AppButton extends StatelessWidget {
   final AppButtonSize size;
   final bool loading;
 
-  /// Fills the available width when true (the common mobile CTA case).
+  /// Fills the available width when t
+  ///rue (the common mobile CTA case).
   final bool expanded;
 
   final IconData? leadingIcon;
@@ -58,14 +59,17 @@ class AppButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final ButtonColors button = context.colors.button;
     final TextColors text = context.colors.text;
+    final StateColors state = context.colors.state;
 
     final Color foreground = switch (variant) {
       AppButtonVariant.primary => text.neutral,
       AppButtonVariant.outline => button.outline,
+      AppButtonVariant.danger => text.neutral,
     };
     final Color disabledForeground = switch (variant) {
       AppButtonVariant.primary => AppPalette.primaryBase2,
       AppButtonVariant.outline => text.disabled,
+      AppButtonVariant.danger => text.disabled,
     };
 
     Color resolveForeground(Set<WidgetState> states) {
@@ -84,13 +88,19 @@ class AppButton extends StatelessWidget {
       backgroundColor: WidgetStateProperty.resolveWith((states) {
         if (variant == AppButtonVariant.outline) return Colors.transparent;
         if (states.contains(WidgetState.disabled) && !loading) {
-          return button.disabled;
+          return variant == AppButtonVariant.danger
+              ? state.errorLight
+              : button.disabled;
         }
         if (states.contains(WidgetState.pressed) ||
             states.contains(WidgetState.hovered)) {
-          return button.hoverActive;
+          return variant == AppButtonVariant.danger
+              ? state.errorDark
+              : button.hoverActive;
         }
-        return button.primary;
+        return variant == AppButtonVariant.danger
+            ? state.errorBase
+            : button.primary;
       }),
       foregroundColor: WidgetStateProperty.resolveWith(resolveForeground),
       iconColor: WidgetStateProperty.resolveWith(resolveForeground),

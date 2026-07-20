@@ -53,8 +53,7 @@ class PoolSummarySheet extends StatelessWidget {
       ('Category', formState.category?.displayName ?? '—'),
       (
         'Contribution Type',
-        // Null means the user left the "defaults to Equal slot" hint as-is.
-        (formState.evenContribution ?? true) ? 'Equal slot' : 'Custom',
+        formState.evenContribution ? 'Equal slot' : 'Custom',
       ),
       ('Target Amount', _naira(targetAmount)),
       ('Number of Slots', formState.slots),

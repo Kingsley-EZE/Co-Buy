@@ -399,14 +399,30 @@ class _JoinPoolButton extends StatelessWidget {
               BlocSelector<PoolPaymentBloc, PoolPaymentState, bool>(
                 selector: (state) =>
                     state.status == PoolPaymentRequestStatus.loading,
-                builder: (context, isStartingPayment) => Padding(
-                  padding: const EdgeInsets.only(top: AppSpacing.s32),
-                  child: AppButton(
-                    label: 'Join pool',
-                    loading: isSubmitting || isStartingPayment,
-                    onPressed: onPressed,
-                  ),
-                ),
+                builder: (context, isStartingPayment) =>
+                    // Spin while the pool details fetch is still in flight:
+                    // the enquiry can verify the account before details land,
+                    // and _onJoinPool needs them — so gating the tap here is
+                    // what stops a premature "still loading" error. Failure is
+                    // left tappable so _onJoinPool surfaces it and retries.
+                    BlocSelector<PoolDetailsBloc, PoolDetailsState, bool>(
+                      selector: (state) =>
+                          state.detailsStatus ==
+                              PoolDetailsRequestStatus.initial ||
+                          state.detailsStatus ==
+                              PoolDetailsRequestStatus.loading,
+                      builder: (context, isLoadingDetails) => Padding(
+                        padding: const EdgeInsets.only(top: AppSpacing.s32),
+                        child: AppButton(
+                          label: 'Join pool',
+                          loading:
+                              isSubmitting ||
+                              isStartingPayment ||
+                              isLoadingDetails,
+                          onPressed: onPressed,
+                        ),
+                      ),
+                    ),
               ),
         );
       },

@@ -253,26 +253,6 @@ class _CreatePoolPageState extends State<CreatePoolPage> {
                         ),
                   ),
                   const SizedBox(height: AppSpacing.s24),
-                  BlocSelector<CreatePoolFormBloc, CreatePoolFormState, bool?>(
-                    selector: (state) => state.evenContribution,
-                    builder: (context, evenContribution) =>
-                        AppDropdownField<bool>(
-                          label: 'Even Contribution?',
-                          hint: 'defaults to Equal slot',
-                          items: const [true, false],
-                          itemLabel: (even) => even ? 'Yes' : 'No',
-                          value: evenContribution,
-                          onChanged: (value) {
-                            if (value == null) return;
-                            context.read<CreatePoolFormBloc>().add(
-                              CreatePoolFormEvent.evenContributionChanged(
-                                value,
-                              ),
-                            );
-                          },
-                        ),
-                  ),
-                  const SizedBox(height: AppSpacing.s24),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
