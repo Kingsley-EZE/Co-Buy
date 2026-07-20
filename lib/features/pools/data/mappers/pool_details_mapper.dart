@@ -24,12 +24,15 @@ extension PoolDetailsDtoX on PoolDetailsDto {
     slotsRemaining: slotsRemaining,
   );
 
-  /// Mirrors the home feed's parsing: the server calls a fully-subscribed
-  /// pool CLOSED, and unknown values degrade to open.
+  /// Only an explicit OPEN is joinable. The server calls a fully-subscribed
+  /// pool CLOSED; every other lifecycle state — EXPIRED and transitional ones
+  /// like REFUNDING/REFUNDED — degrades to a non-open status so the details
+  /// page hides the join/pay CTA (see `canJoin`). This deliberately differs
+  /// from the home feed, which degrades unknowns to OPEN to keep listing them.
   static PoolStatus _statusFromApi(String raw) => switch (raw.toUpperCase()) {
+    'OPEN' => PoolStatus.open,
     'CLOSED' || 'FILLED' => PoolStatus.filled,
     'FUNDED' => PoolStatus.funded,
-    'EXPIRED' => PoolStatus.expired,
-    _ => PoolStatus.open,
+    _ => PoolStatus.expired,
   };
 }
