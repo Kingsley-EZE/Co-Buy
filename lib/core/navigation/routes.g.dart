@@ -191,6 +191,11 @@ RouteBase get $dashboardShellRoute => StatefulShellRouteData.$route(
                   parentNavigatorKey: JoinPoolRoute.$parentNavigatorKey,
                   factory: $JoinPoolRoute._fromState,
                 ),
+                GoRouteData.$route(
+                  path: 'pay',
+                  parentNavigatorKey: PaymentCheckoutRoute.$parentNavigatorKey,
+                  factory: $PaymentCheckoutRoute._fromState,
+                ),
               ],
             ),
           ],
@@ -276,6 +281,39 @@ mixin $JoinPoolRoute on GoRouteData {
   @override
   String get location => GoRouteData.$location(
     '/home/pool/${Uri.encodeComponent(_self.poolId)}/join',
+  );
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+mixin $PaymentCheckoutRoute on GoRouteData {
+  static PaymentCheckoutRoute _fromState(GoRouterState state) =>
+      PaymentCheckoutRoute(
+        poolId: state.pathParameters['poolId']!,
+        checkoutUrl: state.uri.queryParameters['checkout-url']!,
+        redirectUrl: state.uri.queryParameters['redirect-url']!,
+      );
+
+  PaymentCheckoutRoute get _self => this as PaymentCheckoutRoute;
+
+  @override
+  String get location => GoRouteData.$location(
+    '/home/pool/${Uri.encodeComponent(_self.poolId)}/pay',
+    queryParams: {
+      'checkout-url': _self.checkoutUrl,
+      'redirect-url': _self.redirectUrl,
+    },
   );
 
   @override

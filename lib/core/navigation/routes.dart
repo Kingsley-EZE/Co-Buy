@@ -12,6 +12,7 @@ import '../../features/home/presentation/pages/dashboard_page.dart';
 import '../../features/home/presentation/pages/home_page.dart';
 import '../../features/pools/presentation/pages/join_pool_page.dart';
 import '../../features/pools/presentation/pages/my_pools_page.dart';
+import '../../features/pools/presentation/pages/payment_checkout_page.dart';
 import '../../features/pools/presentation/pages/pool_details_page.dart';
 import '../../features/profile/presentation/pages/profile_page.dart';
 
@@ -113,6 +114,7 @@ class CreatePoolRoute extends GoRouteData with $CreatePoolRoute {
               path: 'pool/:poolId',
               routes: <TypedRoute<RouteData>>[
                 TypedGoRoute<JoinPoolRoute>(path: 'join'),
+                TypedGoRoute<PaymentCheckoutRoute>(path: 'pay'),
               ],
             ),
           ],
@@ -210,6 +212,28 @@ class JoinPoolRoute extends GoRouteData with $JoinPoolRoute {
   @override
   Widget build(BuildContext context, GoRouterState state) =>
       JoinPoolPage(poolId: poolId);
+}
+
+/// Gateway checkout webview, nested under pool details so the pool stays in
+/// the back stack. The URLs ride along as query parameters — strings, not
+/// objects — because they exist only in the POST /pools/pay response; the
+/// page cannot refetch them without creating another transaction.
+class PaymentCheckoutRoute extends GoRouteData with $PaymentCheckoutRoute {
+  const PaymentCheckoutRoute({
+    required this.poolId,
+    required this.checkoutUrl,
+    required this.redirectUrl,
+  });
+
+  final String poolId;
+  final String checkoutUrl;
+  final String redirectUrl;
+
+  static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) =>
+      PaymentCheckoutPage(checkoutUrl: checkoutUrl, redirectUrl: redirectUrl);
 }
 
 class MyPoolsRoute extends GoRouteData with $MyPoolsRoute {
