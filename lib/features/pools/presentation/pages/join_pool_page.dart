@@ -6,12 +6,15 @@ import 'package:co_buy/core/components/feedback/app_snackbar.dart';
 import 'package:co_buy/core/components/scaffolds/app_scaffold.dart';
 import 'package:co_buy/core/design_system/design_system.dart';
 import 'package:co_buy/core/di/injection.dart';
+import 'package:co_buy/core/navigation/routes.dart';
 import 'package:co_buy/core/validation/app_validators.dart';
 import 'package:co_buy/features/home/domain/entities/bank.dart';
 import 'package:co_buy/features/pools/domain/entities/join_pool_request.dart';
+import 'package:co_buy/features/pools/domain/entities/pool_payment.dart';
 import 'package:co_buy/features/pools/presentation/blocs/join_pool_bloc/join_pool_bloc.dart';
 import 'package:co_buy/features/pools/presentation/blocs/join_pool_form_bloc/join_pool_form_bloc.dart';
 import 'package:co_buy/features/pools/presentation/blocs/pool_details_bloc/pool_details_bloc.dart';
+import 'package:co_buy/features/pools/presentation/blocs/pool_payment_bloc/pool_payment_bloc.dart';
 import 'package:co_buy/features/pools/presentation/widgets/account_verified_card.dart';
 import 'package:co_buy/features/pools/presentation/widgets/join_pool_review_sheet.dart';
 import 'package:flutter/material.dart';
@@ -86,10 +89,11 @@ class _JoinPoolPageState extends State<JoinPoolPage> {
     );
   }
 
-  /// Shown once the join call succeeds. Whatever dismisses the sheet — the
-  /// close button, the barrier, or "Continue to payment" — the user has
-  /// joined, so the page pops back to the pool details underneath with a
-  /// `true` result so that page knows to refresh its now-stale figures.
+  /// Shown once the join call succeeds. The user has joined whatever they
+  /// do next, so every path out of the sheet eventually pops back to the
+  /// pool details underneath with a `true` result so that page refreshes
+  /// its now-stale figures — immediately when the sheet is just dismissed,
+  /// or after checkout (via the payment listener) when they continue.
   Future<void> _showReviewSheet(BuildContext context) async {
     final detailsState = context.read<PoolDetailsBloc>().state;
     // Submission only fires with details on hand, and nothing clears them.
@@ -98,17 +102,66 @@ class _JoinPoolPageState extends State<JoinPoolPage> {
       (m) => m.userId == details.leaderId,
     );
 
-    await JoinPoolReviewSheet.show(
+    final continueToPayment = await JoinPoolReviewSheet.show(
       context,
       details: details,
       leaderName: leaders.isEmpty ? null : leaders.first.name,
       formState: context.read<JoinPoolFormBloc>().state,
-      // TODO(join-pool): start the payment flow once its endpoint exists.
-      onContinue: () =>
-          AppSnackBar.showSuccess(context, 'Payment is coming soon.'),
     );
 
-    if (context.mounted) context.pop(true);
+    if (!context.mounted) return;
+    if (continueToPayment == true) {
+      // The pop is deferred to the payment listener so the page stays put
+      // under the in-flight call and the checkout it leads to.
+      context.read<PoolPaymentBloc>().add(
+        PoolPaymentEvent.payRequested(
+          PoolPaymentRequest(
+            poolId: widget.poolId,
+            amount: details.amountPerSlot,
+          ),
+        ),
+      );
+    } else {
+      context.pop(true);
+    }
+  }
+
+  Future<void> _onPaymentStatusChanged(
+    BuildContext context,
+    PoolPaymentState state,
+  ) async {
+    switch (state.status) {
+      case PoolPaymentRequestStatus.success:
+        // Set exactly while status is success, and cleared only below.
+        final payment = state.payment!;
+        context.read<PoolPaymentBloc>().add(
+          const PoolPaymentEvent.stateCleared(),
+        );
+        await PaymentCheckoutRoute(
+          poolId: widget.poolId,
+          checkoutUrl: payment.checkoutUrl,
+          redirectUrl: 'https://www.avenyhq.com',//payment.redirectUrl,
+        ).push<bool>(context);
+        // Whatever checkout popped with, the user joined — back to details,
+        // which refetches on the `true` result and reflects any payment.
+        if (context.mounted) context.pop(true);
+      case PoolPaymentRequestStatus.failure:
+        // Don't strand the user on the join form: re-joining would be
+        // rejected server-side. Back on details the CTA reads "Continue to
+        // payment", which is the natural retry path. The snackbar outlives
+        // the pop because the ScaffoldMessenger is app-rooted.
+        AppSnackBar.showError(
+          context,
+          state.error ?? 'Could not start this payment',
+        );
+        context.read<PoolPaymentBloc>().add(
+          const PoolPaymentEvent.stateCleared(),
+        );
+        context.pop(true);
+      case PoolPaymentRequestStatus.initial:
+      case PoolPaymentRequestStatus.loading:
+        break;
+    }
   }
 
   @override
@@ -125,6 +178,7 @@ class _JoinPoolPageState extends State<JoinPoolPage> {
               getIt<PoolDetailsBloc>()
                 ..add(PoolDetailsEvent.fetchRequested(widget.poolId)),
         ),
+        BlocProvider(create: (_) => getIt<PoolPaymentBloc>()),
       ],
       // The form bloc owns the inputs and the feature bloc owns the network
       // call, so the page bridges them both ways: whenever bank/account
@@ -177,6 +231,11 @@ class _JoinPoolPageState extends State<JoinPoolPage> {
                   break;
               }
             },
+          ),
+          BlocListener<PoolPaymentBloc, PoolPaymentState>(
+            listenWhen: (previous, current) =>
+                previous.status != current.status,
+            listener: _onPaymentStatusChanged,
           ),
         ],
         child: AppScaffold(
@@ -334,14 +393,21 @@ class _JoinPoolButton extends StatelessWidget {
         return BlocSelector<JoinPoolBloc, JoinPoolState, bool>(
           selector: (state) =>
               state.joinStatus == JoinPoolRequestStatus.loading,
-          builder: (context, isSubmitting) => Padding(
-            padding: const EdgeInsets.only(top: AppSpacing.s32),
-            child: AppButton(
-              label: 'Join pool',
-              loading: isSubmitting,
-              onPressed: onPressed,
-            ),
-          ),
+          builder: (context, isSubmitting) =>
+              // Payment initiation also spins the button: it fills the gap
+              // between the review sheet closing and checkout pushing.
+              BlocSelector<PoolPaymentBloc, PoolPaymentState, bool>(
+                selector: (state) =>
+                    state.status == PoolPaymentRequestStatus.loading,
+                builder: (context, isStartingPayment) => Padding(
+                  padding: const EdgeInsets.only(top: AppSpacing.s32),
+                  child: AppButton(
+                    label: 'Join pool',
+                    loading: isSubmitting || isStartingPayment,
+                    onPressed: onPressed,
+                  ),
+                ),
+              ),
         );
       },
     );

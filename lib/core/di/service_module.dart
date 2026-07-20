@@ -7,6 +7,7 @@ import '../../features/home/data/datasources/create_pool_data_source.dart';
 import '../../features/home/data/datasources/pools_data_source.dart';
 import '../../features/pools/data/datasources/join_pool_data_source.dart';
 import '../../features/pools/data/datasources/pool_details_data_source.dart';
+import '../../features/pools/data/datasources/pool_payment_data_source.dart';
 import '../config/app_config.dart';
 import '../config/env/env.dart';
 
@@ -40,4 +41,8 @@ abstract class ServiceModule {
   @lazySingleton
   JoinPoolDataSource joinPoolDataSource(@Named('appDio') Dio dio) =>
       JoinPoolDataSource(dio);
+
+  @lazySingleton
+  PoolPaymentDataSource poolPaymentDataSource(@Named('appDio') Dio dio) =>
+      PoolPaymentDataSource(dio);
 }

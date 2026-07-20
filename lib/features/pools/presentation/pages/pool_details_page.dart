@@ -7,7 +7,9 @@ import 'package:co_buy/core/di/injection.dart';
 import 'package:co_buy/core/navigation/routes.dart';
 import 'package:co_buy/features/auth/presentation/blocs/auth_bloc/auth_bloc.dart';
 import 'package:co_buy/features/pools/domain/entities/pool_details.dart';
+import 'package:co_buy/features/pools/domain/entities/pool_payment.dart';
 import 'package:co_buy/features/pools/presentation/blocs/pool_details_bloc/pool_details_bloc.dart';
+import 'package:co_buy/features/pools/presentation/blocs/pool_payment_bloc/pool_payment_bloc.dart';
 import 'package:co_buy/features/pools/presentation/widgets/pool_destination_card.dart';
 import 'package:co_buy/features/pools/presentation/widgets/pool_member_tile.dart';
 import 'package:co_buy/features/pools/presentation/widgets/pool_raised_card.dart';
@@ -22,49 +24,96 @@ class PoolDetailsPage extends StatelessWidget {
 
   final String poolId;
 
+  /// Success hands the checkout URLs to the webview; whatever result that
+  /// pops with, the details refetch — the payment may have settled
+  /// server-side even if the user backed out, and a refetch self-corrects.
+  Future<void> _onPaymentStatusChanged(
+    BuildContext context,
+    PoolPaymentState state,
+  ) async {
+    switch (state.status) {
+      case PoolPaymentRequestStatus.success:
+        // Set exactly while status is success, and cleared only below.
+        final payment = state.payment!;
+        context.read<PoolPaymentBloc>().add(
+          const PoolPaymentEvent.stateCleared(),
+        );
+        await PaymentCheckoutRoute(
+          poolId: poolId,
+          checkoutUrl: payment.checkoutUrl,
+          redirectUrl: 'https://www.avenyhq.com',//payment.redirectUrl,
+        ).push<bool>(context);
+        if (context.mounted) {
+          context.read<PoolDetailsBloc>().add(
+            PoolDetailsEvent.fetchRequested(poolId),
+          );
+        }
+      case PoolPaymentRequestStatus.failure:
+        AppSnackBar.showError(
+          context,
+          state.error ?? 'Could not start this payment',
+        );
+        context.read<PoolPaymentBloc>().add(
+          const PoolPaymentEvent.stateCleared(),
+        );
+      case PoolPaymentRequestStatus.initial:
+      case PoolPaymentRequestStatus.loading:
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) =>
-          getIt<PoolDetailsBloc>()
-            ..add(PoolDetailsEvent.fetchRequested(poolId)),
-      child: AppScaffold(
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const SizedBox(height: AppSpacing.s16),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: AppSpacing.screenH),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: AppBackButton(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (_) =>
+              getIt<PoolDetailsBloc>()
+                ..add(PoolDetailsEvent.fetchRequested(poolId)),
+        ),
+        BlocProvider(create: (_) => getIt<PoolPaymentBloc>()),
+      ],
+      child: BlocListener<PoolPaymentBloc, PoolPaymentState>(
+        listenWhen: (previous, current) => previous.status != current.status,
+        listener: _onPaymentStatusChanged,
+        child: AppScaffold(
+          body: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const SizedBox(height: AppSpacing.s16),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: AppSpacing.screenH),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: AppBackButton(),
+                ),
               ),
-            ),
-            Expanded(
-              child: BlocBuilder<PoolDetailsBloc, PoolDetailsState>(
-                builder: (context, state) {
-                  final details = state.details;
-                  return switch (state.detailsStatus) {
-                    PoolDetailsRequestStatus.initial ||
-                    PoolDetailsRequestStatus.loading => const Center(
-                      child: CircularProgressIndicator(
-                        color: AppPalette.primaryBase,
+              Expanded(
+                child: BlocBuilder<PoolDetailsBloc, PoolDetailsState>(
+                  builder: (context, state) {
+                    final details = state.details;
+                    return switch (state.detailsStatus) {
+                      PoolDetailsRequestStatus.initial ||
+                      PoolDetailsRequestStatus.loading => const Center(
+                        child: CircularProgressIndicator(
+                          color: AppPalette.primaryBase,
+                        ),
                       ),
-                    ),
-                    PoolDetailsRequestStatus.failure => _DetailsError(
-                      message: state.detailsError ?? 'Something went wrong.',
-                      poolId: poolId,
-                    ),
-                    PoolDetailsRequestStatus.success => _DetailsContent(
-                      details: details!,
-                      state: state,
-                      poolId: poolId,
-                    ),
-                  };
-                },
+                      PoolDetailsRequestStatus.failure => _DetailsError(
+                        message: state.detailsError ?? 'Something went wrong.',
+                        poolId: poolId,
+                      ),
+                      PoolDetailsRequestStatus.success => _DetailsContent(
+                        details: details!,
+                        state: state,
+                        poolId: poolId,
+                      ),
+                    };
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -124,29 +173,38 @@ class _DetailsContent extends StatelessWidget {
                 AppSpacing.screenH,
                 AppSpacing.s16,
               ),
-              child: AppButton(
-                label: hasUnpaidSlot ? 'Continue to payment' : 'Join pool',
-                size: AppButtonSize.large,
-                onPressed: hasUnpaidSlot
-                    // TODO(join-pool): start the payment flow once its
-                    // endpoint exists.
-                    ? () => AppSnackBar.showSuccess(
-                        context,
-                        'Payment is coming soon.',
-                      )
-                    : () async {
-                        // The join page pops with `true` after a successful
-                        // join — refetch so the raised amount, slots, and
-                        // members reflect the new membership.
-                        final joined = await JoinPoolRoute(
-                          poolId: poolId,
-                        ).push<bool>(context);
-                        if (joined == true && context.mounted) {
-                          context.read<PoolDetailsBloc>().add(
-                            PoolDetailsEvent.fetchRequested(poolId),
-                          );
-                        }
-                      },
+              child: BlocSelector<PoolPaymentBloc, PoolPaymentState, bool>(
+                selector: (payment) =>
+                    payment.status == PoolPaymentRequestStatus.loading,
+                builder: (context, isStartingPayment) => AppButton(
+                  label: hasUnpaidSlot ? 'Continue to payment' : 'Join pool',
+                  size: AppButtonSize.large,
+                  loading: isStartingPayment,
+                  onPressed: hasUnpaidSlot
+                      // The page's payment listener takes it from here:
+                      // checkout webview on success, snackbar on failure.
+                      ? () => context.read<PoolPaymentBloc>().add(
+                          PoolPaymentEvent.payRequested(
+                            PoolPaymentRequest(
+                              poolId: poolId,
+                              amount: details.amountPerSlot,
+                            ),
+                          ),
+                        )
+                      : () async {
+                          // The join page pops with `true` after a successful
+                          // join — refetch so the raised amount, slots, and
+                          // members reflect the new membership.
+                          final joined = await JoinPoolRoute(
+                            poolId: poolId,
+                          ).push<bool>(context);
+                          if (joined == true && context.mounted) {
+                            context.read<PoolDetailsBloc>().add(
+                              PoolDetailsEvent.fetchRequested(poolId),
+                            );
+                          }
+                        },
+                ),
               ),
             );
           },

@@ -43,23 +43,29 @@ class AuthInterceptor extends QueuedInterceptorsWrapper {
     final alreadyRetried = err.requestOptions.extra['retried'] == true;
     if (!isAuthError || alreadyRetried) return handler.next(err);
 
+    final bool refreshed;
     try {
-      final refreshed = await _runRefreshOnce();
-      if (!refreshed) {
-        await _tokenStorage.clear();
-        return handler.next(err);
-      }
-      final token = await _tokenStorage.readAccessToken();
-      final opts = err.requestOptions
-        ..extra['retried'] = true
-        ..headers['Authorization'] = 'Bearer $token';
-      final response = await _refreshDio.fetch(opts);
-      return handler.resolve(response);
+      refreshed = await _runRefreshOnce();
     } catch (_) {
+      // Refresh call itself failed (network error, server error, etc.).
       // Clearing tokens signals upstream (e.g. an auth listener) to force logout.
       await _tokenStorage.clear();
       return handler.next(err);
     }
+
+    if (!refreshed) {
+      await _tokenStorage.clear();
+      return handler.next(err);
+    }
+
+    final token = await _tokenStorage.readAccessToken();
+    if (token == null) return handler.next(err);
+
+    final opts = err.requestOptions
+      ..extra['retried'] = true
+      ..headers['Authorization'] = 'Bearer $token';
+    final response = await _refreshDio.fetch(opts);
+    return handler.resolve(response);
   }
 
   /// Single-flight refresh: concurrent callers await the same [Completer].

@@ -11,16 +11,17 @@ import 'package:flutter/material.dart';
 /// before the payment step.
 ///
 /// Purely presentational: it renders the fetched [PoolDetails] and a
-/// [JoinPoolFormState] snapshot and reports the choice — "Continue to
-/// payment" pops the sheet then calls [onContinue]; the close button just
-/// pops back to the form. Show it with [JoinPoolReviewSheet.show].
+/// [JoinPoolFormState] snapshot and reports the choice as the sheet's
+/// result — `true` for "Continue to payment", null when dismissed — so the
+/// caller decides what happens next after the sheet is gone (a callback
+/// fired mid-dismissal couldn't sequence navigation safely). Show it with
+/// [JoinPoolReviewSheet.show].
 class JoinPoolReviewSheet extends StatelessWidget {
   const JoinPoolReviewSheet({
     super.key,
     required this.details,
     required this.leaderName,
     required this.formState,
-    required this.onContinue,
   });
 
   final PoolDetails details;
@@ -30,16 +31,14 @@ class JoinPoolReviewSheet extends StatelessWidget {
   final String? leaderName;
 
   final JoinPoolFormState formState;
-  final VoidCallback onContinue;
 
-  static Future<void> show(
+  static Future<bool?> show(
     BuildContext context, {
     required PoolDetails details,
     required String? leaderName,
     required JoinPoolFormState formState,
-    required VoidCallback onContinue,
   }) {
-    return showModalBottomSheet<void>(
+    return showModalBottomSheet<bool>(
       context: context,
       isScrollControlled: true,
       // The sheet paints its own themed surface; a transparent modal keeps
@@ -49,7 +48,6 @@ class JoinPoolReviewSheet extends StatelessWidget {
         details: details,
         leaderName: leaderName,
         formState: formState,
-        onContinue: onContinue,
       ),
     );
   }
@@ -142,10 +140,7 @@ class JoinPoolReviewSheet extends StatelessWidget {
               const SizedBox(height: AppSpacing.s24),
               AppButton(
                 label: 'Continue to payment',
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  onContinue();
-                },
+                onPressed: () => Navigator.of(context).pop(true),
               ),
             ],
           ),
