@@ -14,6 +14,11 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
+    // AGP 8.x disables the resValues feature by default; the dev/prod flavors
+    // define app_name via resValue, so it must be explicitly enabled.
+    buildFeatures {
+        resValues = true
+    }
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId = "com.example.co_buy"
