@@ -22,10 +22,7 @@ part 'create_pool_bloc.freezed.dart';
 /// (e.g. in tests) — in the running app it lives for the app's lifetime.
 FutureOr<void> disposeCreatePoolBloc(CreatePoolBloc bloc) => bloc.close();
 
-/// Feature bloc for the create-pool flow. Registered app-wide (not
-/// page-scoped) so the fetched bank and category lists — static reference
-/// data — are cached for the app's lifetime: reopening create-pool reuses
-/// them instead of refetching.
+/// App-wide singleton — caches bank/category lists for the app's lifetime.
 @LazySingleton(dispose: disposeCreatePoolBloc)
 class CreatePoolBloc extends Bloc<CreatePoolEvent, CreatePoolState> {
   CreatePoolBloc(
@@ -51,8 +48,7 @@ class CreatePoolBloc extends Bloc<CreatePoolEvent, CreatePoolState> {
     CreatePoolBanksFetchRequested event,
     Emitter<CreatePoolState> emit,
   ) async {
-    // Cache hit: the list is already in memory, don't touch the network.
-    // A failure is deliberately not cached so re-dispatching retries.
+    // Cache hit — failures are not cached so re-dispatch retries.
     if (state.banksStatus == CreatePoolRequestStatus.success) return;
 
     emit(
@@ -84,8 +80,7 @@ class CreatePoolBloc extends Bloc<CreatePoolEvent, CreatePoolState> {
     CreatePoolCategoriesFetchRequested event,
     Emitter<CreatePoolState> emit,
   ) async {
-    // Cache hit: the list is already in memory, don't touch the network.
-    // A failure is deliberately not cached so re-dispatching retries.
+    // Cache hit — failures are not cached so re-dispatch retries.
     if (state.categoriesStatus == CreatePoolRequestStatus.success) return;
 
     emit(

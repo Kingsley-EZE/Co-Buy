@@ -25,9 +25,7 @@ part 'auth_bloc.freezed.dart';
 /// (e.g. in tests) — in the running app it lives for the app's lifetime.
 FutureOr<void> disposeAuthBloc(AuthBloc bloc) => bloc.close();
 
-/// App-wide singleton: auth transitions matter beyond the auth pages
-/// (session expiry, logout, router redirects), so one instance is provided
-/// at the root of the widget tree rather than per page.
+/// App-wide singleton for session, logout, and router redirects.
 @LazySingleton(dispose: disposeAuthBloc)
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc(
@@ -149,9 +147,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     );
   }
 
-  /// Clears the session and returns the state machine to [AuthInitial], so a
-  /// stale [AuthSuccess] can't linger on this app-lifetime singleton after
-  /// the user signs out.
+  /// Resets to [AuthInitial] so stale [AuthSuccess] can't linger after sign-out.
   Future<void> _onLogoutRequested(
     AuthLogoutRequested event,
     Emitter<AuthState> emit,

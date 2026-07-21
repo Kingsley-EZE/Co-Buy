@@ -3,13 +3,9 @@ import 'package:co_buy/features/auth/domain/entities/user.dart';
 import 'package:co_buy/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
 
-/// Greeting header for the home tab: initials avatar, time-of-day greeting
-/// with the user's first name, and a notification bell.
 class HomeTopBar extends StatelessWidget {
   const HomeTopBar({super.key, this.user, required this.onNotificationTap});
 
-  /// Null while no session user is available (e.g. a deep link straight into
-  /// the dashboard); the bar then greets without a name.
   final User? user;
 
   final VoidCallback onNotificationTap;
@@ -50,8 +46,6 @@ class HomeTopBar extends StatelessWidget {
   }
 }
 
-/// Brand-tinted circle with the user's initials. The tints stay fixed across
-/// themes so the avatar reads as brand, not surface.
 class _InitialsAvatar extends StatelessWidget {
   const _InitialsAvatar({required this.user});
 

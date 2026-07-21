@@ -21,7 +21,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-/// Full-screen form to start a new pool.
 class CreatePoolPage extends StatefulWidget {
   const CreatePoolPage({super.key});
 
@@ -41,11 +40,9 @@ class _CreatePoolPageState extends State<CreatePoolPage> {
   void initState() {
     super.initState();
     final createPoolBloc = getIt<CreatePoolBloc>();
-    // No-ops when the singleton already holds the cached lists.
     createPoolBloc.add(const CreatePoolEvent.banksFetchRequested());
     createPoolBloc.add(const CreatePoolEvent.categoriesFetchRequested());
-    // The singleton outlives the page — drop a previous visit's resolution
-    // and submission outcome so a fresh, empty form starts clean.
+    // Singleton outlives the page — clear a previous visit's state.
     createPoolBloc.add(const CreatePoolEvent.accountLookupCleared());
     createPoolBloc.add(const CreatePoolEvent.submitStateCleared());
   }
@@ -61,8 +58,6 @@ class _CreatePoolPageState extends State<CreatePoolPage> {
     super.dispose();
   }
 
-  /// Date then time, combined into one deadline. The picked value renders in
-  /// the read-only field via the controller; the bloc keeps the [DateTime].
   Future<void> _pickDeadline(BuildContext context) async {
     final bloc = context.read<CreatePoolFormBloc>();
     final now = DateTime.now();
@@ -114,14 +109,9 @@ class _CreatePoolPageState extends State<CreatePoolPage> {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => getIt<CreatePoolFormBloc>()),
-        // `.value` because get_it owns the singleton's lifecycle.
         BlocProvider.value(value: getIt<CreatePoolBloc>()),
       ],
-      // The form bloc owns the inputs and the feature bloc owns the network
-      // call, so the page bridges them both ways: whenever bank/account
-      // number settle into a valid pair the enquiry fires (and a stale
-      // resolution is dropped when they stop being valid), and the enquiry
-      // result is mirrored back so `canSubmit` can require verification.
+      // Page bridges form bloc inputs ↔ feature bloc network/enquiry.
       child: MultiBlocListener(
         listeners: [
           BlocListener<CreatePoolFormBloc, CreatePoolFormState>(
@@ -403,9 +393,6 @@ class _CreatePoolPageState extends State<CreatePoolPage> {
   }
 }
 
-/// Feedback under the account number field for the bank name enquiry:
-/// nothing until a lookup runs, then progress, the resolved account name,
-/// or the failure message.
 class _AccountLookupStatusLine extends StatelessWidget {
   const _AccountLookupStatusLine();
 
@@ -450,9 +437,6 @@ class _AccountLookupStatusLine extends StatelessWidget {
   }
 }
 
-/// Read-only payout preview, shown only once the name enquiry has resolved
-/// the beneficiary: the target amount minus the [kPoolFeeRate] fee, with a
-/// note explaining the deduction.
 class _RecipientReceivesField extends StatelessWidget {
   const _RecipientReceivesField();
 

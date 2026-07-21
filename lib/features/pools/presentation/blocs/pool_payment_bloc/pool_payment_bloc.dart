@@ -12,9 +12,7 @@ part 'pool_payment_event.dart';
 part 'pool_payment_state.dart';
 part 'pool_payment_bloc.freezed.dart';
 
-/// Feature bloc for initiating a pool payment. Page-scoped (not a
-/// singleton): a payment attempt is per-visit state, and a stale checkout
-/// URL from an earlier visit must never leak into a new one.
+/// Page-scoped — stale checkout URLs must not leak across visits.
 @injectable
 class PoolPaymentBloc extends Bloc<PoolPaymentEvent, PoolPaymentState> {
   PoolPaymentBloc(this._payForPoolUseCase) : super(const PoolPaymentState()) {
@@ -30,8 +28,6 @@ class PoolPaymentBloc extends Bloc<PoolPaymentEvent, PoolPaymentState> {
     PoolPaymentPayRequested event,
     Emitter<PoolPaymentState> emit,
   ) async {
-    // Each call creates a new transaction server-side — ignore re-taps while
-    // one is already in flight.
     if (state.status == PoolPaymentRequestStatus.loading) return;
 
     emit(
@@ -56,9 +52,7 @@ class PoolPaymentBloc extends Bloc<PoolPaymentEvent, PoolPaymentState> {
           status: PoolPaymentRequestStatus.success,
           payment: payment,
         ));
-        // Subscribe for the server-side confirmation so the checkout page can
-        // be dismissed even if the gateway redirect never fires (e.g. the user
-        // closes the webview before the redirect completes).
+        // Socket confirmation dismisses checkout if the gateway redirect never fires.
         _socketSub?.cancel();
         _socketSub = SocketService.instance
             .on<Map<String, dynamic>>(SocketEvents.paymentSuccess)
@@ -83,8 +77,6 @@ class PoolPaymentBloc extends Bloc<PoolPaymentEvent, PoolPaymentState> {
   ) {
     if (state == const PoolPaymentState()) return;
 
-    // Back to initial so a second attempt produces a fresh initial→loading→
-    // success transition for listeners keyed on status changes.
     emit(const PoolPaymentState());
   }
 

@@ -57,12 +57,8 @@ class PoolTransactionDto {
   final String paymentReference;
   final String? monnifyTransactionReference;
   final double amountExpected;
-
-  /// Null while the payment is still pending.
   final double? amountPaid;
   final String state;
-
-  /// Null until the payment settles.
   final String? paidAt;
   final String createdAt;
   final String updatedAt;

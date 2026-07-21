@@ -7,8 +7,7 @@ sealed class JoinPoolFormEvent with _$JoinPoolFormEvent {
   const factory JoinPoolFormEvent.accountNumberChanged(String accountNumber) =
       JoinPoolAccountNumberChanged;
 
-  /// The bank name enquiry produced [account] (or was cleared when null),
-  /// mirrored in from [JoinPoolBloc] by the page.
+  /// Mirrored from [JoinPoolBloc] by the page.
   const factory JoinPoolFormEvent.accountLookupResultChanged(
     BankAccount? account,
   ) = JoinPoolAccountLookupResultChanged;

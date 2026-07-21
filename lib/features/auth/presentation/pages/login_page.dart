@@ -43,8 +43,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    // AuthBloc is provided app-wide (see MyApp); only the page-scoped form
-    // bloc is created here.
+    // Page-scoped form bloc; AuthBloc is app-wide.
     return BlocProvider(
       create: (_) => getIt<LoginFormBloc>(),
       child: AppScaffold(
@@ -217,8 +216,6 @@ class _CheckBox extends StatelessWidget {
   }
 }
 
-/// Underlined brand-coloured inline link ("Forgot Password?",
-/// "Create Account"). Links stay `primary.base` in both modes.
 class _LinkText extends StatelessWidget {
   const _LinkText(this.label, {required this.onTap});
 

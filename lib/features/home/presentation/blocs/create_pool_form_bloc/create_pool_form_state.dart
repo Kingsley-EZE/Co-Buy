@@ -1,6 +1,5 @@
 part of 'create_pool_form_bloc.dart';
 
-/// Maximum length of the optional pool description.
 const int kPoolDescriptionMaxLength = 200;
 
 /// Fee taken off the target amount before the beneficiary payout.
@@ -14,24 +13,17 @@ abstract class CreatePoolFormState with _$CreatePoolFormState {
     @Default('') String title,
     @Default('') String description,
 
-    /// The whole entity (not just a display name) so the category id is on
-    /// hand for submission.
     PoolCategory? category,
 
-    /// Whether every member contributes the same amount. Defaults to `true`
-    /// (equal slots) — the form no longer exposes a control to change it.
     @Default(true) bool evenContribution,
     @Default('') String targetAmount,
     @Default('') String slots,
     DateTime? deadline,
 
-    /// The whole entity (not just a display name) so the bank code is on hand
-    /// for the account name enquiry and submission.
     Bank? bank,
     @Default('') String accountNumber,
 
-    /// The account the bank name enquiry resolved, mirrored in from
-    /// [CreatePoolBloc] by the page so [canSubmit] can require verification.
+    /// Mirrored from [CreatePoolBloc] by the page for [canSubmit].
     BankAccount? resolvedAccount,
   }) = _CreatePoolFormState;
 
@@ -50,29 +42,21 @@ abstract class CreatePoolFormState with _$CreatePoolFormState {
 
   String? get accountNumberError => AppValidators.accountNumber(accountNumber);
 
-  /// Both enquiry inputs are ready: a bank is chosen and the account number
-  /// is a valid 10-digit value. The page listens for this to fire the lookup.
   bool get canLookupAccount => bank != null && accountNumberError == null;
 
-  /// What the beneficiary is actually paid: the target amount minus
-  /// [kPoolFeeRate]. Null until a valid target amount is entered.
   double? get recipientReceivesAmount {
     final double? amount = double.tryParse(targetAmount);
     if (amount == null || amount <= 0) return null;
     return amount * (1 - kPoolFeeRate);
   }
 
-  /// The [kPoolFeeRate] cut of the target amount. Null until a valid target
-  /// amount is entered.
   double? get platformFeeAmount {
     final double? amount = double.tryParse(targetAmount);
     if (amount == null || amount <= 0) return null;
     return amount * kPoolFeeRate;
   }
 
-  /// The enquiry result applies to what's currently typed — guards the gap
-  /// where inputs changed but the cleared/re-resolved result hasn't
-  /// round-tripped through [CreatePoolBloc] yet.
+  /// Guards the gap before a cleared/re-resolved enquiry round-trips.
   bool get accountVerified =>
       resolvedAccount != null &&
       resolvedAccount!.accountNumber == accountNumber &&
@@ -88,8 +72,7 @@ abstract class CreatePoolFormState with _$CreatePoolFormState {
       accountNumberError == null &&
       accountVerified;
 
-  /// The submission payload derived from the current inputs. Only call once
-  /// [canSubmit] is true — the non-null assertions rely on it.
+  /// Only call once [canSubmit] is true — non-null assertions rely on it.
   CreatePoolRequest toCreatePoolRequest() {
     final double amount = double.parse(targetAmount);
     final int members = int.parse(slots);
@@ -102,12 +85,9 @@ abstract class CreatePoolFormState with _$CreatePoolFormState {
       targetAmount: amount,
       maxMembers: members,
       splitEven: splitEven,
-      // The form only collects per-member shares for an even split; uneven
-      // pools let each member pick their own amount, so no share is sent.
+      // Uneven pools: memberShareAmount 0 — amount chosen at payment.
       memberShareAmount: splitEven ? amount / members : 0,
       beneficiaryAccountNumber: accountNumber,
-      // canSubmit implies accountVerified, so the resolved account is the
-      // enquiry result for exactly this account number and bank.
       beneficiaryAccountName: resolvedAccount!.accountName,
       beneficiaryBankName: bank!.name,
       beneficiaryBankCode: bank!.code,

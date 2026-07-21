@@ -2,9 +2,6 @@ import 'package:co_buy/core/design_system/design_system.dart';
 import 'package:co_buy/features/home/presentation/blocs/pools_bloc/pools_bloc.dart';
 import 'package:flutter/material.dart';
 
-/// Horizontally scrolling pill row for picking a [PoolFilter]. Scrolls
-/// edge-to-edge; the screen gutter is applied as scroll padding so chips
-/// glide past the screen edge like in the design.
 class PoolFilterChips extends StatelessWidget {
   const PoolFilterChips({
     super.key,

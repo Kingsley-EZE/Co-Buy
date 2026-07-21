@@ -4,7 +4,6 @@ import 'package:equatable/equatable.dart';
 /// degrade to [pending] so a new state never shows as paid.
 enum PoolTransactionState { paid, pending }
 
-/// One payment attempt on a pool's transaction history.
 class PoolTransaction extends Equatable {
   const PoolTransaction({
     required this.id,
@@ -25,12 +24,8 @@ class PoolTransaction extends Equatable {
   final String membershipId;
   final String paymentReference;
   final double amountExpected;
-
-  /// Null while the payment is still pending.
   final double? amountPaid;
   final PoolTransactionState state;
-
-  /// Null until the payment settles.
   final DateTime? paidAt;
   final DateTime createdAt;
   final String memberName;
@@ -38,8 +33,6 @@ class PoolTransaction extends Equatable {
 
   bool get isPaid => state == PoolTransactionState.paid;
 
-  /// Amount to show in the list: settled amount when paid, otherwise the
-  /// expected slot amount.
   double get displayAmount => amountPaid ?? amountExpected;
 
   String get initials {

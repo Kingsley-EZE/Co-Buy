@@ -20,11 +20,7 @@ part 'join_pool_bloc.freezed.dart';
 /// (e.g. in tests) — in the running app it lives for the app's lifetime.
 FutureOr<void> disposeJoinPoolBloc(JoinPoolBloc bloc) => bloc.close();
 
-/// Feature bloc for the join-pool flow. Registered app-wide (not
-/// page-scoped) so the fetched bank list — static reference data — is
-/// cached for the app's lifetime: reopening join-pool reuses it instead of
-/// refetching. It reuses the home feature's bank/name-enquiry use cases —
-/// the endpoints are the same ones the create-pool flow integrates.
+/// App-wide singleton — caches the bank list for the app's lifetime.
 @LazySingleton(dispose: disposeJoinPoolBloc)
 class JoinPoolBloc extends Bloc<JoinPoolEvent, JoinPoolState> {
   JoinPoolBloc(
@@ -47,8 +43,7 @@ class JoinPoolBloc extends Bloc<JoinPoolEvent, JoinPoolState> {
     JoinPoolBanksFetchRequested event,
     Emitter<JoinPoolState> emit,
   ) async {
-    // Cache hit: the list is already in memory, don't touch the network.
-    // A failure is deliberately not cached so re-dispatching retries.
+    // Cache hit — failures are not cached so re-dispatch retries.
     if (state.banksStatus == JoinPoolRequestStatus.success) return;
 
     emit(

@@ -9,9 +9,7 @@ part 'join_pool_form_event.dart';
 part 'join_pool_form_state.dart';
 part 'join_pool_form_bloc.freezed.dart';
 
-/// Owns the join-pool form's field values and validity so the page is a
-/// pure renderer. The network calls (bank list, name enquiry, joining) live
-/// with [JoinPoolBloc].
+/// Form fields and validity only; network calls with [JoinPoolBloc].
 @injectable
 class JoinPoolFormBloc extends Bloc<JoinPoolFormEvent, JoinPoolFormState> {
   JoinPoolFormBloc() : super(const JoinPoolFormState()) {

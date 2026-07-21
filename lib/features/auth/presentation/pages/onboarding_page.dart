@@ -110,8 +110,6 @@ class _OnboardingPageState extends State<OnboardingPage> {
   }
 }
 
-/// Segmented progress bar: completed and current steps are filled with the
-/// brand colour, upcoming steps stay neutral.
 class _StepIndicator extends StatelessWidget {
   const _StepIndicator({required this.currentIndex});
 

@@ -15,8 +15,7 @@ part 'pool_details_event.dart';
 part 'pool_details_state.dart';
 part 'pool_details_bloc.freezed.dart';
 
-/// Feature bloc for the pool details screen. Page-scoped: details are live
-/// data for one pool, so every visit fetches fresh.
+/// Page-scoped — fresh fetch per visit.
 @injectable
 class PoolDetailsBloc extends Bloc<PoolDetailsEvent, PoolDetailsState> {
   PoolDetailsBloc(this._getPoolDetailsUseCase, this._getPoolMembersUseCase)
@@ -44,8 +43,6 @@ class PoolDetailsBloc extends Bloc<PoolDetailsEvent, PoolDetailsState> {
       ),
     );
 
-    // The two endpoints are independent — fetch them concurrently so the
-    // screen isn't gated on sequential round trips.
     final (detailsResult, membersResult) = await (
       _getPoolDetailsUseCase(event.poolId),
       _getPoolMembersUseCase(event.poolId),

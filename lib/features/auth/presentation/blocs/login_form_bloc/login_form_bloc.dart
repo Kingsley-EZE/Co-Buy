@@ -7,9 +7,7 @@ part 'login_form_event.dart';
 part 'login_form_state.dart';
 part 'login_form_bloc.freezed.dart';
 
-/// Owns the login form's field values, validity and options so the page is a
-/// pure renderer. Submission itself stays with `AuthBloc`, which serves every
-/// auth flow — this bloc is only the form.
+/// Form fields and validity only; submission stays with [AuthBloc].
 @injectable
 class LoginFormBloc extends Bloc<LoginFormEvent, LoginFormState> {
   LoginFormBloc() : super(const LoginFormState()) {

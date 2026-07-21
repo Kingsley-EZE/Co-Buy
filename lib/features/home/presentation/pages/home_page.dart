@@ -10,8 +10,6 @@ import 'package:co_buy/features/home/presentation/widgets/home_top_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-/// Home tab: greeting header plus the pool feed (banner, status filters and
-/// the pool list, with its empty/error states).
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
