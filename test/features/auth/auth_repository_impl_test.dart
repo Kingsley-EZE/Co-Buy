@@ -114,6 +114,56 @@ void main() {
     },
   );
 
+  test('login returns the unverified user without persisting tokens or opening '
+      'the socket', () async {
+    const unverifiedResponse = LoginResponseDto(
+      success: true,
+      data: LoginDataDto(
+        user: UserDto(
+          id: 'u1',
+          firstName: 'Kingsley',
+          lastName: 'Eze',
+          email: 'kingsley@example.com',
+          name: 'Kingsley Eze',
+          isVerified: false,
+          role: 'User',
+        ),
+        accessToken: 'a1',
+        refreshToken: 'r1',
+      ),
+      message: 'Login successful',
+    );
+    when(
+      () => remote.loginUser(body: any(named: 'body')),
+    ).thenAnswer((_) async => unverifiedResponse);
+
+    final result = await repo.login(request);
+
+    result.fold(
+      (f) => fail('expected Right, got $f'),
+      (u) => expect(u.isVerified, false),
+    );
+    // No session until the OTP is confirmed and the caller logs in again.
+    verifyNever(
+      () => tokenStorage.saveTokens(
+        access: any(named: 'access'),
+        refresh: any(named: 'refresh'),
+      ),
+    );
+    verifyNever(() => socketService.connect(any()));
+  });
+
+  test('triggerOtp posts the email and reports success', () async {
+    when(
+      () => remote.triggerOtp(email: any(named: 'email')),
+    ).thenAnswer((_) async {});
+
+    final result = await repo.triggerOtp('kingsley@example.com');
+
+    expect(result.isRight(), true);
+    verify(() => remote.triggerOtp(email: 'kingsley@example.com')).called(1);
+  });
+
   test('logout clears stored tokens', () async {
     when(() => tokenStorage.clear()).thenAnswer((_) async {});
 

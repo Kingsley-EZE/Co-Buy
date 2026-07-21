@@ -40,6 +40,7 @@ import '../../features/auth/domain/usecases/resend_otp_usecase.dart' as _i613;
 import '../../features/auth/domain/usecases/reset_password_usecase.dart'
     as _i474;
 import '../../features/auth/domain/usecases/signup_usecase.dart' as _i57;
+import '../../features/auth/domain/usecases/trigger_otp_usecase.dart' as _i1064;
 import '../../features/auth/domain/usecases/verify_email_usecase.dart' as _i30;
 import '../../features/auth/presentation/blocs/auth_bloc/auth_bloc.dart'
     as _i661;
@@ -262,6 +263,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i57.SignupUseCase>(
       () => _i57.SignupUseCase(gh<_i787.AuthRepository>()),
     );
+    gh.factory<_i1064.TriggerOtpUseCase>(
+      () => _i1064.TriggerOtpUseCase(gh<_i787.AuthRepository>()),
+    );
     gh.factory<_i30.VerifyEmailUseCase>(
       () => _i30.VerifyEmailUseCase(gh<_i787.AuthRepository>()),
     );
@@ -292,6 +296,7 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i57.SignupUseCase>(),
         gh<_i30.VerifyEmailUseCase>(),
         gh<_i613.ResendOtpUseCase>(),
+        gh<_i1064.TriggerOtpUseCase>(),
         gh<_i560.ForgotPasswordUseCase>(),
         gh<_i474.ResetPasswordUseCase>(),
         gh<_i48.LogoutUseCase>(),

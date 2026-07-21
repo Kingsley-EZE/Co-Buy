@@ -11,6 +11,7 @@ import 'package:co_buy/features/auth/domain/usecases/logout_usecase.dart';
 import 'package:co_buy/features/auth/domain/usecases/resend_otp_usecase.dart';
 import 'package:co_buy/features/auth/domain/usecases/reset_password_usecase.dart';
 import 'package:co_buy/features/auth/domain/usecases/signup_usecase.dart';
+import 'package:co_buy/features/auth/domain/usecases/trigger_otp_usecase.dart';
 import 'package:co_buy/features/auth/domain/usecases/verify_email_usecase.dart';
 import 'package:co_buy/features/auth/presentation/blocs/auth_bloc/auth_bloc.dart';
 import 'package:co_buy/features/auth/presentation/blocs/login_form_bloc/login_form_bloc.dart';
@@ -26,6 +27,8 @@ class _MockSignupUseCase extends Mock implements SignupUseCase {}
 class _MockVerifyEmailUseCase extends Mock implements VerifyEmailUseCase {}
 
 class _MockResendOtpUseCase extends Mock implements ResendOtpUseCase {}
+
+class _MockTriggerOtpUseCase extends Mock implements TriggerOtpUseCase {}
 
 class _MockForgotPasswordUseCase extends Mock
     implements ForgotPasswordUseCase {}
@@ -46,6 +49,7 @@ void main() {
         _MockSignupUseCase(),
         _MockVerifyEmailUseCase(),
         _MockResendOtpUseCase(),
+        _MockTriggerOtpUseCase(),
         _MockForgotPasswordUseCase(),
         _MockResetPasswordUseCase(),
         _MockLogoutUseCase(),

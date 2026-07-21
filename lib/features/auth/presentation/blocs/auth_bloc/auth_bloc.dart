@@ -13,6 +13,7 @@ import 'package:co_buy/features/auth/domain/usecases/logout_usecase.dart';
 import 'package:co_buy/features/auth/domain/usecases/resend_otp_usecase.dart';
 import 'package:co_buy/features/auth/domain/usecases/reset_password_usecase.dart';
 import 'package:co_buy/features/auth/domain/usecases/signup_usecase.dart';
+import 'package:co_buy/features/auth/domain/usecases/trigger_otp_usecase.dart';
 import 'package:co_buy/features/auth/domain/usecases/verify_email_usecase.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -34,6 +35,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     this._signupUseCase,
     this._verifyEmailUseCase,
     this._resendOtpUseCase,
+    this._triggerOtpUseCase,
     this._forgotPasswordUseCase,
     this._resetPasswordUseCase,
     this._logoutUseCase,
@@ -51,6 +53,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final SignupUseCase _signupUseCase;
   final VerifyEmailUseCase _verifyEmailUseCase;
   final ResendOtpUseCase _resendOtpUseCase;
+  final TriggerOtpUseCase _triggerOtpUseCase;
   final ForgotPasswordUseCase _forgotPasswordUseCase;
   final ResetPasswordUseCase _resetPasswordUseCase;
   final LogoutUseCase _logoutUseCase;
@@ -65,16 +68,21 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       LoginRequest(email: event.email, password: event.password),
     );
 
-    /*
-    Anything that needs the current user can now pattern-match it from the app-wide bloc,
-     e.g. if (state case AuthAuthenticated(:final user)) Text('Welcome, ${user.firstName}').
-     When profile/home features start consuming it in earnest,
-    that's the cue for the session-holder step we discussed,
-    so the user survives transient bloc states like a failed forgot-password submission.
-    */
-    result.fold(
-      (failure) => emit(AuthState.failure(failure.message)),
-      (user) => emit(AuthState.authenticated(user)),
+    await result.fold(
+      (failure) async => emit(AuthState.failure(failure.message)),
+      (user) async {
+        if (user.isVerified) {
+          emit(AuthState.authenticated(user));
+          return;
+        }
+        // Unverified account: no session was started (see AuthRepository).
+        // Send a fresh OTP so the page can collect it and re-login after.
+        final otpResult = await _triggerOtpUseCase(event.email);
+        otpResult.fold(
+          (failure) => emit(AuthState.failure(failure.message)),
+          (_) => emit(AuthState.verificationRequired(event.email)),
+        );
+      },
     );
   }
 
