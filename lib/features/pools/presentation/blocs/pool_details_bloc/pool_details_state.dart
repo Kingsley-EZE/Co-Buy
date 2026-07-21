@@ -40,6 +40,15 @@ abstract class PoolDetailsState with _$PoolDetailsState {
     ].join(' – ');
   }
 
+  /// Whether [userId] already holds a slot in this pool (paid or unpaid).
+  /// False while members are still loading or without a session so member-
+  /// only UI never flashes on incomplete information.
+  bool isMember(String? userId) {
+    if (userId == null) return false;
+    if (membersStatus != PoolDetailsRequestStatus.success) return false;
+    return members.any((m) => m.userId == userId);
+  }
+
   /// Whether [userId] may join this pool: the pool must be OPEN and the
   /// user must either not hold a slot yet or hold one they haven't paid
   /// for. False while members are still loading (or without a session) so

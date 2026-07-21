@@ -7,10 +7,12 @@ import '../../../../core/error/failures.dart';
 import '../../../../core/error/result.dart';
 import '../../domain/entities/pool_details.dart';
 import '../../domain/entities/pool_member.dart';
+import '../../domain/entities/pool_transaction.dart';
 import '../../domain/repositories/pool_details_repository.dart';
 import '../datasources/pool_details_data_source.dart';
 import '../mappers/pool_details_mapper.dart';
 import '../mappers/pool_member_mapper.dart';
+import '../mappers/pool_transaction_mapper.dart';
 
 @LazySingleton(as: PoolDetailsRepository)
 class PoolDetailsRepositoryImpl implements PoolDetailsRepository {
@@ -35,6 +37,22 @@ class PoolDetailsRepositoryImpl implements PoolDetailsRepository {
     try {
       final dto = await _remote.getPoolMembers(poolId);
       return Right(dto.data.map((member) => member.toEntity()).toList());
+    } on DioException catch (e) {
+      return Left(mapDioException(e));
+    } catch (_) {
+      return const Left(UnknownFailure());
+    }
+  }
+
+  @override
+  FutureResult<List<PoolTransaction>> getPoolTransactions(
+    String poolId,
+  ) async {
+    try {
+      final dto = await _remote.getPoolTransactions(poolId);
+      return Right(
+        dto.data.transactions.map((tx) => tx.toEntity()).toList(),
+      );
     } on DioException catch (e) {
       return Left(mapDioException(e));
     } catch (_) {

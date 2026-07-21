@@ -87,6 +87,44 @@ void main() {
     });
   });
 
+  group('isMember', () {
+    PoolDetailsState loadedState({List<PoolMember> members = const []}) =>
+        PoolDetailsState(
+          detailsStatus: PoolDetailsRequestStatus.success,
+          details: makeDetails(),
+          membersStatus: PoolDetailsRequestStatus.success,
+          members: members,
+        );
+
+    test('is true for a user who holds a slot', () {
+      expect(loadedState(members: [makeMember(userId: 'u1')]).isMember('u1'), true);
+    });
+
+    test('is true even when the member has not paid', () {
+      final state = loadedState(
+        members: [makeMember(userId: 'u1', state: PoolMemberState.pending)],
+      );
+
+      expect(state.isMember('u1'), true);
+    });
+
+    test('is false for a signed-in non-member', () {
+      expect(loadedState(members: [makeMember(userId: 'u1')]).isMember('stranger'), false);
+    });
+
+    test('is false while members are still loading or without a session', () {
+      final loading = PoolDetailsState(
+        detailsStatus: PoolDetailsRequestStatus.success,
+        details: makeDetails(),
+        membersStatus: PoolDetailsRequestStatus.loading,
+        members: [makeMember(userId: 'u1')],
+      );
+
+      expect(loading.isMember('u1'), false);
+      expect(loadedState(members: [makeMember(userId: 'u1')]).isMember(null), false);
+    });
+  });
+
   group('canJoin', () {
     PoolDetailsState loadedState({
       PoolStatus status = PoolStatus.open,
