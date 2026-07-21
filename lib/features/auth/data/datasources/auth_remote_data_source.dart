@@ -23,6 +23,9 @@ abstract class AuthRemoteDataSource {
   @POST('/auth/verify-email')
   Future<void> verifyEmail({@Body() required VerifyEmailRequestDto body});
 
+  @POST('/auth/resend-otp')
+  Future<void> resendOtp({@Field('email') required String email});
+
   @POST('/auth/forgot-password')
   Future<void> forgotPassword({@Body() required ForgotPasswordRequestDto body});
 

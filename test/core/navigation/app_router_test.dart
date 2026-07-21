@@ -4,9 +4,15 @@ import 'package:co_buy/core/design_system/design_system.dart';
 import 'package:co_buy/core/di/injection.dart';
 import 'package:co_buy/core/error/not_found_screen.dart';
 import 'package:co_buy/core/navigation/routes.dart';
+import 'package:co_buy/core/usecase/usecase.dart';
+import 'package:co_buy/features/alerts/domain/entities/app_notification.dart';
+import 'package:co_buy/features/alerts/domain/usecases/get_notifications_usecase.dart';
+import 'package:co_buy/features/alerts/domain/usecases/mark_notification_read_usecase.dart';
+import 'package:co_buy/features/alerts/presentation/blocs/notifications_bloc/notifications_bloc.dart';
 import 'package:co_buy/features/auth/domain/usecases/forgot_password_usecase.dart';
 import 'package:co_buy/features/auth/domain/usecases/login_usecase.dart';
 import 'package:co_buy/features/auth/domain/usecases/logout_usecase.dart';
+import 'package:co_buy/features/auth/domain/usecases/resend_otp_usecase.dart';
 import 'package:co_buy/features/auth/domain/usecases/reset_password_usecase.dart';
 import 'package:co_buy/features/auth/domain/usecases/signup_usecase.dart';
 import 'package:co_buy/features/auth/domain/usecases/verify_email_usecase.dart';
@@ -32,6 +38,8 @@ class _MockSignupUseCase extends Mock implements SignupUseCase {}
 
 class _MockVerifyEmailUseCase extends Mock implements VerifyEmailUseCase {}
 
+class _MockResendOtpUseCase extends Mock implements ResendOtpUseCase {}
+
 class _MockForgotPasswordUseCase extends Mock
     implements ForgotPasswordUseCase {}
 
@@ -40,6 +48,12 @@ class _MockResetPasswordUseCase extends Mock implements ResetPasswordUseCase {}
 class _MockLogoutUseCase extends Mock implements LogoutUseCase {}
 
 class _MockGetPoolsUseCase extends Mock implements GetPoolsUseCase {}
+
+class _MockGetNotificationsUseCase extends Mock
+    implements GetNotificationsUseCase {}
+
+class _MockMarkNotificationReadUseCase extends Mock
+    implements MarkNotificationReadUseCase {}
 
 /// Real router over the generated route tree. Needs the app's
 /// [rootNavigatorKey]: routes parented to the root navigator (e.g.
@@ -71,6 +85,7 @@ void main() {
   setUpAll(() {
     AppConfig.init(Flavor.dev);
     registerFallbackValue(const GetPoolsParams());
+    registerFallbackValue(const NoParams());
   });
 
   setUp(() {
@@ -81,6 +96,7 @@ void main() {
         _MockLoginUseCase(),
         _MockSignupUseCase(),
         _MockVerifyEmailUseCase(),
+        _MockResendOtpUseCase(),
         _MockForgotPasswordUseCase(),
         _MockResetPasswordUseCase(),
         _MockLogoutUseCase(),
@@ -95,6 +111,19 @@ void main() {
     final getPools = _MockGetPoolsUseCase();
     when(() => getPools(any())).thenAnswer((_) async => const Right(<Pool>[]));
     getIt.registerFactory<PoolsBloc>(() => PoolsBloc(getPools));
+
+    // DashboardPage resolves NotificationsBloc from get_it and fetches on
+    // init; resolve to an empty list so the badge settles instead of spinning.
+    final getNotifications = _MockGetNotificationsUseCase();
+    when(
+      () => getNotifications(any()),
+    ).thenAnswer((_) async => const Right(<AppNotification>[]));
+    getIt.registerFactory<NotificationsBloc>(
+      () => NotificationsBloc(
+        getNotifications,
+        _MockMarkNotificationReadUseCase(),
+      ),
+    );
   });
 
   tearDown(() => getIt.reset());

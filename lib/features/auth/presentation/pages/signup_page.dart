@@ -48,6 +48,7 @@ class _SignupPageState extends State<SignupPage> {
       subtitle: 'Type one time code we sent to your email',
       onSubmit: (otp) =>
           authBloc.add(AuthEvent.verifyEmailRequested(email: email, otp: otp)),
+      onResend: () => authBloc.add(AuthEvent.resendOtpRequested(email: email)),
     );
     _isOtpSheetOpen = false;
 

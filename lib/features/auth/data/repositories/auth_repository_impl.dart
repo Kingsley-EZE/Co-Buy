@@ -76,6 +76,18 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  FutureResult<void> resendOtp(String email) async {
+    try {
+      await _remote.resendOtp(email: email);
+      return const Right(null);
+    } on DioException catch (e) {
+      return Left(mapDioException(e));
+    } catch (_) {
+      return const Left(UnknownFailure());
+    }
+  }
+
+  @override
   FutureResult<void> forgotPassword(ForgotPasswordRequest request) async {
     try {
       await _remote.forgotPassword(body: request.toDto());

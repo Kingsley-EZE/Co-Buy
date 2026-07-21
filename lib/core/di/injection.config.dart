@@ -36,6 +36,7 @@ import '../../features/auth/domain/usecases/forgot_password_usecase.dart'
     as _i560;
 import '../../features/auth/domain/usecases/login_usecase.dart' as _i188;
 import '../../features/auth/domain/usecases/logout_usecase.dart' as _i48;
+import '../../features/auth/domain/usecases/resend_otp_usecase.dart' as _i613;
 import '../../features/auth/domain/usecases/reset_password_usecase.dart'
     as _i474;
 import '../../features/auth/domain/usecases/signup_usecase.dart' as _i57;
@@ -252,6 +253,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i48.LogoutUseCase>(
       () => _i48.LogoutUseCase(gh<_i787.AuthRepository>()),
     );
+    gh.factory<_i613.ResendOtpUseCase>(
+      () => _i613.ResendOtpUseCase(gh<_i787.AuthRepository>()),
+    );
     gh.factory<_i474.ResetPasswordUseCase>(
       () => _i474.ResetPasswordUseCase(gh<_i787.AuthRepository>()),
     );
@@ -282,6 +286,18 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i851.PoolPaymentBloc>(
       () => _i851.PoolPaymentBloc(gh<_i717.PayForPoolUseCase>()),
     );
+    gh.lazySingleton<_i661.AuthBloc>(
+      () => _i661.AuthBloc(
+        gh<_i188.LoginUseCase>(),
+        gh<_i57.SignupUseCase>(),
+        gh<_i30.VerifyEmailUseCase>(),
+        gh<_i613.ResendOtpUseCase>(),
+        gh<_i560.ForgotPasswordUseCase>(),
+        gh<_i474.ResetPasswordUseCase>(),
+        gh<_i48.LogoutUseCase>(),
+      ),
+      dispose: _i661.disposeAuthBloc,
+    );
     gh.factory<_i1015.GetMyPoolsUseCase>(
       () => _i1015.GetMyPoolsUseCase(gh<_i113.MyPoolsRepository>()),
     );
@@ -295,17 +311,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i148.PoolsBloc>(
       () => _i148.PoolsBloc(gh<_i162.GetPoolsUseCase>()),
       dispose: _i148.disposePoolsBloc,
-    );
-    gh.lazySingleton<_i661.AuthBloc>(
-      () => _i661.AuthBloc(
-        gh<_i188.LoginUseCase>(),
-        gh<_i57.SignupUseCase>(),
-        gh<_i30.VerifyEmailUseCase>(),
-        gh<_i560.ForgotPasswordUseCase>(),
-        gh<_i474.ResetPasswordUseCase>(),
-        gh<_i48.LogoutUseCase>(),
-      ),
-      dispose: _i661.disposeAuthBloc,
     );
     gh.factory<_i971.CreatePoolUseCase>(
       () => _i971.CreatePoolUseCase(gh<_i742.CreatePoolRepository>()),

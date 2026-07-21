@@ -23,6 +23,9 @@ abstract class AuthRepository {
   /// [Failure].
   FutureResult<void> verifyEmail(VerifyEmailRequest request);
 
+  /// Requests a fresh verification OTP for the given email.
+  FutureResult<void> resendOtp(String email);
+
   /// Requests a password-reset OTP to be sent to the given email.
   FutureResult<void> forgotPassword(ForgotPasswordRequest request);
 
