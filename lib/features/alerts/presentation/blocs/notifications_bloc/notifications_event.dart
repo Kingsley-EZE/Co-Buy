@@ -5,10 +5,13 @@ sealed class NotificationsEvent with _$NotificationsEvent {
   const factory NotificationsEvent.fetchRequested() =
       NotificationsFetchRequested;
 
-  const factory NotificationsEvent.socketStarted() =
-      NotificationsSocketStarted;
+  const factory NotificationsEvent.socketStarted() = NotificationsSocketStarted;
 
   /// Silent background refetch when the socket pushes a new notification.
   const factory NotificationsEvent.socketUpdateReceived() =
       NotificationsSocketUpdateReceived;
+
+  /// Marks every notification read, clearing the unread badge. Fired when the
+  /// user opens the Alerts tab.
+  const factory NotificationsEvent.allMarkedRead() = NotificationsAllMarkedRead;
 }

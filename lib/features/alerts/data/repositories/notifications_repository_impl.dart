@@ -20,9 +20,19 @@ class NotificationsRepositoryImpl implements NotificationsRepository {
   FutureResult<List<AppNotification>> getNotifications() async {
     try {
       final dto = await _remote.getNotifications();
-      return Right(
-        dto.data.map((n) => n.toEntity()).toList(),
-      );
+      return Right(dto.data.map((n) => n.toEntity()).toList());
+    } on DioException catch (e) {
+      return Left(mapDioException(e));
+    } catch (_) {
+      return const Left(UnknownFailure());
+    }
+  }
+
+  @override
+  FutureResult<void> markAsRead(String id) async {
+    try {
+      await _remote.markAsRead(id, const <String, dynamic>{});
+      return const Right(null);
     } on DioException catch (e) {
       return Left(mapDioException(e));
     } catch (_) {

@@ -56,13 +56,14 @@ extension NotificationsEventPatterns on NotificationsEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( NotificationsFetchRequested value)?  fetchRequested,TResult Function( NotificationsSocketStarted value)?  socketStarted,TResult Function( NotificationsSocketUpdateReceived value)?  socketUpdateReceived,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( NotificationsFetchRequested value)?  fetchRequested,TResult Function( NotificationsSocketStarted value)?  socketStarted,TResult Function( NotificationsSocketUpdateReceived value)?  socketUpdateReceived,TResult Function( NotificationsAllMarkedRead value)?  allMarkedRead,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case NotificationsFetchRequested() when fetchRequested != null:
 return fetchRequested(_that);case NotificationsSocketStarted() when socketStarted != null:
 return socketStarted(_that);case NotificationsSocketUpdateReceived() when socketUpdateReceived != null:
-return socketUpdateReceived(_that);case _:
+return socketUpdateReceived(_that);case NotificationsAllMarkedRead() when allMarkedRead != null:
+return allMarkedRead(_that);case _:
   return orElse();
 
 }
@@ -80,13 +81,14 @@ return socketUpdateReceived(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( NotificationsFetchRequested value)  fetchRequested,required TResult Function( NotificationsSocketStarted value)  socketStarted,required TResult Function( NotificationsSocketUpdateReceived value)  socketUpdateReceived,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( NotificationsFetchRequested value)  fetchRequested,required TResult Function( NotificationsSocketStarted value)  socketStarted,required TResult Function( NotificationsSocketUpdateReceived value)  socketUpdateReceived,required TResult Function( NotificationsAllMarkedRead value)  allMarkedRead,}){
 final _that = this;
 switch (_that) {
 case NotificationsFetchRequested():
 return fetchRequested(_that);case NotificationsSocketStarted():
 return socketStarted(_that);case NotificationsSocketUpdateReceived():
-return socketUpdateReceived(_that);}
+return socketUpdateReceived(_that);case NotificationsAllMarkedRead():
+return allMarkedRead(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -100,13 +102,14 @@ return socketUpdateReceived(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( NotificationsFetchRequested value)?  fetchRequested,TResult? Function( NotificationsSocketStarted value)?  socketStarted,TResult? Function( NotificationsSocketUpdateReceived value)?  socketUpdateReceived,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( NotificationsFetchRequested value)?  fetchRequested,TResult? Function( NotificationsSocketStarted value)?  socketStarted,TResult? Function( NotificationsSocketUpdateReceived value)?  socketUpdateReceived,TResult? Function( NotificationsAllMarkedRead value)?  allMarkedRead,}){
 final _that = this;
 switch (_that) {
 case NotificationsFetchRequested() when fetchRequested != null:
 return fetchRequested(_that);case NotificationsSocketStarted() when socketStarted != null:
 return socketStarted(_that);case NotificationsSocketUpdateReceived() when socketUpdateReceived != null:
-return socketUpdateReceived(_that);case _:
+return socketUpdateReceived(_that);case NotificationsAllMarkedRead() when allMarkedRead != null:
+return allMarkedRead(_that);case _:
   return null;
 
 }
@@ -123,12 +126,13 @@ return socketUpdateReceived(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  fetchRequested,TResult Function()?  socketStarted,TResult Function()?  socketUpdateReceived,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  fetchRequested,TResult Function()?  socketStarted,TResult Function()?  socketUpdateReceived,TResult Function()?  allMarkedRead,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case NotificationsFetchRequested() when fetchRequested != null:
 return fetchRequested();case NotificationsSocketStarted() when socketStarted != null:
 return socketStarted();case NotificationsSocketUpdateReceived() when socketUpdateReceived != null:
-return socketUpdateReceived();case _:
+return socketUpdateReceived();case NotificationsAllMarkedRead() when allMarkedRead != null:
+return allMarkedRead();case _:
   return orElse();
 
 }
@@ -146,12 +150,13 @@ return socketUpdateReceived();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  fetchRequested,required TResult Function()  socketStarted,required TResult Function()  socketUpdateReceived,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  fetchRequested,required TResult Function()  socketStarted,required TResult Function()  socketUpdateReceived,required TResult Function()  allMarkedRead,}) {final _that = this;
 switch (_that) {
 case NotificationsFetchRequested():
 return fetchRequested();case NotificationsSocketStarted():
 return socketStarted();case NotificationsSocketUpdateReceived():
-return socketUpdateReceived();}
+return socketUpdateReceived();case NotificationsAllMarkedRead():
+return allMarkedRead();}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -165,12 +170,13 @@ return socketUpdateReceived();}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  fetchRequested,TResult? Function()?  socketStarted,TResult? Function()?  socketUpdateReceived,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  fetchRequested,TResult? Function()?  socketStarted,TResult? Function()?  socketUpdateReceived,TResult? Function()?  allMarkedRead,}) {final _that = this;
 switch (_that) {
 case NotificationsFetchRequested() when fetchRequested != null:
 return fetchRequested();case NotificationsSocketStarted() when socketStarted != null:
 return socketStarted();case NotificationsSocketUpdateReceived() when socketUpdateReceived != null:
-return socketUpdateReceived();case _:
+return socketUpdateReceived();case NotificationsAllMarkedRead() when allMarkedRead != null:
+return allMarkedRead();case _:
   return null;
 
 }
@@ -266,6 +272,38 @@ int get hashCode => runtimeType.hashCode;
 @override
 String toString() {
   return 'NotificationsEvent.socketUpdateReceived()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class NotificationsAllMarkedRead implements NotificationsEvent {
+  const NotificationsAllMarkedRead();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NotificationsAllMarkedRead);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'NotificationsEvent.allMarkedRead()';
 }
 
 
@@ -470,8 +508,8 @@ return $default(_that.status,_that.notifications,_that.error);case _:
 /// @nodoc
 
 
-class _NotificationsState implements NotificationsState {
-  const _NotificationsState({this.status = NotificationsStatus.initial,  List<AppNotification> notifications = const <AppNotification>[], this.error}): _notifications = notifications;
+class _NotificationsState extends NotificationsState {
+  const _NotificationsState({this.status = NotificationsStatus.initial,  List<AppNotification> notifications = const <AppNotification>[], this.error}): _notifications = notifications,super._();
   
 
 @override@JsonKey() final  NotificationsStatus status;

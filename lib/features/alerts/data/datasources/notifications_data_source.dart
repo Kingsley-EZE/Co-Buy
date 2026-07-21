@@ -11,4 +11,10 @@ abstract class NotificationsDataSource {
 
   @GET('/notifications/mine')
   Future<NotificationsResponseDto> getNotifications();
+
+  @PATCH('/notifications/{id}/read')
+  Future<void> markAsRead(
+    @Path('id') String id,
+    @Body() Map<String, dynamic> body,
+  );
 }

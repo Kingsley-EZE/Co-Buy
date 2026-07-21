@@ -3,6 +3,7 @@ import 'package:co_buy/core/design_system/design_system.dart';
 import 'package:co_buy/core/di/injection.dart';
 import 'package:co_buy/core/navigation/routes.dart';
 import 'package:co_buy/features/auth/domain/entities/user.dart';
+import 'package:co_buy/features/alerts/presentation/blocs/notifications_bloc/notifications_bloc.dart';
 import 'package:co_buy/features/auth/presentation/blocs/auth_bloc/auth_bloc.dart';
 import 'package:co_buy/features/home/presentation/blocs/pools_bloc/pools_bloc.dart';
 import 'package:co_buy/features/home/presentation/widgets/home_pools_feed.dart';
@@ -26,15 +27,20 @@ class HomePage extends StatelessWidget {
               padding: const EdgeInsets.symmetric(
                 horizontal: AppSpacing.screenH,
               ),
-              child:
-                  BlocSelector<AuthBloc, AuthState, User?>(
-                    selector: (state) =>
-                        state is AuthAuthenticated ? state.user : null,
-                    builder: (context, user) => HomeTopBar(
-                      user: user,
-                      onNotificationTap: () => const AlertsRoute().go(context),
+              child: BlocSelector<AuthBloc, AuthState, User?>(
+                selector: (state) =>
+                    state is AuthAuthenticated ? state.user : null,
+                builder: (context, user) =>
+                    BlocSelector<NotificationsBloc, NotificationsState, int>(
+                      selector: (state) => state.unreadCount,
+                      builder: (context, unreadCount) => HomeTopBar(
+                        user: user,
+                        unreadCount: unreadCount,
+                        onNotificationTap: () =>
+                            const AlertsRoute().go(context),
+                      ),
                     ),
-                  ),
+              ),
             ),
             const SizedBox(height: AppSpacing.s24),
             Expanded(
