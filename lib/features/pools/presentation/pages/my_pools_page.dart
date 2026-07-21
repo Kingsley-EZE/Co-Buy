@@ -1,7 +1,6 @@
 import 'package:co_buy/core/components/scaffolds/app_scaffold.dart';
 import 'package:flutter/material.dart';
 
-/// My pools tab. Placeholder until the real pools feature lands.
 class MyPoolsPage extends StatelessWidget {
   const MyPoolsPage({super.key});
 

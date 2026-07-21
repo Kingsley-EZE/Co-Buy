@@ -8,10 +8,6 @@ import 'package:co_buy/features/home/presentation/widgets/pool_card.dart';
 import 'package:co_buy/features/home/presentation/widgets/pool_filter_chips.dart';
 import 'package:flutter/material.dart';
 
-/// Pool feed for the home tab: the refund notice, the status filter row and
-/// the list area. The banner and chips stay in place while a fetch is in
-/// flight — only the list area switches between spinner, error, empty and
-/// results. Pure renderer: all state arrives via props from [PoolsBloc].
 class HomePoolsFeed extends StatelessWidget {
   const HomePoolsFeed({
     super.key,
@@ -65,9 +61,6 @@ class HomePoolsFeed extends StatelessWidget {
         );
       case PoolsRequestStatus.success:
         if (pools.isNotEmpty) return _buildList();
-        // Nothing anywhere: prompt the user to start the first pool. An
-        // empty *filtered* view gets a lighter notice — pools exist, just
-        // not in this status.
         return filter == PoolFilter.all
             ? Center(child: HomeEmptyState(onStartPool: onStartPool))
             : Center(

@@ -87,8 +87,6 @@ class _NotificationList extends StatelessWidget {
 
   final List<AppNotification> notifications;
 
-  /// Returns a flat list alternating between String section labels and
-  /// [AppNotification] items, preserving API order within each group.
   List<Object> _buildItems() {
     final groups = <String, List<AppNotification>>{};
     for (final n in notifications) {

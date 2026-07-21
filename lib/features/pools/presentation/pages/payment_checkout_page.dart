@@ -4,13 +4,8 @@ import 'package:co_buy/core/design_system/design_system.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-/// The payment gateway's hosted checkout, in a webview. No bloc: the POST
-/// that created the transaction already happened — this page only renders it.
-///
-/// This page never pops itself. Payment completion arrives over the socket:
-/// the details page listens for the confirmed status and pops this route.
-/// Backing out early pops `null`; either way the caller refetches the pool,
-/// since the payment may settle server-side even on a back-out.
+/// Never pops itself — the details page pops checkout on socket confirmation
+/// and refetches either way, since payment may settle after a back-out.
 class PaymentCheckoutPage extends StatefulWidget {
   const PaymentCheckoutPage({super.key, required this.checkoutUrl});
 

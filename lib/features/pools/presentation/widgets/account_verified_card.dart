@@ -1,10 +1,6 @@
 import 'package:co_buy/core/design_system/design_system.dart';
 import 'package:flutter/material.dart';
 
-/// The green confirmation card from the join-pool designs: the resolved
-/// account name alongside the selected bank, marking the name enquiry as
-/// verified. Shown under the form's account field and again on the review
-/// sheet.
 class AccountVerifiedCard extends StatelessWidget {
   const AccountVerifiedCard({
     super.key,
@@ -13,8 +9,6 @@ class AccountVerifiedCard extends StatelessWidget {
   });
 
   final String accountName;
-
-  /// Appended after a bullet when known ("Golden Harvest Foods • GT Bank").
   final String? bankName;
 
   @override

@@ -5,8 +5,6 @@ import 'package:co_buy/core/formatting/app_formatters.dart';
 import 'package:co_buy/features/home/domain/entities/pool.dart';
 import 'package:flutter/material.dart';
 
-/// Feed card for a single [Pool]: name with a slots badge, leader row,
-/// price per slot, funding progress and the expiry countdown.
 class PoolCard extends StatelessWidget {
   const PoolCard({super.key, required this.pool, this.onTap});
 
@@ -57,8 +55,7 @@ class PoolCard extends StatelessWidget {
               ),
               const SizedBox(height: AppSpacing.s8),
               _VerifiedChip(label: '${pool.beneficiaryBankName} Verified'),
-              // No fixed slot price when the target isn't split evenly
-              // (amountPerSlot arrives as zero) — skip the row entirely.
+              // amountPerSlot 0 means uneven split — no fixed per-slot price.
               if (pool.amountPerSlot > 0) ...[
                 const SizedBox(height: AppSpacing.s16),
                 Text.rich(
@@ -96,16 +93,12 @@ class PoolCard extends StatelessWidget {
   }
 }
 
-/// Availability badge: green "Full" once every slot is taken, warning-tinted
-/// when the pool is nearly full, neutral otherwise, grey "Expired" for pools
-/// past their deadline.
 class _SlotsBadge extends StatelessWidget {
   const _SlotsBadge({required this.pool});
 
   final Pool pool;
 
-  /// At or below this many open slots the badge switches to the warning
-  /// tint to nudge users to grab one.
+  /// Warning tint when this many or fewer slots remain.
   static const int _lowSlotsThreshold = 2;
 
   @override
@@ -219,8 +212,6 @@ class _FillProgressBar extends StatelessWidget {
   }
 }
 
-/// Clock icon plus a `1d 11:05:04` countdown that ticks every second while
-/// the deadline is in the future, then settles on "Expired".
 class _ExpiryCountdown extends StatefulWidget {
   const _ExpiryCountdown({required this.deadlineAt});
 

@@ -3,9 +3,8 @@ import 'package:co_buy/core/formatting/app_formatters.dart';
 import 'package:co_buy/features/pools/domain/entities/pool_member.dart';
 import 'package:flutter/material.dart';
 
-/// One row in the members list: initials avatar, name, slot line and the
-/// payment pill. [slotNumber] and [isLeader] are derived by the page (list
-/// order and the pool's leaderId) — the members API carries neither.
+/// [slotNumber] and [isLeader] are derived by the page — the members API
+/// carries neither.
 class PoolMemberTile extends StatelessWidget {
   const PoolMemberTile({
     super.key,
@@ -18,9 +17,6 @@ class PoolMemberTile extends StatelessWidget {
   final int slotNumber;
   final bool isLeader;
 
-  /// "Slot 1 • Leader" for the leader; everyone else gets their payment
-  /// recency ("Slot 2 • Paid 2 hours ago") or, while unpaid, when they
-  /// joined.
   String get _subtitle {
     final slot = 'Slot $slotNumber';
     if (isLeader) return '$slot • Leader';
@@ -66,8 +62,6 @@ class PoolMemberTile extends StatelessWidget {
   }
 }
 
-/// Brand-tinted circle with the member's initials; fixed tints across themes
-/// so the avatar reads as brand, not surface (matches the home top bar).
 class _InitialsAvatar extends StatelessWidget {
   const _InitialsAvatar({required this.initials});
 
@@ -93,8 +87,6 @@ class _InitialsAvatar extends StatelessWidget {
   }
 }
 
-/// Green "Paid" once the slot is settled, warning-tinted "Awaiting payment"
-/// until then.
 class _StatusPill extends StatelessWidget {
   const _StatusPill({required this.hasPaid});
 

@@ -22,8 +22,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-/// Full-screen form to join a pool: the contributor picks their bank, enters
-/// their account number, and can submit once the name enquiry verifies it.
 class JoinPoolPage extends StatefulWidget {
   const JoinPoolPage({super.key, required this.poolId});
 
@@ -40,10 +38,8 @@ class _JoinPoolPageState extends State<JoinPoolPage> {
   void initState() {
     super.initState();
     final joinPoolBloc = getIt<JoinPoolBloc>();
-    // No-op when the singleton already holds the cached bank list.
     joinPoolBloc.add(const JoinPoolEvent.banksFetchRequested());
-    // The singleton outlives the page — drop a previous visit's resolution
-    // and submission outcome so a fresh, empty form starts clean.
+    // Singleton outlives the page — clear a previous visit's state.
     joinPoolBloc.add(const JoinPoolEvent.accountLookupCleared());
     joinPoolBloc.add(const JoinPoolEvent.submitStateCleared());
   }
@@ -58,9 +54,7 @@ class _JoinPoolPageState extends State<JoinPoolPage> {
     final detailsState = context.read<PoolDetailsBloc>().state;
     final details = detailsState.details;
     if (details == null) {
-      // The details fetch is still in flight or failed — the share amount
-      // and review sheet need it, so surface that and retry rather than
-      // submitting on incomplete information.
+      // Review sheet needs details — retry rather than submit incomplete.
       AppSnackBar.showError(
         context,
         detailsState.detailsError ?? 'Still loading this pool — try again.',
@@ -76,27 +70,20 @@ class _JoinPoolPageState extends State<JoinPoolPage> {
       JoinPoolEvent.submitRequested(
         JoinPoolRequest(
           id: widget.poolId,
-          // The button only renders once canSubmit is true, so the bank and
-          // resolved account are the enquiry result for exactly this input.
           bankName: formState.bank!.name,
           bankCode: formState.bank!.code,
           accountNumber: formState.accountNumber,
           accountName: formState.resolvedAccount!.accountName,
-          // Zero for uneven pools — the member's amount is chosen at payment.
+          // amountPerSlot 0 for uneven pools — amount chosen at payment.
           memberShareAmount: details.amountPerSlot,
         ),
       ),
     );
   }
 
-  /// Shown once the join call succeeds. The user has joined whatever they
-  /// do next, so every path out of the sheet eventually pops back to the
-  /// pool details underneath with a `true` result so that page refreshes
-  /// its now-stale figures — immediately when the sheet is just dismissed,
-  /// or after checkout (via the payment listener) when they continue.
+  /// Every path out pops details with `true` so figures refresh after join/pay.
   Future<void> _showReviewSheet(BuildContext context) async {
     final detailsState = context.read<PoolDetailsBloc>().state;
-    // Submission only fires with details on hand, and nothing clears them.
     final details = detailsState.details!;
     final leaders = detailsState.members.where(
       (m) => m.userId == details.leaderId,
@@ -111,8 +98,7 @@ class _JoinPoolPageState extends State<JoinPoolPage> {
 
     if (!context.mounted) return;
     if (continueToPayment == true) {
-      // The pop is deferred to the payment listener so the page stays put
-      // under the in-flight call and the checkout it leads to.
+      // Pop deferred to payment listener — page stays under checkout.
       context.read<PoolPaymentBloc>().add(
         PoolPaymentEvent.payRequested(
           PoolPaymentRequest(
@@ -122,9 +108,7 @@ class _JoinPoolPageState extends State<JoinPoolPage> {
         ),
       );
     } else {
-      // The user has already joined — no reason to return to the form or
-      // pool details. Go home so the updated pool list is the next thing
-      // they see.
+      // Already joined — home shows the updated pool list.
       const HomeRoute().go(context);
     }
   }
@@ -135,7 +119,6 @@ class _JoinPoolPageState extends State<JoinPoolPage> {
   ) async {
     switch (state.status) {
       case PoolPaymentRequestStatus.success:
-        // Set exactly while status is success, and cleared only below.
         final payment = state.payment!;
         context.read<PoolPaymentBloc>().add(
           const PoolPaymentEvent.stateCleared(),
@@ -144,14 +127,9 @@ class _JoinPoolPageState extends State<JoinPoolPage> {
           poolId: widget.poolId,
           checkoutUrl: payment.checkoutUrl,
         ).push<bool>(context);
-        // Whatever checkout popped with, the user joined — back to details,
-        // which refetches on the `true` result and reflects any payment.
         if (context.mounted) context.pop(true);
       case PoolPaymentRequestStatus.failure:
-        // Don't strand the user on the join form: re-joining would be
-        // rejected server-side. Back on details the CTA reads "Continue to
-        // payment", which is the natural retry path. The snackbar outlives
-        // the pop because the ScaffoldMessenger is app-rooted.
+        // Re-join would fail — pop to details where CTA is "Continue to payment".
         AppSnackBar.showError(
           context,
           state.error ?? 'Could not start this payment',
@@ -174,10 +152,7 @@ class _JoinPoolPageState extends State<JoinPoolPage> {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => getIt<JoinPoolFormBloc>()),
-        // `.value` because get_it owns the singleton's lifecycle.
         BlocProvider.value(value: getIt<JoinPoolBloc>()),
-        // The review sheet recaps the pool, so the page fetches its own
-        // details rather than receiving them from wherever it was pushed.
         BlocProvider(
           create: (_) =>
               getIt<PoolDetailsBloc>()
@@ -185,11 +160,6 @@ class _JoinPoolPageState extends State<JoinPoolPage> {
         ),
         BlocProvider(create: (_) => getIt<PoolPaymentBloc>()),
       ],
-      // The form bloc owns the inputs and the feature bloc owns the network
-      // call, so the page bridges them both ways: whenever bank/account
-      // number settle into a valid pair the enquiry fires (and a stale
-      // resolution is dropped when they stop being valid), and the enquiry
-      // result is mirrored back so `canSubmit` can require verification.
       child: MultiBlocListener(
         listeners: [
           BlocListener<JoinPoolFormBloc, JoinPoolFormState>(
@@ -332,9 +302,6 @@ class _JoinPoolPageState extends State<JoinPoolPage> {
   }
 }
 
-/// Feedback under the account number field for the bank name enquiry:
-/// nothing until a lookup runs, then progress, the verified-account card,
-/// or the failure message.
 class _AccountLookupFeedback extends StatelessWidget {
   const _AccountLookupFeedback();
 
@@ -381,8 +348,6 @@ class _AccountLookupFeedback extends StatelessWidget {
   }
 }
 
-/// The submit CTA, hidden until the name enquiry verifies the typed account —
-/// the design shows no button on the empty form.
 class _JoinPoolButton extends StatelessWidget {
   const _JoinPoolButton({required this.onPressed});
 
@@ -399,17 +364,10 @@ class _JoinPoolButton extends StatelessWidget {
           selector: (state) =>
               state.joinStatus == JoinPoolRequestStatus.loading,
           builder: (context, isSubmitting) =>
-              // Payment initiation also spins the button: it fills the gap
-              // between the review sheet closing and checkout pushing.
               BlocSelector<PoolPaymentBloc, PoolPaymentState, bool>(
                 selector: (state) =>
                     state.status == PoolPaymentRequestStatus.loading,
                 builder: (context, isStartingPayment) =>
-                    // Spin while the pool details fetch is still in flight:
-                    // the enquiry can verify the account before details land,
-                    // and _onJoinPool needs them — so gating the tap here is
-                    // what stops a premature "still loading" error. Failure is
-                    // left tappable so _onJoinPool surfaces it and retries.
                     BlocSelector<PoolDetailsBloc, PoolDetailsState, bool>(
                       selector: (state) =>
                           state.detailsStatus ==

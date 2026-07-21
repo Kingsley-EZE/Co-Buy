@@ -3,8 +3,6 @@ import 'package:co_buy/core/formatting/app_formatters.dart';
 import 'package:co_buy/features/pools/domain/entities/pool_details.dart';
 import 'package:flutter/material.dart';
 
-/// Summary card at the top of the pool details screen: the amount raised so
-/// far against the target, the funded percentage and the slot badges.
 class PoolRaisedCard extends StatelessWidget {
   const PoolRaisedCard({super.key, required this.details});
 

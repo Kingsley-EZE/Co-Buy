@@ -1,8 +1,6 @@
 import 'package:co_buy/core/design_system/design_system.dart';
 import 'package:flutter/material.dart';
 
-/// Warning-tinted notice above the pool feed reminding users of the
-/// automatic-refund guarantee.
 class HomeInfoBanner extends StatelessWidget {
   const HomeInfoBanner({super.key});
 

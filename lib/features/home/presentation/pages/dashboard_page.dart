@@ -4,9 +4,7 @@ import 'package:co_buy/features/home/presentation/widgets/dashboard_nav_bar.dart
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-/// Shell for the four bottom-nav tabs. [navigationShell] owns the active
-/// branch and per-tab back stacks; this page just renders it plus the bar.
-/// Safe areas stay off here — each tab page manages its own insets.
+/// Safe areas off here — each tab page manages its own insets.
 class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key, required this.navigationShell});
 

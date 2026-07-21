@@ -8,8 +8,7 @@ part 'pool_transactions_event.dart';
 part 'pool_transactions_state.dart';
 part 'pool_transactions_bloc.freezed.dart';
 
-/// Page-scoped fetch of one pool's payment history. Created per visit so a
-/// previous pool's list never leaks into a newly opened transactions screen.
+/// Page-scoped — a previous pool's list must not leak into a new visit.
 @injectable
 class PoolTransactionsBloc
     extends Bloc<PoolTransactionsEvent, PoolTransactionsState> {

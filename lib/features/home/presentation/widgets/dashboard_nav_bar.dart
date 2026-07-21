@@ -2,11 +2,6 @@ import 'package:co_buy/core/design_system/design_system.dart';
 import 'package:co_buy/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
 
-/// Bottom navigation bar for the dashboard shell.
-///
-/// Four tabs (Home, My pools, Alerts, Profile) around a raised circular
-/// create-pool button. The active tab is marked by a rounded indicator flush
-/// with the bar's top edge plus a primary-tinted icon and label.
 class DashboardNavBar extends StatelessWidget {
   const DashboardNavBar({
     super.key,

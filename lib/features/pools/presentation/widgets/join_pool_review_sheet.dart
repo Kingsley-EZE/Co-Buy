@@ -7,15 +7,7 @@ import 'package:co_buy/features/pools/presentation/blocs/join_pool_form_bloc/joi
 import 'package:co_buy/features/pools/presentation/widgets/account_verified_card.dart';
 import 'package:flutter/material.dart';
 
-/// Bottom sheet recapping the pool and the contributor's verified account
-/// before the payment step.
-///
-/// Purely presentational: it renders the fetched [PoolDetails] and a
-/// [JoinPoolFormState] snapshot and reports the choice as the sheet's
-/// result — `true` for "Continue to payment", null when dismissed — so the
-/// caller decides what happens next after the sheet is gone (a callback
-/// fired mid-dismissal couldn't sequence navigation safely). Show it with
-/// [JoinPoolReviewSheet.show].
+/// Sheet result (`true`/`null`) lets the caller navigate after dismiss.
 class JoinPoolReviewSheet extends StatelessWidget {
   const JoinPoolReviewSheet({
     super.key,
@@ -26,8 +18,6 @@ class JoinPoolReviewSheet extends StatelessWidget {
 
   final PoolDetails details;
 
-  /// Resolved from the members list by the page; null when the leader isn't
-  /// among the fetched members.
   final String? leaderName;
 
   final JoinPoolFormState formState;
@@ -43,8 +33,6 @@ class JoinPoolReviewSheet extends StatelessWidget {
       isScrollControlled: true,
       isDismissible: false,
       enableDrag: false,
-      // The sheet paints its own themed surface; a transparent modal keeps
-      // the default Material from poking out behind the rounded corners.
       backgroundColor: Colors.transparent,
       builder: (_) => JoinPoolReviewSheet(
         details: details,
@@ -65,8 +53,7 @@ class JoinPoolReviewSheet extends StatelessWidget {
       ('Your Slot', '1 slot'),
       (
         'Your Share',
-        // Zero means the pool doesn't split evenly — the member's amount is
-        // chosen at payment, so there is no fixed share to preview.
+        // amountPerSlot 0 — amount chosen at payment, nothing to preview.
         details.amountPerSlot > 0
             ? AppFormatters.naira(details.amountPerSlot)
             : '—',
@@ -74,8 +61,6 @@ class JoinPoolReviewSheet extends StatelessWidget {
       ('Deadline', AppFormatters.deadline(details.deadlineAt)),
     ];
 
-    // The widget owns its background (theme-aware, so dark mode gets the
-    // dark surface) instead of leaning on how the modal route is configured.
     return Material(
       color: colors.bg.primary,
       shape: const RoundedRectangleBorder(
@@ -171,10 +156,7 @@ class _ReviewRow extends StatelessWidget {
         children: [
           Expanded(child: Text(label, style: styles.bodyM)),
           const SizedBox(width: AppSpacing.s12),
-          // Expanded (tight), not Flexible (loose): a loose child
-          // shrink-wraps, so its unused allocation became free space at the
-          // row's end and the value sat mid-row. Tight fit stretches the
-          // Text across its half, letting textAlign.end park it at the edge.
+          // Expanded, not Flexible — loose children left values mid-row.
           Expanded(
             child: Text(
               value,
@@ -189,8 +171,6 @@ class _ReviewRow extends StatelessWidget {
   }
 }
 
-/// The reassurance line under the verified card: contributions sit in
-/// escrow with the payment provider, not with the pool leader.
 class _EscrowNote extends StatelessWidget {
   const _EscrowNote();
 

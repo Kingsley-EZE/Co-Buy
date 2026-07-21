@@ -1,11 +1,8 @@
 part of 'pools_bloc.dart';
 
-/// Lifecycle of the feed request.
 enum PoolsRequestStatus { initial, loading, success, failure }
 
-/// Status filters for the home pool feed, in display order. Owned by the
-/// bloc (not the chips widget) because filtering happens server-side: the
-/// selection drives fetches and must survive reloads.
+/// Owned by the bloc (not the chips widget) because filtering is server-side.
 enum PoolFilter {
   all('All', null),
   open('Open', PoolStatus.open),
@@ -16,14 +13,10 @@ enum PoolFilter {
   const PoolFilter(this.label, this.status);
 
   final String label;
-
-  /// The status sent to the API; null means no `status` query param ("All").
   final PoolStatus? status;
 }
 
-/// A data class rather than a union: [filter] and the previously loaded
-/// [pools] must survive a reload, so the chips stay in place while a
-/// filtered fetch is in flight.
+/// A data class rather than a union: [filter] and [pools] survive reloads.
 @freezed
 abstract class PoolsState with _$PoolsState {
   const factory PoolsState({

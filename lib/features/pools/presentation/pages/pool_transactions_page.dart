@@ -8,8 +8,6 @@ import 'package:co_buy/features/pools/presentation/widgets/pool_transaction_tile
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-/// Transaction history for one pool. Members reach this from pool details;
-/// the page owns its own fetch from [poolId].
 class PoolTransactionsPage extends StatelessWidget {
   const PoolTransactionsPage({super.key, required this.poolId});
 

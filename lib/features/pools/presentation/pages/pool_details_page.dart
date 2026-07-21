@@ -17,24 +17,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-/// Full-screen details for one pool: what's being raised, where the money
-/// goes and who holds each slot. Pool and members load from two independent
-/// endpoints, so the members section has its own loading/error area.
 class PoolDetailsPage extends StatelessWidget {
   const PoolDetailsPage({super.key, required this.poolId});
 
   final String poolId;
 
-  /// Success hands the checkout URLs to the webview; whatever result that
-  /// pops with, the details refetch — the payment may have settled
-  /// server-side even if the user backed out, and a refetch self-corrects.
+  /// Refetch after checkout — payment may settle even if the user backed out.
   Future<void> _onPaymentStatusChanged(
     BuildContext context,
     PoolPaymentState state,
   ) async {
     switch (state.status) {
       case PoolPaymentRequestStatus.success:
-        // Set exactly while status is success, and cleared only below.
         final payment = state.payment!;
         context.read<PoolPaymentBloc>().add(
           const PoolPaymentEvent.stateCleared(),
@@ -192,9 +186,6 @@ class _DetailsContent extends StatelessWidget {
             ],
           ),
         ),
-        // Join CTA for signed-in non-members (or members who haven't paid),
-        // only while the pool is still OPEN. A member with an unpaid slot has
-        // already joined, so their CTA continues to payment instead.
         BlocSelector<AuthBloc, AuthState, String?>(
           selector: (auth) => auth is AuthAuthenticated ? auth.user.id : null,
           builder: (context, userId) {
@@ -217,8 +208,6 @@ class _DetailsContent extends StatelessWidget {
                   size: AppButtonSize.large,
                   loading: isStartingPayment,
                   onPressed: hasUnpaidSlot
-                      // The page's payment listener takes it from here:
-                      // checkout webview on success, snackbar on failure.
                       ? () => context.read<PoolPaymentBloc>().add(
                           PoolPaymentEvent.payRequested(
                             PoolPaymentRequest(
@@ -228,9 +217,6 @@ class _DetailsContent extends StatelessWidget {
                           ),
                         )
                       : () async {
-                          // The join page pops with `true` after a successful
-                          // join — refetch so the raised amount, slots, and
-                          // members reflect the new membership.
                           final joined = await JoinPoolRoute(
                             poolId: poolId,
                           ).push<bool>(context);

@@ -95,6 +95,8 @@ Per-environment values (API base URL, keys, …) live in **`.env.dev`** and
 which generates obfuscated, type-safe Dart — the raw files are never bundled into
 the app, so secrets stay out of the shipped APK/IPA.
 
+Current keys and example values: [ENV details for Co-Buy](https://docs.google.com/document/d/1hEeAewTwpKCe4g15AQvILeFZQJMP9e9ftOvc58990CE/edit?usp=sharing).
+
 - `.env.dev` / `.env.prod` are **gitignored**. Never commit real secrets.
 - **`.env.example`** is committed and documents every required key. Keep it in
   sync when you add a variable.

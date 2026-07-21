@@ -3,8 +3,6 @@ import 'package:co_buy/core/design_system/design_system.dart';
 import 'package:co_buy/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
 
-/// Centered empty state for the home tab when there are no pools nearby yet:
-/// illustration, prompt copy and the outlined "Start a pool" CTA.
 class HomeEmptyState extends StatelessWidget {
   const HomeEmptyState({super.key, required this.onStartPool});
 

@@ -3,7 +3,6 @@ import 'package:co_buy/core/formatting/app_formatters.dart';
 import 'package:co_buy/features/pools/domain/entities/pool_transaction.dart';
 import 'package:flutter/material.dart';
 
-/// One row in the pool transactions list: payer, amount, status, and when.
 class PoolTransactionTile extends StatelessWidget {
   const PoolTransactionTile({super.key, required this.transaction});
 

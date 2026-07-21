@@ -26,8 +26,7 @@ sealed class CreatePoolFormEvent with _$CreatePoolFormEvent {
   const factory CreatePoolFormEvent.accountNumberChanged(String accountNumber) =
       CreatePoolAccountNumberChanged;
 
-  /// The bank name enquiry produced [account] (or was cleared when null),
-  /// mirrored in from [CreatePoolBloc] by the page.
+  /// Mirrored from [CreatePoolBloc] by the page.
   const factory CreatePoolFormEvent.accountLookupResultChanged(
     BankAccount? account,
   ) = CreatePoolAccountLookupResultChanged;

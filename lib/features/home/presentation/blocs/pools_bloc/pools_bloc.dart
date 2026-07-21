@@ -14,9 +14,7 @@ part 'pools_bloc.freezed.dart';
 
 FutureOr<void> disposePoolsBloc(PoolsBloc bloc) => bloc.close();
 
-/// Feature bloc for the home pool feed. Singleton so external flows (e.g.
-/// create-pool success) can dispatch a refetch to the same instance the home
-/// tab is listening to, regardless of whether the tab is currently visible.
+/// App-wide singleton so external flows can refetch the feed instance.
 @LazySingleton(dispose: disposePoolsBloc)
 class PoolsBloc extends Bloc<PoolsEvent, PoolsState> {
   PoolsBloc(this._getPoolsUseCase) : super(const PoolsState()) {

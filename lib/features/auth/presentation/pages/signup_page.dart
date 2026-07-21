@@ -26,9 +26,7 @@ class _SignupPageState extends State<SignupPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  /// While the OTP sheet is up it owns the auth states (inline error,
-  /// spinner, pop on success), so the page listener must stand down —
-  /// otherwise the verify flow's `AuthSuccess` would re-open the sheet.
+  /// OTP sheet owns auth states while open — page listener must stand down.
   bool _isOtpSheetOpen = false;
 
   @override
@@ -40,9 +38,6 @@ class _SignupPageState extends State<SignupPage> {
     super.dispose();
   }
 
-  /// Signup succeeded: collect the emailed OTP and verify it. The sheet pops
-  /// with the code once `AuthBloc` reports the verification succeeded, or
-  /// with `null` if the user closes it without verifying.
   Future<void> _showOtpSheet(BuildContext context) async {
     final authBloc = context.read<AuthBloc>();
     final email = context.read<SignupFormBloc>().state.email.trim();

@@ -3,8 +3,6 @@ import 'package:co_buy/core/formatting/app_formatters.dart';
 import 'package:co_buy/features/pools/domain/entities/pool_details.dart';
 import 'package:flutter/material.dart';
 
-/// Bordered card listing where the pooled money goes: beneficiary, bank,
-/// masked account number and the target amount.
 class PoolDestinationCard extends StatelessWidget {
   const PoolDestinationCard({super.key, required this.details});
 

@@ -7,32 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-/// Modal bottom sheet where the user types the one-time code sent to them.
-///
-/// The sheet only collects the code — [onSubmit] is where the caller
-/// dispatches the actual verification (e.g. `AuthEvent.verifyEmailRequested`),
-/// and [onResend] is where it re-requests a code. While the request runs the
-/// sheet stays open watching the app-wide `AuthBloc`: `AuthLoading` drives the
-/// Continue spinner, `AuthFailure` shows its message inline under the boxes,
-/// and `AuthSuccess` pops the sheet with the code:
-///
-/// ```dart
-/// final code = await ConfirmOtpSheet.show(
-///   context,
-///   onSubmit: (code) => context.read<AuthBloc>().add(
-///     AuthEvent.verifyEmailRequested(email: email, otp: code),
-///   ),
-///   onResend: _resendCode,
-/// );
-/// if (code != null) { /* verified */ }
-/// ```
-///
-/// Without [onSubmit] the sheet is a dumb collector: Continue pops with the
-/// code immediately and auth states are ignored.
-///
-/// The digits live in a single invisible [TextField] stretched over the boxes
-/// rather than one field per box, so paste and OTP autofill work and
-/// backspace needs no focus juggling.
+/// Single invisible [TextField] over digit boxes for paste/autofill.
+/// With [onSubmit], watches [AuthBloc] for spinner, inline error, and pop.
 class ConfirmOtpSheet extends StatefulWidget {
   const ConfirmOtpSheet({
     super.key,
@@ -44,21 +20,12 @@ class ConfirmOtpSheet extends StatefulWidget {
   });
 
   final int length;
-
-  /// Tells the user where the code went (phone, email, ...).
   final String subtitle;
-
-  /// How long the resend link stays disabled after (re)sending a code.
   final Duration resendCooldown;
-
-  /// Starts verification of the entered code (typically by dispatching an
-  /// `AuthBloc` event). The sheet then reacts to the resulting auth states.
   final ValueChanged<String>? onSubmit;
 
   final VoidCallback? onResend;
 
-  /// Presents the sheet and resolves with the verified code, or `null` when
-  /// dismissed.
   static Future<String?> show(
     BuildContext context, {
     int length = 6,
@@ -99,8 +66,6 @@ class _ConfirmOtpSheetState extends State<ConfirmOtpSheet> {
   Timer? _timer;
   late int _secondsLeft;
 
-  /// Backend rejection shown inline under the boxes; cleared as soon as the
-  /// user edits the code.
   String? _errorMessage;
 
   @override
@@ -144,7 +109,6 @@ class _ConfirmOtpSheetState extends State<ConfirmOtpSheet> {
   }
 
   void _onAuthStateChanged(BuildContext context, AuthState state) {
-    // Only meaningful when this sheet started the request.
     if (widget.onSubmit == null) return;
 
     if (state case AuthFailure(:final message)) {
@@ -220,7 +184,6 @@ class _ConfirmOtpSheetState extends State<ConfirmOtpSheet> {
                     focusNode: _focusNode,
                     length: widget.length,
                     hasError: _errorMessage != null,
-                    // Rebuilds Continue on completion and clears any error.
                     onChanged: (_) => _onCodeChanged(),
                   ),
                   if (_errorMessage != null) ...[
@@ -255,8 +218,6 @@ class _ConfirmOtpSheetState extends State<ConfirmOtpSheet> {
   }
 }
 
-/// The row of digit boxes with the real (invisible) input field stretched
-/// over them, so tapping any box focuses the field and opens the keyboard.
 class _OtpBoxes extends StatelessWidget {
   const _OtpBoxes({
     required this.controller,
@@ -287,7 +248,6 @@ class _OtpBoxes extends StatelessWidget {
                   Expanded(
                     child: _OtpBox(
                       digit: i < code.length ? code[i] : null,
-                      // The box the next keystroke lands in.
                       active: focusNode.hasFocus && i == code.length,
                       hasError: hasError,
                     ),
@@ -361,8 +321,6 @@ class _OtpBox extends StatelessWidget {
   }
 }
 
-/// Text-input caret look-alike for the active empty box, since the real
-/// field's cursor is hidden with the field itself.
 class _BlinkingCursor extends StatefulWidget {
   const _BlinkingCursor();
 
@@ -396,7 +354,6 @@ class _BlinkingCursorState extends State<_BlinkingCursor>
   }
 }
 
-/// "Resend in 52s." while the cooldown runs, then a tappable resend link.
 class _ResendText extends StatelessWidget {
   const _ResendText({required this.secondsLeft, required this.onResend});
 

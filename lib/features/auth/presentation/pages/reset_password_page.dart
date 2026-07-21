@@ -16,7 +16,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class ResetPasswordPage extends StatefulWidget {
   const ResetPasswordPage({super.key, required this.email});
 
-  /// Account being reset — carried over from the forgot-password step.
   final String email;
 
   @override

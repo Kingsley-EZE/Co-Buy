@@ -11,9 +11,7 @@ part 'create_pool_form_event.dart';
 part 'create_pool_form_state.dart';
 part 'create_pool_form_bloc.freezed.dart';
 
-/// Owns the create-pool form's field values and validity so the page is a
-/// pure renderer. Submission will live with the pools feature bloc once the
-/// create-pool use case lands.
+/// Form fields and validity only; submission with [CreatePoolBloc].
 @injectable
 class CreatePoolFormBloc
     extends Bloc<CreatePoolFormEvent, CreatePoolFormState> {
