@@ -72,6 +72,7 @@ dev_dependencies:
   http_mock_adapter: ^0.6.1
   freezed: ^4.0.0-dev.3
   flutter_gen_runner: ^5.15.0
+  flutter_launcher_icons: ^0.14.4
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -148,3 +149,16 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+# Android launcher icon generation (iOS icons are managed separately).
+# The source image is full-bleed on the brand blue, so the same file works as
+# the adaptive foreground over a matching solid background — any launcher mask
+# shape blends seamlessly. Regenerate with:
+#   fvm dart run flutter_launcher_icons
+flutter_launcher_icons:
+  android: true
+  ios: false
+  image_path: "assets_dev/app_launcher_icon.png"
+  adaptive_icon_background: "#0052D5"
+  adaptive_icon_foreground: "assets_dev/app_launcher_icon.png"
+  min_sdk_android: 24
