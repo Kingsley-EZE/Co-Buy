@@ -254,8 +254,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i851.PoolPaymentBloc>(
       () => _i851.PoolPaymentBloc(gh<_i717.PayForPoolUseCase>()),
     );
-    gh.factory<_i148.PoolsBloc>(
+    gh.lazySingleton<_i148.PoolsBloc>(
       () => _i148.PoolsBloc(gh<_i162.GetPoolsUseCase>()),
+      dispose: _i148.disposePoolsBloc,
     );
     gh.lazySingleton<_i661.AuthBloc>(
       () => _i661.AuthBloc(

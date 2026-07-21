@@ -15,7 +15,8 @@ class AlertsPage extends StatelessWidget {
     return BlocProvider(
       create: (_) =>
           getIt<NotificationsBloc>()
-            ..add(const NotificationsEvent.fetchRequested()),
+            ..add(const NotificationsEvent.fetchRequested())
+            ..add(const NotificationsEvent.socketStarted()),
       child: const _AlertsView(),
     );
   }

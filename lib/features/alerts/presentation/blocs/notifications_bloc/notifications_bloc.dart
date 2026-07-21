@@ -1,3 +1,7 @@
+import 'dart:async';
+
+import 'package:co_buy/core/network/sockets/socket_events.dart';
+import 'package:co_buy/core/network/sockets/socket_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
@@ -16,9 +20,12 @@ class NotificationsBloc
   NotificationsBloc(this._getNotificationsUseCase)
       : super(const NotificationsState()) {
     on<NotificationsFetchRequested>(_onFetchRequested);
+    on<NotificationsSocketStarted>(_onSocketStarted);
+    on<NotificationsSocketUpdateReceived>(_onSocketUpdateReceived);
   }
 
   final GetNotificationsUseCase _getNotificationsUseCase;
+  StreamSubscription<Map<String, dynamic>>? _socketSub;
 
   Future<void> _onFetchRequested(
     NotificationsFetchRequested event,
@@ -42,5 +49,39 @@ class NotificationsBloc
         ),
       ),
     );
+  }
+
+  void _onSocketStarted(
+    NotificationsSocketStarted event,
+    Emitter<NotificationsState> emit,
+  ) {
+    _socketSub?.cancel();
+    _socketSub = SocketService.instance
+        .on<Map<String, dynamic>>(SocketEvents.notifications)
+        .listen((_) => add(const NotificationsEvent.socketUpdateReceived()));
+  }
+
+  /// Silently refreshes the list without resetting to loading so existing
+  /// items stay visible. Errors are swallowed — stale data beats a flash error.
+  Future<void> _onSocketUpdateReceived(
+    NotificationsSocketUpdateReceived event,
+    Emitter<NotificationsState> emit,
+  ) async {
+    final result = await _getNotificationsUseCase(const NoParams());
+    result.fold(
+      (_) {},
+      (notifications) => emit(
+        state.copyWith(
+          status: NotificationsStatus.success,
+          notifications: notifications,
+        ),
+      ),
+    );
+  }
+
+  @override
+  Future<void> close() {
+    _socketSub?.cancel();
+    return super.close();
   }
 }

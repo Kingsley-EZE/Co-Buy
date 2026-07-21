@@ -13,6 +13,7 @@ import 'package:co_buy/features/home/domain/entities/bank.dart';
 import 'package:co_buy/features/home/domain/entities/pool_category.dart';
 import 'package:co_buy/features/home/presentation/blocs/create_pool_bloc/create_pool_bloc.dart';
 import 'package:co_buy/features/home/presentation/blocs/create_pool_form_bloc/create_pool_form_bloc.dart';
+import 'package:co_buy/features/home/presentation/blocs/pools_bloc/pools_bloc.dart';
 import 'package:co_buy/features/home/presentation/widgets/pool_summary_sheet.dart';
 import 'package:co_buy/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
@@ -160,6 +161,7 @@ class _CreatePoolPageState extends State<CreatePoolPage> {
               switch (state.createPoolStatus) {
                 case CreatePoolRequestStatus.success:
                   AppSnackBar.showSuccess(context, 'Pool created successfully');
+                  getIt<PoolsBloc>().add(const PoolsEvent.fetchRequested());
                   context.pop();
                 case CreatePoolRequestStatus.failure:
                   AppSnackBar.showError(

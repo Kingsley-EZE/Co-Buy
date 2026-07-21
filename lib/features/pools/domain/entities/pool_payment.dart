@@ -15,23 +15,16 @@ class PoolPaymentRequest extends Equatable {
 }
 
 /// An initiated payment, reduced to what the checkout step needs: where to
-/// send the user and how to recognise that the gateway is done with them.
+/// send the user. Completion is signalled over the socket, not by watching
+/// the webview for a redirect URL.
 class PoolPayment extends Equatable {
-  const PoolPayment({
-    required this.checkoutUrl,
-    this.redirectUrl,
-    required this.merchantName,
-  });
+  const PoolPayment({required this.checkoutUrl, required this.merchantName});
 
   /// The gateway's hosted checkout page, to be opened in a webview.
   final String checkoutUrl;
 
-  /// Where the gateway sends the browser once payment completes — the
-  /// webview watches for this URL to know the checkout is over.
-  final String? redirectUrl;
-
   final String merchantName;
 
   @override
-  List<Object?> get props => [checkoutUrl, redirectUrl, merchantName];
+  List<Object?> get props => [checkoutUrl, merchantName];
 }

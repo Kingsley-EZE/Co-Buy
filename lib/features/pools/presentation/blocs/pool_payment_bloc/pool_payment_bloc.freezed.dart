@@ -56,12 +56,13 @@ extension PoolPaymentEventPatterns on PoolPaymentEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( PoolPaymentPayRequested value)?  payRequested,TResult Function( PoolPaymentStateCleared value)?  stateCleared,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( PoolPaymentPayRequested value)?  payRequested,TResult Function( PoolPaymentStateCleared value)?  stateCleared,TResult Function( PoolPaymentSocketConfirmed value)?  socketConfirmed,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case PoolPaymentPayRequested() when payRequested != null:
 return payRequested(_that);case PoolPaymentStateCleared() when stateCleared != null:
-return stateCleared(_that);case _:
+return stateCleared(_that);case PoolPaymentSocketConfirmed() when socketConfirmed != null:
+return socketConfirmed(_that);case _:
   return orElse();
 
 }
@@ -79,12 +80,13 @@ return stateCleared(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( PoolPaymentPayRequested value)  payRequested,required TResult Function( PoolPaymentStateCleared value)  stateCleared,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( PoolPaymentPayRequested value)  payRequested,required TResult Function( PoolPaymentStateCleared value)  stateCleared,required TResult Function( PoolPaymentSocketConfirmed value)  socketConfirmed,}){
 final _that = this;
 switch (_that) {
 case PoolPaymentPayRequested():
 return payRequested(_that);case PoolPaymentStateCleared():
-return stateCleared(_that);}
+return stateCleared(_that);case PoolPaymentSocketConfirmed():
+return socketConfirmed(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -98,12 +100,13 @@ return stateCleared(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( PoolPaymentPayRequested value)?  payRequested,TResult? Function( PoolPaymentStateCleared value)?  stateCleared,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( PoolPaymentPayRequested value)?  payRequested,TResult? Function( PoolPaymentStateCleared value)?  stateCleared,TResult? Function( PoolPaymentSocketConfirmed value)?  socketConfirmed,}){
 final _that = this;
 switch (_that) {
 case PoolPaymentPayRequested() when payRequested != null:
 return payRequested(_that);case PoolPaymentStateCleared() when stateCleared != null:
-return stateCleared(_that);case _:
+return stateCleared(_that);case PoolPaymentSocketConfirmed() when socketConfirmed != null:
+return socketConfirmed(_that);case _:
   return null;
 
 }
@@ -120,11 +123,12 @@ return stateCleared(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( PoolPaymentRequest request)?  payRequested,TResult Function()?  stateCleared,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( PoolPaymentRequest request)?  payRequested,TResult Function()?  stateCleared,TResult Function()?  socketConfirmed,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case PoolPaymentPayRequested() when payRequested != null:
 return payRequested(_that.request);case PoolPaymentStateCleared() when stateCleared != null:
-return stateCleared();case _:
+return stateCleared();case PoolPaymentSocketConfirmed() when socketConfirmed != null:
+return socketConfirmed();case _:
   return orElse();
 
 }
@@ -142,11 +146,12 @@ return stateCleared();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( PoolPaymentRequest request)  payRequested,required TResult Function()  stateCleared,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( PoolPaymentRequest request)  payRequested,required TResult Function()  stateCleared,required TResult Function()  socketConfirmed,}) {final _that = this;
 switch (_that) {
 case PoolPaymentPayRequested():
 return payRequested(_that.request);case PoolPaymentStateCleared():
-return stateCleared();}
+return stateCleared();case PoolPaymentSocketConfirmed():
+return socketConfirmed();}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -160,11 +165,12 @@ return stateCleared();}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( PoolPaymentRequest request)?  payRequested,TResult? Function()?  stateCleared,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( PoolPaymentRequest request)?  payRequested,TResult? Function()?  stateCleared,TResult? Function()?  socketConfirmed,}) {final _that = this;
 switch (_that) {
 case PoolPaymentPayRequested() when payRequested != null:
 return payRequested(_that.request);case PoolPaymentStateCleared() when stateCleared != null:
-return stateCleared();case _:
+return stateCleared();case PoolPaymentSocketConfirmed() when socketConfirmed != null:
+return socketConfirmed();case _:
   return null;
 
 }
@@ -262,6 +268,38 @@ int get hashCode => runtimeType.hashCode;
 @override
 String toString() {
   return 'PoolPaymentEvent.stateCleared()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class PoolPaymentSocketConfirmed implements PoolPaymentEvent {
+  const PoolPaymentSocketConfirmed();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PoolPaymentSocketConfirmed);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'PoolPaymentEvent.socketConfirmed()';
 }
 
 

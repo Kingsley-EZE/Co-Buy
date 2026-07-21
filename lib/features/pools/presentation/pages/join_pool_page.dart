@@ -122,7 +122,10 @@ class _JoinPoolPageState extends State<JoinPoolPage> {
         ),
       );
     } else {
-      context.pop(true);
+      // The user has already joined — no reason to return to the form or
+      // pool details. Go home so the updated pool list is the next thing
+      // they see.
+      const HomeRoute().go(context);
     }
   }
 
@@ -140,7 +143,6 @@ class _JoinPoolPageState extends State<JoinPoolPage> {
         await PaymentCheckoutRoute(
           poolId: widget.poolId,
           checkoutUrl: payment.checkoutUrl,
-          redirectUrl: 'https://www.avenyhq.com',//payment.redirectUrl,
         ).push<bool>(context);
         // Whatever checkout popped with, the user joined — back to details,
         // which refetches on the `true` result and reflects any payment.
@@ -158,6 +160,9 @@ class _JoinPoolPageState extends State<JoinPoolPage> {
           const PoolPaymentEvent.stateCleared(),
         );
         context.pop(true);
+      case PoolPaymentRequestStatus.confirmed:
+        context.read<PoolPaymentBloc>().add(const PoolPaymentEvent.stateCleared());
+        if (context.canPop()) context.pop(true);
       case PoolPaymentRequestStatus.initial:
       case PoolPaymentRequestStatus.loading:
         break;

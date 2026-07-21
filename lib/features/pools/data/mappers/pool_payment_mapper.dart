@@ -9,10 +9,7 @@ extension PoolPaymentRequestX on PoolPaymentRequest {
 
 extension PoolPaymentDataDtoX on PoolPaymentDataDto {
   /// The transaction's bookkeeping fields stay in the data layer — the app
-  /// only needs where to send the user and how to spot the checkout ending.
-  PoolPayment toEntity() => PoolPayment(
-    checkoutUrl: checkoutUrl,
-    redirectUrl: transaction.redirectUrl,
-    merchantName: merchantName,
-  );
+  /// only needs where to send the user for checkout.
+  PoolPayment toEntity() =>
+      PoolPayment(checkoutUrl: checkoutUrl, merchantName: merchantName);
 }

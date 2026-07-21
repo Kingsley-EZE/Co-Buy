@@ -58,10 +58,6 @@ void main() {
         payment.checkoutUrl,
         'https://sandbox.monnify.com/checkout/abc123',
       );
-      expect(
-        payment.redirectUrl,
-        'https://my-merchants-page.com/transaction/confirm',
-      );
       expect(payment.merchantName, 'Co Buy');
     });
 

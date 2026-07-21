@@ -222,18 +222,16 @@ class PaymentCheckoutRoute extends GoRouteData with $PaymentCheckoutRoute {
   const PaymentCheckoutRoute({
     required this.poolId,
     required this.checkoutUrl,
-    required this.redirectUrl,
   });
 
   final String poolId;
   final String checkoutUrl;
-  final String redirectUrl;
 
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 
   @override
   Widget build(BuildContext context, GoRouterState state) =>
-      PaymentCheckoutPage(checkoutUrl: checkoutUrl, redirectUrl: redirectUrl);
+      PaymentCheckoutPage(checkoutUrl: checkoutUrl);
 }
 
 class MyPoolsRoute extends GoRouteData with $MyPoolsRoute {

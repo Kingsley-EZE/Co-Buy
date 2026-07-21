@@ -17,8 +17,10 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => getIt<PoolsBloc>()..add(const PoolsEvent.fetchRequested()),
+    return BlocProvider.value(
+      value: getIt<PoolsBloc>()
+        ..add(const PoolsEvent.fetchRequested())
+        ..add(const PoolsEvent.socketStarted()),
       child: AppScaffold(
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
