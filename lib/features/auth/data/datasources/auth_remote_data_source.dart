@@ -26,6 +26,9 @@ abstract class AuthRemoteDataSource {
   @POST('/auth/resend-otp')
   Future<void> resendOtp({@Field('email') required String email});
 
+  @POST('/auth/trigger-otp')
+  Future<void> triggerOtp({@Field('email') required String email});
+
   @POST('/auth/forgot-password')
   Future<void> forgotPassword({@Body() required ForgotPasswordRequestDto body});
 

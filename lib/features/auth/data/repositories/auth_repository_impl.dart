@@ -34,15 +34,20 @@ class AuthRepositoryImpl implements AuthRepository {
   FutureResult<User> login(LoginRequest request) async {
     try {
       final dto = await _remote.loginUser(body: request.toDto());
-      // Persist so AuthInterceptor attaches the token to every subsequent
-      // request — the tokens never leave this layer. refreshToken is nullable
-      // until the backend ships it; saveTokens leaves any stored value
-      // untouched when it's absent.
-      await _tokenStorage.saveTokens(
-        access: dto.data.accessToken,
-        refresh: dto.data.refreshToken,
-      );
-      _socketService.connect(dto.data.accessToken);
+      // An unverified account gets no session: tokens stay unpersisted and
+      // the socket stays closed until the caller confirms the OTP and logs
+      // in again.
+      if (dto.data.user.isVerified) {
+        // Persist so AuthInterceptor attaches the token to every subsequent
+        // request — the tokens never leave this layer. refreshToken is
+        // nullable until the backend ships it; saveTokens leaves any stored
+        // value untouched when it's absent.
+        await _tokenStorage.saveTokens(
+          access: dto.data.accessToken,
+          refresh: dto.data.refreshToken,
+        );
+        _socketService.connect(dto.data.accessToken);
+      }
       return Right(dto.data.user.toEntity());
     } on DioException catch (e) {
       return Left(mapDioException(e));
@@ -79,6 +84,18 @@ class AuthRepositoryImpl implements AuthRepository {
   FutureResult<void> resendOtp(String email) async {
     try {
       await _remote.resendOtp(email: email);
+      return const Right(null);
+    } on DioException catch (e) {
+      return Left(mapDioException(e));
+    } catch (_) {
+      return const Left(UnknownFailure());
+    }
+  }
+
+  @override
+  FutureResult<void> triggerOtp(String email) async {
+    try {
+      await _remote.triggerOtp(email: email);
       return const Right(null);
     } on DioException catch (e) {
       return Left(mapDioException(e));

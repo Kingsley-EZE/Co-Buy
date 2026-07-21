@@ -8,6 +8,7 @@ import 'package:co_buy/core/navigation/routes.dart';
 import 'package:co_buy/core/validation/app_validators.dart';
 import 'package:co_buy/features/auth/presentation/blocs/auth_bloc/auth_bloc.dart';
 import 'package:co_buy/features/auth/presentation/blocs/login_form_bloc/login_form_bloc.dart';
+import 'package:co_buy/features/auth/presentation/widgets/confirm_otp_sheet.dart';
 import 'package:co_buy/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,11 +24,37 @@ class _LoginPageState extends State<LoginPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
+  /// OTP sheet owns auth states while open — page listener must stand down.
+  bool _isOtpSheetOpen = false;
+
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  Future<void> _showOtpSheet(BuildContext context, String email) async {
+    final authBloc = context.read<AuthBloc>();
+    final formBloc = context.read<LoginFormBloc>();
+
+    _isOtpSheetOpen = true;
+    final code = await ConfirmOtpSheet.show(
+      context,
+      subtitle: 'Type one time code we sent to your email',
+      onSubmit: (otp) =>
+          authBloc.add(AuthEvent.verifyEmailRequested(email: email, otp: otp)),
+      onResend: () => authBloc.add(AuthEvent.resendOtpRequested(email: email)),
+    );
+    _isOtpSheetOpen = false;
+
+    if (code == null || !context.mounted) return;
+    authBloc.add(
+      AuthEvent.loginRequested(
+        email: formBloc.state.email.trim(),
+        password: formBloc.state.password,
+      ),
+    );
   }
 
   void _onLoginPressed(BuildContext context) {
@@ -49,11 +76,15 @@ class _LoginPageState extends State<LoginPage> {
       child: AppScaffold(
         body: BlocConsumer<AuthBloc, AuthState>(
           listener: (context, state) {
+            if (_isOtpSheetOpen) return;
             if (state case AuthFailure(:final message)) {
               AppSnackBar.showError(context, message);
             }
             if (state case AuthAuthenticated()) {
               DashboardShellRoute.go(context);
+            }
+            if (state case AuthVerificationRequired(:final email)) {
+              _showOtpSheet(context, email);
             }
           },
           builder: (context, state) {

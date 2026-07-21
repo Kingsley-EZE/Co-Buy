@@ -7,6 +7,12 @@ sealed class AuthState with _$AuthState {
 
   const factory AuthState.authenticated(User user) = AuthAuthenticated;
 
+  /// Login found an unverified account: an OTP was sent to [email] and no
+  /// session starts until it's confirmed, so the page must collect the code
+  /// rather than navigate.
+  const factory AuthState.verificationRequired(String email) =
+      AuthVerificationRequired;
+
   const factory AuthState.success() = AuthSuccess;
 
   const factory AuthState.failure(String message) = AuthFailure;

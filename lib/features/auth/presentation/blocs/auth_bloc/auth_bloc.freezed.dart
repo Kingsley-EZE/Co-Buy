@@ -688,13 +688,14 @@ extension AuthStatePatterns on AuthState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( AuthInitial value)?  initial,TResult Function( AuthLoading value)?  loading,TResult Function( AuthAuthenticated value)?  authenticated,TResult Function( AuthSuccess value)?  success,TResult Function( AuthFailure value)?  failure,TResult Function( AuthResendOtpSuccess value)?  resendOtpSuccess,TResult Function( AuthResendOtpFailure value)?  resendOtpFailure,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( AuthInitial value)?  initial,TResult Function( AuthLoading value)?  loading,TResult Function( AuthAuthenticated value)?  authenticated,TResult Function( AuthVerificationRequired value)?  verificationRequired,TResult Function( AuthSuccess value)?  success,TResult Function( AuthFailure value)?  failure,TResult Function( AuthResendOtpSuccess value)?  resendOtpSuccess,TResult Function( AuthResendOtpFailure value)?  resendOtpFailure,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case AuthInitial() when initial != null:
 return initial(_that);case AuthLoading() when loading != null:
 return loading(_that);case AuthAuthenticated() when authenticated != null:
-return authenticated(_that);case AuthSuccess() when success != null:
+return authenticated(_that);case AuthVerificationRequired() when verificationRequired != null:
+return verificationRequired(_that);case AuthSuccess() when success != null:
 return success(_that);case AuthFailure() when failure != null:
 return failure(_that);case AuthResendOtpSuccess() when resendOtpSuccess != null:
 return resendOtpSuccess(_that);case AuthResendOtpFailure() when resendOtpFailure != null:
@@ -716,13 +717,14 @@ return resendOtpFailure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( AuthInitial value)  initial,required TResult Function( AuthLoading value)  loading,required TResult Function( AuthAuthenticated value)  authenticated,required TResult Function( AuthSuccess value)  success,required TResult Function( AuthFailure value)  failure,required TResult Function( AuthResendOtpSuccess value)  resendOtpSuccess,required TResult Function( AuthResendOtpFailure value)  resendOtpFailure,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( AuthInitial value)  initial,required TResult Function( AuthLoading value)  loading,required TResult Function( AuthAuthenticated value)  authenticated,required TResult Function( AuthVerificationRequired value)  verificationRequired,required TResult Function( AuthSuccess value)  success,required TResult Function( AuthFailure value)  failure,required TResult Function( AuthResendOtpSuccess value)  resendOtpSuccess,required TResult Function( AuthResendOtpFailure value)  resendOtpFailure,}){
 final _that = this;
 switch (_that) {
 case AuthInitial():
 return initial(_that);case AuthLoading():
 return loading(_that);case AuthAuthenticated():
-return authenticated(_that);case AuthSuccess():
+return authenticated(_that);case AuthVerificationRequired():
+return verificationRequired(_that);case AuthSuccess():
 return success(_that);case AuthFailure():
 return failure(_that);case AuthResendOtpSuccess():
 return resendOtpSuccess(_that);case AuthResendOtpFailure():
@@ -740,13 +742,14 @@ return resendOtpFailure(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( AuthInitial value)?  initial,TResult? Function( AuthLoading value)?  loading,TResult? Function( AuthAuthenticated value)?  authenticated,TResult? Function( AuthSuccess value)?  success,TResult? Function( AuthFailure value)?  failure,TResult? Function( AuthResendOtpSuccess value)?  resendOtpSuccess,TResult? Function( AuthResendOtpFailure value)?  resendOtpFailure,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( AuthInitial value)?  initial,TResult? Function( AuthLoading value)?  loading,TResult? Function( AuthAuthenticated value)?  authenticated,TResult? Function( AuthVerificationRequired value)?  verificationRequired,TResult? Function( AuthSuccess value)?  success,TResult? Function( AuthFailure value)?  failure,TResult? Function( AuthResendOtpSuccess value)?  resendOtpSuccess,TResult? Function( AuthResendOtpFailure value)?  resendOtpFailure,}){
 final _that = this;
 switch (_that) {
 case AuthInitial() when initial != null:
 return initial(_that);case AuthLoading() when loading != null:
 return loading(_that);case AuthAuthenticated() when authenticated != null:
-return authenticated(_that);case AuthSuccess() when success != null:
+return authenticated(_that);case AuthVerificationRequired() when verificationRequired != null:
+return verificationRequired(_that);case AuthSuccess() when success != null:
 return success(_that);case AuthFailure() when failure != null:
 return failure(_that);case AuthResendOtpSuccess() when resendOtpSuccess != null:
 return resendOtpSuccess(_that);case AuthResendOtpFailure() when resendOtpFailure != null:
@@ -767,12 +770,13 @@ return resendOtpFailure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( User user)?  authenticated,TResult Function()?  success,TResult Function( String message)?  failure,TResult Function()?  resendOtpSuccess,TResult Function( String message)?  resendOtpFailure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( User user)?  authenticated,TResult Function( String email)?  verificationRequired,TResult Function()?  success,TResult Function( String message)?  failure,TResult Function()?  resendOtpSuccess,TResult Function( String message)?  resendOtpFailure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case AuthInitial() when initial != null:
 return initial();case AuthLoading() when loading != null:
 return loading();case AuthAuthenticated() when authenticated != null:
-return authenticated(_that.user);case AuthSuccess() when success != null:
+return authenticated(_that.user);case AuthVerificationRequired() when verificationRequired != null:
+return verificationRequired(_that.email);case AuthSuccess() when success != null:
 return success();case AuthFailure() when failure != null:
 return failure(_that.message);case AuthResendOtpSuccess() when resendOtpSuccess != null:
 return resendOtpSuccess();case AuthResendOtpFailure() when resendOtpFailure != null:
@@ -794,12 +798,13 @@ return resendOtpFailure(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( User user)  authenticated,required TResult Function()  success,required TResult Function( String message)  failure,required TResult Function()  resendOtpSuccess,required TResult Function( String message)  resendOtpFailure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( User user)  authenticated,required TResult Function( String email)  verificationRequired,required TResult Function()  success,required TResult Function( String message)  failure,required TResult Function()  resendOtpSuccess,required TResult Function( String message)  resendOtpFailure,}) {final _that = this;
 switch (_that) {
 case AuthInitial():
 return initial();case AuthLoading():
 return loading();case AuthAuthenticated():
-return authenticated(_that.user);case AuthSuccess():
+return authenticated(_that.user);case AuthVerificationRequired():
+return verificationRequired(_that.email);case AuthSuccess():
 return success();case AuthFailure():
 return failure(_that.message);case AuthResendOtpSuccess():
 return resendOtpSuccess();case AuthResendOtpFailure():
@@ -817,12 +822,13 @@ return resendOtpFailure(_that.message);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( User user)?  authenticated,TResult? Function()?  success,TResult? Function( String message)?  failure,TResult? Function()?  resendOtpSuccess,TResult? Function( String message)?  resendOtpFailure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( User user)?  authenticated,TResult? Function( String email)?  verificationRequired,TResult? Function()?  success,TResult? Function( String message)?  failure,TResult? Function()?  resendOtpSuccess,TResult? Function( String message)?  resendOtpFailure,}) {final _that = this;
 switch (_that) {
 case AuthInitial() when initial != null:
 return initial();case AuthLoading() when loading != null:
 return loading();case AuthAuthenticated() when authenticated != null:
-return authenticated(_that.user);case AuthSuccess() when success != null:
+return authenticated(_that.user);case AuthVerificationRequired() when verificationRequired != null:
+return verificationRequired(_that.email);case AuthSuccess() when success != null:
 return success();case AuthFailure() when failure != null:
 return failure(_that.message);case AuthResendOtpSuccess() when resendOtpSuccess != null:
 return resendOtpSuccess();case AuthResendOtpFailure() when resendOtpFailure != null:
@@ -958,6 +964,72 @@ class _$AuthAuthenticatedCopyWithImpl<$Res>
   return _then(AuthAuthenticated(
 null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
 as User,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class AuthVerificationRequired implements AuthState {
+  const AuthVerificationRequired(this.email);
+  
+
+ final  String email;
+
+/// Create a copy of AuthState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$AuthVerificationRequiredCopyWith<AuthVerificationRequired> get copyWith => _$AuthVerificationRequiredCopyWithImpl<AuthVerificationRequired>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthVerificationRequired&&(identical(other.email, email) || other.email == email));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,email);
+
+@override
+String toString() {
+  return 'AuthState.verificationRequired(email: $email)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $AuthVerificationRequiredCopyWith<$Res> implements $AuthStateCopyWith<$Res> {
+  factory $AuthVerificationRequiredCopyWith(AuthVerificationRequired value, $Res Function(AuthVerificationRequired) _then) = _$AuthVerificationRequiredCopyWithImpl;
+@useResult
+$Res call({
+ String email
+});
+
+
+
+
+}
+/// @nodoc
+class _$AuthVerificationRequiredCopyWithImpl<$Res>
+    implements $AuthVerificationRequiredCopyWith<$Res> {
+  _$AuthVerificationRequiredCopyWithImpl(this._self, this._then);
+
+  final AuthVerificationRequired _self;
+  final $Res Function(AuthVerificationRequired) _then;
+
+/// Create a copy of AuthState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? email = null,}) {
+  return _then(AuthVerificationRequired(
+null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
+as String,
   ));
 }
 

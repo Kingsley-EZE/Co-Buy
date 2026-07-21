@@ -26,6 +26,10 @@ abstract class AuthRepository {
   /// Requests a fresh verification OTP for the given email.
   FutureResult<void> resendOtp(String email);
 
+  /// Requests a verification OTP for an unverified account that just tried
+  /// to log in — [login] won't start a session until it's confirmed.
+  FutureResult<void> triggerOtp(String email);
+
   /// Requests a password-reset OTP to be sent to the given email.
   FutureResult<void> forgotPassword(ForgotPasswordRequest request);
 
