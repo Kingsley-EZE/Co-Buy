@@ -114,6 +114,7 @@ import '../navigation/app_navigator.dart' as _i397;
 import '../navigation/go_router_navigator.dart' as _i489;
 import '../network/dio_factory.dart' as _i798;
 import '../network/interceptors/auth_interceptor.dart' as _i745;
+import '../network/sockets/socket_service.dart' as _i802;
 import '../network/storage/token_storage.dart' as _i483;
 import 'router_module.dart' as _i393;
 import 'service_module.dart' as _i180;
@@ -142,6 +143,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i558.FlutterSecureStorage>(
       () => serviceModule.secureStorage,
     );
+    gh.lazySingleton<_i802.SocketService>(() => serviceModule.socketService);
     gh.lazySingleton<_i513.Env>(() => serviceModule.env());
     gh.lazySingleton<_i483.TokenStorage>(
       () => _i483.TokenStorage(gh<_i558.FlutterSecureStorage>()),
@@ -197,14 +199,15 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i361.Dio>(instanceName: 'appDio'),
       ),
     );
+    gh.lazySingleton<_i1062.PoolsRepository>(
+      () => _i590.PoolsRepositoryImpl(gh<_i694.PoolsDataSource>()),
+    );
     gh.lazySingleton<_i787.AuthRepository>(
       () => _i153.AuthRepositoryImpl(
         gh<_i107.AuthRemoteDataSource>(),
         gh<_i483.TokenStorage>(),
+        gh<_i802.SocketService>(),
       ),
-    );
-    gh.lazySingleton<_i1062.PoolsRepository>(
-      () => _i590.PoolsRepositoryImpl(gh<_i694.PoolsDataSource>()),
     );
     gh.lazySingleton<_i343.PoolPaymentRepository>(
       () => _i975.PoolPaymentRepositoryImpl(gh<_i255.PoolPaymentDataSource>()),

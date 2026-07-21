@@ -423,9 +423,7 @@ String toString() {
 /// @nodoc
 mixin _$JoinPoolState {
 
- JoinPoolRequestStatus get banksStatus;/// The in-memory bank cache — once loaded, fetch events are no-ops.
- List<Bank> get banks; String? get banksError; JoinPoolRequestStatus get accountLookupStatus;/// The account resolved by the last name enquiry, cleared when a new
-/// lookup starts so a stale name is never shown against fresh input.
+ JoinPoolRequestStatus get banksStatus; List<Bank> get banks; String? get banksError; JoinPoolRequestStatus get accountLookupStatus;/// Cleared when a new lookup starts so a stale name isn't shown.
  BankAccount? get resolvedAccount; String? get accountLookupError; JoinPoolRequestStatus get joinStatus; String? get joinError;
 /// Create a copy of JoinPoolState
 /// with the given fields replaced by the non-null parameter values.
@@ -629,9 +627,7 @@ class _JoinPoolState extends JoinPoolState {
   
 
 @override@JsonKey() final  JoinPoolRequestStatus banksStatus;
-/// The in-memory bank cache — once loaded, fetch events are no-ops.
  final  List<Bank> _banks;
-/// The in-memory bank cache — once loaded, fetch events are no-ops.
 @override@JsonKey() List<Bank> get banks {
   if (_banks is EqualUnmodifiableListView) return _banks;
   // ignore: implicit_dynamic_type
@@ -640,8 +636,7 @@ class _JoinPoolState extends JoinPoolState {
 
 @override final  String? banksError;
 @override@JsonKey() final  JoinPoolRequestStatus accountLookupStatus;
-/// The account resolved by the last name enquiry, cleared when a new
-/// lookup starts so a stale name is never shown against fresh input.
+/// Cleared when a new lookup starts so a stale name isn't shown.
 @override final  BankAccount? resolvedAccount;
 @override final  String? accountLookupError;
 @override@JsonKey() final  JoinPoolRequestStatus joinStatus;

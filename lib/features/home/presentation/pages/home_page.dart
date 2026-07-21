@@ -16,9 +16,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
-      value: getIt<PoolsBloc>()
-        ..add(const PoolsEvent.fetchRequested())
-        ..add(const PoolsEvent.socketStarted()),
+      value: getIt<PoolsBloc>()..add(const PoolsEvent.fetchRequested()),
       child: AppScaffold(
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -29,8 +27,6 @@ class HomePage extends StatelessWidget {
                 horizontal: AppSpacing.screenH,
               ),
               child:
-                  // Rebuilds only when the signed-in user changes, not on every
-                  // transient auth transition (loading, failure, ...).
                   BlocSelector<AuthBloc, AuthState, User?>(
                     selector: (state) =>
                         state is AuthAuthenticated ? state.user : null,

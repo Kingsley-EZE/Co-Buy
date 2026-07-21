@@ -1,4 +1,5 @@
 import 'package:co_buy/core/error/failures.dart';
+import 'package:co_buy/core/network/sockets/socket_service.dart';
 import 'package:co_buy/core/network/storage/token_storage.dart';
 import 'package:co_buy/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:co_buy/features/auth/data/dtos/login_request_dto.dart';
@@ -13,9 +14,12 @@ class MockAuthRemoteDataSource extends Mock implements AuthRemoteDataSource {}
 
 class MockTokenStorage extends Mock implements TokenStorage {}
 
+class MockSocketService extends Mock implements SocketService {}
+
 void main() {
   late MockAuthRemoteDataSource remote;
   late MockTokenStorage tokenStorage;
+  late MockSocketService socketService;
   late AuthRepositoryImpl repo;
 
   const request = LoginRequest(
@@ -35,7 +39,7 @@ void main() {
 
   const response = LoginResponseDto(
     success: true,
-    data: LoginDataDto(user: user, accessToken: 'a1'),
+    data: LoginDataDto(user: user, accessToken: 'a1', refreshToken: 'r1'),
     message: 'Login successful',
   );
 
@@ -46,7 +50,8 @@ void main() {
   setUp(() {
     remote = MockAuthRemoteDataSource();
     tokenStorage = MockTokenStorage();
-    repo = AuthRepositoryImpl(remote, tokenStorage);
+    socketService = MockSocketService();
+    repo = AuthRepositoryImpl(remote, tokenStorage, socketService);
   });
 
   test(
@@ -61,6 +66,7 @@ void main() {
           refresh: any(named: 'refresh'),
         ),
       ).thenAnswer((_) async {});
+      when(() => socketService.connect(any())).thenReturn(null);
 
       final result = await repo.login(request);
 
@@ -69,10 +75,13 @@ void main() {
         expect(u.email, 'kingsley@example.com');
         expect(u.name, 'Kingsley Eze');
       });
-      // No refresh token in the login response yet, so none is persisted.
+      // Both tokens from the response are persisted so AuthInterceptor can
+      // refresh the session on a 401 instead of forcing a re-login.
       verify(
-        () => tokenStorage.saveTokens(access: 'a1', refresh: null),
+        () => tokenStorage.saveTokens(access: 'a1', refresh: 'r1'),
       ).called(1);
+      // The socket is opened with the fresh access token after login.
+      verify(() => socketService.connect('a1')).called(1);
     },
   );
 
@@ -101,6 +110,7 @@ void main() {
           refresh: any(named: 'refresh'),
         ),
       );
+      verifyNever(() => socketService.connect(any()));
     },
   );
 

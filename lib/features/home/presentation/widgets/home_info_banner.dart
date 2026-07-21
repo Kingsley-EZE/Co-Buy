@@ -26,8 +26,7 @@ class HomeInfoBanner extends StatelessWidget {
           const SizedBox(width: AppSpacing.s12),
           Expanded(
             child: Text(
-              "Every pool must be filled, if it doesn't, all contributors "
-              'are refunded automatically.',
+              "Every pool must be filled. If it isn't, all contributors are refunded automatically.",
               style: context.styles.bodyM.copyWith(
                 color: colors.state.warningDark,
               ),

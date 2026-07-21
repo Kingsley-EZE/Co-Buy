@@ -461,10 +461,7 @@ String toString() {
 /// @nodoc
 mixin _$CreatePoolState {
 
- CreatePoolRequestStatus get banksStatus;/// The in-memory bank cache — once loaded, fetch events are no-ops.
- List<Bank> get banks; String? get banksError; CreatePoolRequestStatus get categoriesStatus;/// The in-memory category cache — once loaded, fetch events are no-ops.
- List<PoolCategory> get categories; String? get categoriesError; CreatePoolRequestStatus get accountLookupStatus;/// The account resolved by the last name enquiry, cleared when a new
-/// lookup starts so a stale name is never shown against fresh input.
+ CreatePoolRequestStatus get banksStatus; List<Bank> get banks; String? get banksError; CreatePoolRequestStatus get categoriesStatus; List<PoolCategory> get categories; String? get categoriesError; CreatePoolRequestStatus get accountLookupStatus;/// Cleared when a new lookup starts so a stale name isn't shown.
  BankAccount? get resolvedAccount; String? get accountLookupError; CreatePoolRequestStatus get createPoolStatus; String? get createPoolError;
 /// Create a copy of CreatePoolState
 /// with the given fields replaced by the non-null parameter values.
@@ -671,9 +668,7 @@ class _CreatePoolState extends CreatePoolState {
   
 
 @override@JsonKey() final  CreatePoolRequestStatus banksStatus;
-/// The in-memory bank cache — once loaded, fetch events are no-ops.
  final  List<Bank> _banks;
-/// The in-memory bank cache — once loaded, fetch events are no-ops.
 @override@JsonKey() List<Bank> get banks {
   if (_banks is EqualUnmodifiableListView) return _banks;
   // ignore: implicit_dynamic_type
@@ -682,9 +677,7 @@ class _CreatePoolState extends CreatePoolState {
 
 @override final  String? banksError;
 @override@JsonKey() final  CreatePoolRequestStatus categoriesStatus;
-/// The in-memory category cache — once loaded, fetch events are no-ops.
  final  List<PoolCategory> _categories;
-/// The in-memory category cache — once loaded, fetch events are no-ops.
 @override@JsonKey() List<PoolCategory> get categories {
   if (_categories is EqualUnmodifiableListView) return _categories;
   // ignore: implicit_dynamic_type
@@ -693,8 +686,7 @@ class _CreatePoolState extends CreatePoolState {
 
 @override final  String? categoriesError;
 @override@JsonKey() final  CreatePoolRequestStatus accountLookupStatus;
-/// The account resolved by the last name enquiry, cleared when a new
-/// lookup starts so a stale name is never shown against fresh input.
+/// Cleared when a new lookup starts so a stale name isn't shown.
 @override final  BankAccount? resolvedAccount;
 @override final  String? accountLookupError;
 @override@JsonKey() final  CreatePoolRequestStatus createPoolStatus;

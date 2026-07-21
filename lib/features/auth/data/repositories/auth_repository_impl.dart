@@ -24,10 +24,11 @@ import '../mappers/verify_email_request_mapper.dart';
 
 @LazySingleton(as: AuthRepository)
 class AuthRepositoryImpl implements AuthRepository {
-  AuthRepositoryImpl(this._remote, this._tokenStorage);
+  AuthRepositoryImpl(this._remote, this._tokenStorage, this._socketService);
 
   final AuthRemoteDataSource _remote;
   final TokenStorage _tokenStorage;
+  final SocketService _socketService;
 
   @override
   FutureResult<User> login(LoginRequest request) async {
@@ -41,7 +42,7 @@ class AuthRepositoryImpl implements AuthRepository {
         access: dto.data.accessToken,
         refresh: dto.data.refreshToken,
       );
-      SocketService.instance.connect(dto.data.accessToken);
+      _socketService.connect(dto.data.accessToken);
       return Right(dto.data.user.toEntity());
     } on DioException catch (e) {
       return Left(mapDioException(e));

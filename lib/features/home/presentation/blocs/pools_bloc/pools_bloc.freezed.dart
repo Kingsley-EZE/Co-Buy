@@ -56,14 +56,12 @@ extension PoolsEventPatterns on PoolsEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( PoolsFetchRequested value)?  fetchRequested,TResult Function( PoolsFilterChanged value)?  filterChanged,TResult Function( PoolsSocketStarted value)?  socketStarted,TResult Function( PoolsSocketUpdateReceived value)?  socketUpdateReceived,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( PoolsFetchRequested value)?  fetchRequested,TResult Function( PoolsFilterChanged value)?  filterChanged,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case PoolsFetchRequested() when fetchRequested != null:
 return fetchRequested(_that);case PoolsFilterChanged() when filterChanged != null:
-return filterChanged(_that);case PoolsSocketStarted() when socketStarted != null:
-return socketStarted(_that);case PoolsSocketUpdateReceived() when socketUpdateReceived != null:
-return socketUpdateReceived(_that);case _:
+return filterChanged(_that);case _:
   return orElse();
 
 }
@@ -81,14 +79,12 @@ return socketUpdateReceived(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( PoolsFetchRequested value)  fetchRequested,required TResult Function( PoolsFilterChanged value)  filterChanged,required TResult Function( PoolsSocketStarted value)  socketStarted,required TResult Function( PoolsSocketUpdateReceived value)  socketUpdateReceived,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( PoolsFetchRequested value)  fetchRequested,required TResult Function( PoolsFilterChanged value)  filterChanged,}){
 final _that = this;
 switch (_that) {
 case PoolsFetchRequested():
 return fetchRequested(_that);case PoolsFilterChanged():
-return filterChanged(_that);case PoolsSocketStarted():
-return socketStarted(_that);case PoolsSocketUpdateReceived():
-return socketUpdateReceived(_that);}
+return filterChanged(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -102,14 +98,12 @@ return socketUpdateReceived(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( PoolsFetchRequested value)?  fetchRequested,TResult? Function( PoolsFilterChanged value)?  filterChanged,TResult? Function( PoolsSocketStarted value)?  socketStarted,TResult? Function( PoolsSocketUpdateReceived value)?  socketUpdateReceived,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( PoolsFetchRequested value)?  fetchRequested,TResult? Function( PoolsFilterChanged value)?  filterChanged,}){
 final _that = this;
 switch (_that) {
 case PoolsFetchRequested() when fetchRequested != null:
 return fetchRequested(_that);case PoolsFilterChanged() when filterChanged != null:
-return filterChanged(_that);case PoolsSocketStarted() when socketStarted != null:
-return socketStarted(_that);case PoolsSocketUpdateReceived() when socketUpdateReceived != null:
-return socketUpdateReceived(_that);case _:
+return filterChanged(_that);case _:
   return null;
 
 }
@@ -126,13 +120,11 @@ return socketUpdateReceived(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  fetchRequested,TResult Function( PoolFilter filter)?  filterChanged,TResult Function()?  socketStarted,TResult Function()?  socketUpdateReceived,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  fetchRequested,TResult Function( PoolFilter filter)?  filterChanged,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case PoolsFetchRequested() when fetchRequested != null:
 return fetchRequested();case PoolsFilterChanged() when filterChanged != null:
-return filterChanged(_that.filter);case PoolsSocketStarted() when socketStarted != null:
-return socketStarted();case PoolsSocketUpdateReceived() when socketUpdateReceived != null:
-return socketUpdateReceived();case _:
+return filterChanged(_that.filter);case _:
   return orElse();
 
 }
@@ -150,13 +142,11 @@ return socketUpdateReceived();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  fetchRequested,required TResult Function( PoolFilter filter)  filterChanged,required TResult Function()  socketStarted,required TResult Function()  socketUpdateReceived,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  fetchRequested,required TResult Function( PoolFilter filter)  filterChanged,}) {final _that = this;
 switch (_that) {
 case PoolsFetchRequested():
 return fetchRequested();case PoolsFilterChanged():
-return filterChanged(_that.filter);case PoolsSocketStarted():
-return socketStarted();case PoolsSocketUpdateReceived():
-return socketUpdateReceived();}
+return filterChanged(_that.filter);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -170,13 +160,11 @@ return socketUpdateReceived();}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  fetchRequested,TResult? Function( PoolFilter filter)?  filterChanged,TResult? Function()?  socketStarted,TResult? Function()?  socketUpdateReceived,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  fetchRequested,TResult? Function( PoolFilter filter)?  filterChanged,}) {final _that = this;
 switch (_that) {
 case PoolsFetchRequested() when fetchRequested != null:
 return fetchRequested();case PoolsFilterChanged() when filterChanged != null:
-return filterChanged(_that.filter);case PoolsSocketStarted() when socketStarted != null:
-return socketStarted();case PoolsSocketUpdateReceived() when socketUpdateReceived != null:
-return socketUpdateReceived();case _:
+return filterChanged(_that.filter);case _:
   return null;
 
 }
@@ -281,70 +269,6 @@ as PoolFilter,
 
 
 }
-
-/// @nodoc
-
-
-class PoolsSocketStarted implements PoolsEvent {
-  const PoolsSocketStarted();
-  
-
-
-
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PoolsSocketStarted);
-}
-
-
-@override
-int get hashCode => runtimeType.hashCode;
-
-@override
-String toString() {
-  return 'PoolsEvent.socketStarted()';
-}
-
-
-}
-
-
-
-
-/// @nodoc
-
-
-class PoolsSocketUpdateReceived implements PoolsEvent {
-  const PoolsSocketUpdateReceived();
-  
-
-
-
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PoolsSocketUpdateReceived);
-}
-
-
-@override
-int get hashCode => runtimeType.hashCode;
-
-@override
-String toString() {
-  return 'PoolsEvent.socketUpdateReceived()';
-}
-
-
-}
-
-
-
 
 /// @nodoc
 mixin _$PoolsState {
