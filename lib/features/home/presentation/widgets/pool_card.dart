@@ -48,15 +48,15 @@ class PoolCard extends StatelessWidget {
                   const SizedBox(width: AppSpacing.s4),
                   Flexible(
                     child: Text(
-                      'Led by ${pool.leaderDisplayName} •',
+                      'Led by ${pool.leaderFirstName} ${pool.leaderLastName}',
                       style: styles.bodyM,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  const SizedBox(width: AppSpacing.s8),
-                  _VerifiedChip(label: '${pool.beneficiaryBankName} Verified'),
                 ],
               ),
+              const SizedBox(height: AppSpacing.s8),
+              _VerifiedChip(label: '${pool.beneficiaryBankName} Verified'),
               // No fixed slot price when the target isn't split evenly
               // (amountPerSlot arrives as zero) — skip the row entirely.
               if (pool.amountPerSlot > 0) ...[
@@ -154,7 +154,7 @@ class _SlotsBadge extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         color: background,
-        borderRadius: AppRadius.br8,
+        borderRadius: AppRadius.brFull,
         border: Border.all(color: border),
       ),
       child: Text(
@@ -192,6 +192,7 @@ class _VerifiedChip extends StatelessWidget {
           Text(
             label,
             style: context.styles.bodyM.copyWith(color: colors.text.subtle),
+            overflow: TextOverflow.ellipsis,
           ),
         ],
       ),

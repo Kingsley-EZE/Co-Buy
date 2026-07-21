@@ -14,4 +14,8 @@ final class EnvProd implements Env {
   @override
   @EnviedField(varName: 'API_KEY', obfuscate: true)
   final String apiKey = _EnvProd.apiKey;
+
+  @override
+  @EnviedField(varName: 'SOCKET_BASE_URL', obfuscate: true)
+  final String socketBaseUrl = _EnvProd.socketBaseUrl;
 }
