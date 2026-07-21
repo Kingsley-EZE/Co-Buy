@@ -9,22 +9,33 @@ import 'package:injectable/injectable.dart';
 import '../../../../../core/usecase/usecase.dart';
 import '../../../domain/entities/app_notification.dart';
 import '../../../domain/usecases/get_notifications_usecase.dart';
+import '../../../domain/usecases/mark_notification_read_usecase.dart';
 
 part 'notifications_event.dart';
 part 'notifications_state.dart';
 part 'notifications_bloc.freezed.dart';
 
-@injectable
-class NotificationsBloc
-    extends Bloc<NotificationsEvent, NotificationsState> {
-  NotificationsBloc(this._getNotificationsUseCase)
-      : super(const NotificationsState()) {
+/// Dispose hook so get_it closes the bloc if the container is ever reset
+/// (e.g. in tests) — in the running app it lives for the app's lifetime.
+FutureOr<void> disposeNotificationsBloc(NotificationsBloc bloc) => bloc.close();
+
+/// App-wide singleton: the unread count feeds the home bell and the Alerts
+/// nav-bar badge, both of which live outside the alerts page, so the list and
+/// its count must survive tab switches rather than being page-scoped.
+@LazySingleton(dispose: disposeNotificationsBloc)
+class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
+  NotificationsBloc(
+    this._getNotificationsUseCase,
+    this._markNotificationReadUseCase,
+  ) : super(const NotificationsState()) {
     on<NotificationsFetchRequested>(_onFetchRequested);
     on<NotificationsSocketStarted>(_onSocketStarted);
     on<NotificationsSocketUpdateReceived>(_onSocketUpdateReceived);
+    on<NotificationsAllMarkedRead>(_onAllMarkedRead);
   }
 
   final GetNotificationsUseCase _getNotificationsUseCase;
+  final MarkNotificationReadUseCase _markNotificationReadUseCase;
   StreamSubscription<Map<String, dynamic>>? _socketSub;
 
   Future<void> _onFetchRequested(
@@ -76,6 +87,33 @@ class NotificationsBloc
           notifications: notifications,
         ),
       ),
+    );
+  }
+
+  /// Clears the unread count the moment the user opens Alerts, then persists
+  /// each read via `PATCH /notifications/{id}/read`. The list is updated
+  /// optimistically so the badge clears instantly; the endpoint is per-id, so
+  /// we fire one call per previously-unread notification. Failures are
+  /// swallowed — a later fetch/socket refetch reconciles with the server.
+  Future<void> _onAllMarkedRead(
+    NotificationsAllMarkedRead event,
+    Emitter<NotificationsState> emit,
+  ) async {
+    final unread = state.notifications.where((n) => !n.isRead).toList();
+    if (unread.isEmpty) return;
+
+    final now = DateTime.now();
+    emit(
+      state.copyWith(
+        notifications: [
+          for (final n in state.notifications)
+            n.isRead ? n : n.copyWith(isRead: true, readAt: now),
+        ],
+      ),
+    );
+
+    await Future.wait(
+      unread.map((n) => _markNotificationReadUseCase(n.id)),
     );
   }
 

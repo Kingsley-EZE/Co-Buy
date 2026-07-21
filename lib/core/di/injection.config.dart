@@ -23,6 +23,8 @@ import '../../features/alerts/domain/repositories/notifications_repository.dart'
     as _i110;
 import '../../features/alerts/domain/usecases/get_notifications_usecase.dart'
     as _i187;
+import '../../features/alerts/domain/usecases/mark_notification_read_usecase.dart'
+    as _i555;
 import '../../features/alerts/presentation/blocs/notifications_bloc/notifications_bloc.dart'
     as _i768;
 import '../../features/auth/data/datasources/auth_remote_data_source.dart'
@@ -222,6 +224,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i187.GetNotificationsUseCase>(
       () => _i187.GetNotificationsUseCase(gh<_i110.NotificationsRepository>()),
     );
+    gh.factory<_i555.MarkNotificationReadUseCase>(
+      () => _i555.MarkNotificationReadUseCase(
+        gh<_i110.NotificationsRepository>(),
+      ),
+    );
     gh.factory<_i560.ForgotPasswordUseCase>(
       () => _i560.ForgotPasswordUseCase(gh<_i787.AuthRepository>()),
     );
@@ -246,9 +253,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i162.GetPoolsUseCase>(
       () => _i162.GetPoolsUseCase(gh<_i1062.PoolsRepository>()),
     );
-    gh.factory<_i768.NotificationsBloc>(
-      () => _i768.NotificationsBloc(gh<_i187.GetNotificationsUseCase>()),
-    );
     gh.factory<_i370.JoinPoolUseCase>(
       () => _i370.JoinPoolUseCase(gh<_i274.JoinPoolRepository>()),
     );
@@ -260,6 +264,13 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i851.PoolPaymentBloc>(
       () => _i851.PoolPaymentBloc(gh<_i717.PayForPoolUseCase>()),
+    );
+    gh.lazySingleton<_i768.NotificationsBloc>(
+      () => _i768.NotificationsBloc(
+        gh<_i187.GetNotificationsUseCase>(),
+        gh<_i555.MarkNotificationReadUseCase>(),
+      ),
+      dispose: _i768.disposeNotificationsBloc,
     );
     gh.lazySingleton<_i148.PoolsBloc>(
       () => _i148.PoolsBloc(gh<_i162.GetPoolsUseCase>()),

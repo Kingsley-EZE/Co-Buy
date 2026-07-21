@@ -5,25 +5,11 @@ import 'package:co_buy/features/alerts/presentation/blocs/notifications_bloc/not
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/di/injection.dart';
-
+/// Reads the app-wide [NotificationsBloc] provided by the dashboard shell —
+/// which also owns fetching, the socket, and clearing the unread badge on
+/// entry — so this page is a pure renderer of the shared list.
 class AlertsPage extends StatelessWidget {
   const AlertsPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) =>
-          getIt<NotificationsBloc>()
-            ..add(const NotificationsEvent.fetchRequested())
-            ..add(const NotificationsEvent.socketStarted()),
-      child: const _AlertsView(),
-    );
-  }
-}
-
-class _AlertsView extends StatelessWidget {
-  const _AlertsView();
 
   @override
   Widget build(BuildContext context) {
@@ -49,10 +35,8 @@ class _AlertsView extends StatelessWidget {
           Expanded(
             child: BlocBuilder<NotificationsBloc, NotificationsState>(
               builder: (context, state) => switch (state.status) {
-                NotificationsStatus.initial ||
-                NotificationsStatus.loading => const Center(
-                  child: CircularProgressIndicator(),
-                ),
+                NotificationsStatus.initial || NotificationsStatus.loading =>
+                  const Center(child: CircularProgressIndicator()),
                 NotificationsStatus.failure => Center(
                   child: Text(
                     state.error ?? 'Something went wrong',
@@ -61,18 +45,17 @@ class _AlertsView extends StatelessWidget {
                     ),
                   ),
                 ),
-                NotificationsStatus.success => state.notifications.isEmpty
-                    ? Center(
-                        child: Text(
-                          'No notifications yet',
-                          style: context.styles.bodyL.copyWith(
-                            color: context.colors.text.subtle,
+                NotificationsStatus.success =>
+                  state.notifications.isEmpty
+                      ? Center(
+                          child: Text(
+                            'No notifications yet',
+                            style: context.styles.bodyL.copyWith(
+                              color: context.colors.text.subtle,
+                            ),
                           ),
-                        ),
-                      )
-                    : _NotificationList(
-                        notifications: state.notifications,
-                      ),
+                        )
+                      : _NotificationList(notifications: state.notifications),
               },
             ),
           ),
@@ -108,8 +91,18 @@ class _NotificationList extends StatelessWidget {
     if (d == today.subtract(const Duration(days: 1))) return 'YESTERDAY';
 
     const months = [
-      'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN',
-      'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC',
+      'JAN',
+      'FEB',
+      'MAR',
+      'APR',
+      'MAY',
+      'JUN',
+      'JUL',
+      'AUG',
+      'SEP',
+      'OCT',
+      'NOV',
+      'DEC',
     ];
     const weekdays = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
     return '${weekdays[d.weekday - 1]}, ${months[d.month - 1]} ${d.day}';
@@ -188,7 +181,10 @@ class _NotificationTile extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(notification.title, style: context.styles.bodyM.copyWith(fontWeight: .w600)),
+                Text(
+                  notification.title,
+                  style: context.styles.bodyM.copyWith(fontWeight: .w600),
+                ),
                 const SizedBox(height: AppSpacing.s4),
                 Text(
                   notification.message,
@@ -201,7 +197,7 @@ class _NotificationTile extends StatelessWidget {
                   _formatTimestamp(notification.createdAt),
                   style: context.styles.bodyS.copyWith(
                     color: context.colors.text.subtle,
-                    fontWeight: .w500
+                    fontWeight: .w500,
                   ),
                 ),
               ],
@@ -223,8 +219,11 @@ class _NotificationTile extends StatelessWidget {
     final d = DateTime(local.year, local.month, local.day);
 
     if (d == today) {
-      final h =
-          local.hour == 0 ? 12 : local.hour > 12 ? local.hour - 12 : local.hour;
+      final h = local.hour == 0
+          ? 12
+          : local.hour > 12
+          ? local.hour - 12
+          : local.hour;
       final min = local.minute.toString().padLeft(2, '0');
       final period = local.hour < 12 ? 'am' : 'pm';
       return '$h:$min$period';

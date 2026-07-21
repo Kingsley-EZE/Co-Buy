@@ -1,12 +1,21 @@
+import 'package:co_buy/core/components/atoms/notification_badge.dart';
 import 'package:co_buy/core/design_system/design_system.dart';
 import 'package:co_buy/features/auth/domain/entities/user.dart';
 import 'package:co_buy/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
 
 class HomeTopBar extends StatelessWidget {
-  const HomeTopBar({super.key, this.user, required this.onNotificationTap});
+  const HomeTopBar({
+    super.key,
+    this.user,
+    this.unreadCount = 0,
+    required this.onNotificationTap,
+  });
 
   final User? user;
+
+  /// Unread notifications, shown as a badge on the bell.
+  final int unreadCount;
 
   final VoidCallback onNotificationTap;
 
@@ -40,7 +49,7 @@ class HomeTopBar extends StatelessWidget {
           ),
         ),
         const SizedBox(width: AppSpacing.s16),
-        _BellButton(onTap: onNotificationTap),
+        _BellButton(onTap: onNotificationTap, unreadCount: unreadCount),
       ],
     );
   }
@@ -77,29 +86,33 @@ class _InitialsAvatar extends StatelessWidget {
 }
 
 class _BellButton extends StatelessWidget {
-  const _BellButton({required this.onTap});
+  const _BellButton({required this.onTap, required this.unreadCount});
 
   final VoidCallback onTap;
+  final int unreadCount;
 
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
 
-    return Material(
-      color: Colors.transparent,
-      shape: CircleBorder(side: BorderSide(color: colors.stroke.primary)),
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: onTap,
-        child: SizedBox.square(
-          dimension: AppSpacing.s48,
-          child: Center(
-            child: Assets.icons.icNotification.svg(
-              width: AppSpacing.s24,
-              height: AppSpacing.s24,
-              colorFilter: ColorFilter.mode(
-                colors.text.header,
-                BlendMode.srcIn,
+    return NotificationBadge(
+      count: unreadCount,
+      child: Material(
+        color: Colors.transparent,
+        shape: CircleBorder(side: BorderSide(color: colors.stroke.primary)),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: onTap,
+          child: SizedBox.square(
+            dimension: AppSpacing.s48,
+            child: Center(
+              child: Assets.icons.icNotification.svg(
+                width: AppSpacing.s24,
+                height: AppSpacing.s24,
+                colorFilter: ColorFilter.mode(
+                  colors.text.header,
+                  BlendMode.srcIn,
+                ),
               ),
             ),
           ),

@@ -1,3 +1,4 @@
+import 'package:co_buy/core/components/atoms/notification_badge.dart';
 import 'package:co_buy/core/design_system/design_system.dart';
 import 'package:co_buy/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
@@ -8,11 +9,15 @@ class DashboardNavBar extends StatelessWidget {
     required this.currentIndex,
     required this.onTabSelected,
     required this.onCreatePool,
+    this.alertsBadgeCount = 0,
   });
 
   final int currentIndex;
   final ValueChanged<int> onTabSelected;
   final VoidCallback onCreatePool;
+
+  /// Unread notifications, shown as a badge on the Alerts tab.
+  final int alertsBadgeCount;
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +52,7 @@ class DashboardNavBar extends StatelessWidget {
               icon: Assets.icons.icNavAlert,
               label: 'Alerts',
               selected: currentIndex == 2,
+              badgeCount: alertsBadgeCount,
               onTap: () => onTabSelected(2),
             ),
             _NavTab(
@@ -68,12 +74,14 @@ class _NavTab extends StatelessWidget {
     required this.label,
     required this.selected,
     required this.onTap,
+    this.badgeCount = 0,
   });
 
   final SvgGenImage icon;
   final String label;
   final bool selected;
   final VoidCallback onTap;
+  final int badgeCount;
 
   @override
   Widget build(BuildContext context) {
@@ -101,10 +109,13 @@ class _NavTab extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: AppSpacing.s12),
-              icon.svg(
-                width: 24,
-                height: 24,
-                colorFilter: ColorFilter.mode(tint, BlendMode.srcIn),
+              NotificationBadge(
+                count: badgeCount,
+                child: icon.svg(
+                  width: 24,
+                  height: 24,
+                  colorFilter: ColorFilter.mode(tint, BlendMode.srcIn),
+                ),
               ),
               const SizedBox(height: AppSpacing.s4),
               Text(

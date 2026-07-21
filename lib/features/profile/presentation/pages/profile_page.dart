@@ -1,6 +1,7 @@
 import 'package:co_buy/core/components/atoms/app_button.dart';
 import 'package:co_buy/core/components/scaffolds/app_scaffold.dart';
 import 'package:co_buy/core/design_system/design_system.dart';
+import 'package:co_buy/core/navigation/routes.dart';
 import 'package:co_buy/features/auth/domain/entities/user.dart';
 import 'package:co_buy/features/auth/presentation/blocs/auth_bloc/auth_bloc.dart';
 import 'package:flutter/material.dart';
@@ -11,15 +12,20 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<AuthBloc, AuthState, User?>(
-      selector: (state) => switch (state) {
-        AuthAuthenticated(:final user) => user,
-        _ => null,
-      },
-      builder: (context, user) {
-        if (user == null) return const SizedBox.shrink();
-        return _ProfileView(user: user);
-      },
+    return BlocListener<AuthBloc, AuthState>(
+      listenWhen: (previous, current) =>
+          previous is AuthAuthenticated && current is AuthInitial,
+      listener: (context, state) => const LoginRoute().go(context),
+      child: BlocSelector<AuthBloc, AuthState, User?>(
+        selector: (state) => switch (state) {
+          AuthAuthenticated(:final user) => user,
+          _ => null,
+        },
+        builder: (context, user) {
+          if (user == null) return const SizedBox.shrink();
+          return _ProfileView(user: user);
+        },
+      ),
     );
   }
 }
