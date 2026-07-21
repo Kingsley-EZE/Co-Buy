@@ -217,14 +217,25 @@ class _DetailsContent extends StatelessWidget {
                           ),
                         )
                       : () async {
-                          final joined = await JoinPoolRoute(
+                          // JoinPool returns true when the user joined and
+                          // chose to pay now. Refetch so membership shows, then
+                          // start payment here — checkout opens on top of
+                          // details, never back on the (now stale) join form.
+                          final payNow = await JoinPoolRoute(
                             poolId: poolId,
                           ).push<bool>(context);
-                          if (joined == true && context.mounted) {
-                            context.read<PoolDetailsBloc>().add(
-                              PoolDetailsEvent.fetchRequested(poolId),
-                            );
-                          }
+                          if (payNow != true || !context.mounted) return;
+                          context.read<PoolDetailsBloc>().add(
+                            PoolDetailsEvent.fetchRequested(poolId),
+                          );
+                          context.read<PoolPaymentBloc>().add(
+                            PoolPaymentEvent.payRequested(
+                              PoolPaymentRequest(
+                                poolId: poolId,
+                                amount: details.amountPerSlot,
+                              ),
+                            ),
+                          );
                         },
                 ),
               ),

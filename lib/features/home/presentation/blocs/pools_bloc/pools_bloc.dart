@@ -1,7 +1,5 @@
 import 'dart:async';
 
-import 'package:co_buy/core/network/sockets/socket_events.dart';
-import 'package:co_buy/core/network/sockets/socket_service.dart';
 import 'package:co_buy/features/home/domain/entities/pool.dart';
 import 'package:co_buy/features/home/domain/usecases/get_pools_usecase.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,12 +18,9 @@ class PoolsBloc extends Bloc<PoolsEvent, PoolsState> {
   PoolsBloc(this._getPoolsUseCase) : super(const PoolsState()) {
     on<PoolsFetchRequested>(_onFetchRequested);
     on<PoolsFilterChanged>(_onFilterChanged);
-    on<PoolsSocketStarted>(_onSocketStarted);
-    on<PoolsSocketUpdateReceived>(_onSocketUpdateReceived);
   }
 
   final GetPoolsUseCase _getPoolsUseCase;
-  StreamSubscription<Map<String, dynamic>>? _socketSub;
 
   Future<void> _onFetchRequested(
     PoolsFetchRequested event,
@@ -61,35 +56,5 @@ class PoolsBloc extends Bloc<PoolsEvent, PoolsState> {
         state.copyWith(status: PoolsRequestStatus.success, pools: pools),
       ),
     );
-  }
-
-  void _onSocketStarted(PoolsSocketStarted event, Emitter<PoolsState> emit) {
-    _socketSub?.cancel();
-    _socketSub = SocketService.instance
-        .on<Map<String, dynamic>>(SocketEvents.poolUpdate)
-        .listen((_) => add(const PoolsEvent.socketUpdateReceived()));
-  }
-
-  /// Silently refreshes the feed without resetting to loading so the list
-  /// stays responsive. Errors are swallowed — stale data beats a flash error.
-  Future<void> _onSocketUpdateReceived(
-    PoolsSocketUpdateReceived event,
-    Emitter<PoolsState> emit,
-  ) async {
-    final result = await _getPoolsUseCase(
-      GetPoolsParams(status: state.filter.status),
-    );
-    result.fold(
-      (_) {},
-      (pools) => emit(
-        state.copyWith(status: PoolsRequestStatus.success, pools: pools),
-      ),
-    );
-  }
-
-  @override
-  Future<void> close() {
-    _socketSub?.cancel();
-    return super.close();
   }
 }

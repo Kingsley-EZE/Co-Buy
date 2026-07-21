@@ -10,11 +10,9 @@ import 'package:co_buy/core/navigation/routes.dart';
 import 'package:co_buy/core/validation/app_validators.dart';
 import 'package:co_buy/features/home/domain/entities/bank.dart';
 import 'package:co_buy/features/pools/domain/entities/join_pool_request.dart';
-import 'package:co_buy/features/pools/domain/entities/pool_payment.dart';
 import 'package:co_buy/features/pools/presentation/blocs/join_pool_bloc/join_pool_bloc.dart';
 import 'package:co_buy/features/pools/presentation/blocs/join_pool_form_bloc/join_pool_form_bloc.dart';
 import 'package:co_buy/features/pools/presentation/blocs/pool_details_bloc/pool_details_bloc.dart';
-import 'package:co_buy/features/pools/presentation/blocs/pool_payment_bloc/pool_payment_bloc.dart';
 import 'package:co_buy/features/pools/presentation/widgets/account_verified_card.dart';
 import 'package:co_buy/features/pools/presentation/widgets/join_pool_review_sheet.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +37,6 @@ class _JoinPoolPageState extends State<JoinPoolPage> {
     super.initState();
     final joinPoolBloc = getIt<JoinPoolBloc>();
     joinPoolBloc.add(const JoinPoolEvent.banksFetchRequested());
-    // Singleton outlives the page — clear a previous visit's state.
     joinPoolBloc.add(const JoinPoolEvent.accountLookupCleared());
     joinPoolBloc.add(const JoinPoolEvent.submitStateCleared());
   }
@@ -74,14 +71,12 @@ class _JoinPoolPageState extends State<JoinPoolPage> {
           bankCode: formState.bank!.code,
           accountNumber: formState.accountNumber,
           accountName: formState.resolvedAccount!.accountName,
-          // amountPerSlot 0 for uneven pools — amount chosen at payment.
           memberShareAmount: details.amountPerSlot,
         ),
       ),
     );
   }
 
-  /// Every path out pops details with `true` so figures refresh after join/pay.
   Future<void> _showReviewSheet(BuildContext context) async {
     final detailsState = context.read<PoolDetailsBloc>().state;
     final details = detailsState.details!;
@@ -98,52 +93,14 @@ class _JoinPoolPageState extends State<JoinPoolPage> {
 
     if (!context.mounted) return;
     if (continueToPayment == true) {
-      // Pop deferred to payment listener — page stays under checkout.
-      context.read<PoolPaymentBloc>().add(
-        PoolPaymentEvent.payRequested(
-          PoolPaymentRequest(
-            poolId: widget.poolId,
-            amount: details.amountPerSlot,
-          ),
-        ),
-      );
+      // Hand payment off to pool details by popping with `true`. Checkout then
+      // opens directly on top of details, so the join form never lingers in
+      // the back stack once the user is a member — details owns the
+      // PoolPaymentBloc that drives (and outlives) checkout.
+      context.pop(true);
     } else {
       // Already joined — home shows the updated pool list.
       const HomeRoute().go(context);
-    }
-  }
-
-  Future<void> _onPaymentStatusChanged(
-    BuildContext context,
-    PoolPaymentState state,
-  ) async {
-    switch (state.status) {
-      case PoolPaymentRequestStatus.success:
-        final payment = state.payment!;
-        context.read<PoolPaymentBloc>().add(
-          const PoolPaymentEvent.stateCleared(),
-        );
-        await PaymentCheckoutRoute(
-          poolId: widget.poolId,
-          checkoutUrl: payment.checkoutUrl,
-        ).push<bool>(context);
-        if (context.mounted) context.pop(true);
-      case PoolPaymentRequestStatus.failure:
-        // Re-join would fail — pop to details where CTA is "Continue to payment".
-        AppSnackBar.showError(
-          context,
-          state.error ?? 'Could not start this payment',
-        );
-        context.read<PoolPaymentBloc>().add(
-          const PoolPaymentEvent.stateCleared(),
-        );
-        context.pop(true);
-      case PoolPaymentRequestStatus.confirmed:
-        context.read<PoolPaymentBloc>().add(const PoolPaymentEvent.stateCleared());
-        if (context.canPop()) context.pop(true);
-      case PoolPaymentRequestStatus.initial:
-      case PoolPaymentRequestStatus.loading:
-        break;
     }
   }
 
@@ -158,7 +115,6 @@ class _JoinPoolPageState extends State<JoinPoolPage> {
               getIt<PoolDetailsBloc>()
                 ..add(PoolDetailsEvent.fetchRequested(widget.poolId)),
         ),
-        BlocProvider(create: (_) => getIt<PoolPaymentBloc>()),
       ],
       child: MultiBlocListener(
         listeners: [
@@ -206,11 +162,6 @@ class _JoinPoolPageState extends State<JoinPoolPage> {
                   break;
               }
             },
-          ),
-          BlocListener<PoolPaymentBloc, PoolPaymentState>(
-            listenWhen: (previous, current) =>
-                previous.status != current.status,
-            listener: _onPaymentStatusChanged,
           ),
         ],
         child: AppScaffold(
@@ -364,28 +315,18 @@ class _JoinPoolButton extends StatelessWidget {
           selector: (state) =>
               state.joinStatus == JoinPoolRequestStatus.loading,
           builder: (context, isSubmitting) =>
-              BlocSelector<PoolPaymentBloc, PoolPaymentState, bool>(
+              BlocSelector<PoolDetailsBloc, PoolDetailsState, bool>(
                 selector: (state) =>
-                    state.status == PoolPaymentRequestStatus.loading,
-                builder: (context, isStartingPayment) =>
-                    BlocSelector<PoolDetailsBloc, PoolDetailsState, bool>(
-                      selector: (state) =>
-                          state.detailsStatus ==
-                              PoolDetailsRequestStatus.initial ||
-                          state.detailsStatus ==
-                              PoolDetailsRequestStatus.loading,
-                      builder: (context, isLoadingDetails) => Padding(
-                        padding: const EdgeInsets.only(top: AppSpacing.s32),
-                        child: AppButton(
-                          label: 'Join pool',
-                          loading:
-                              isSubmitting ||
-                              isStartingPayment ||
-                              isLoadingDetails,
-                          onPressed: onPressed,
-                        ),
-                      ),
-                    ),
+                    state.detailsStatus == PoolDetailsRequestStatus.initial ||
+                    state.detailsStatus == PoolDetailsRequestStatus.loading,
+                builder: (context, isLoadingDetails) => Padding(
+                  padding: const EdgeInsets.only(top: AppSpacing.s32),
+                  child: AppButton(
+                    label: 'Join pool',
+                    loading: isSubmitting || isLoadingDetails,
+                    onPressed: onPressed,
+                  ),
+                ),
               ),
         );
       },
