@@ -37,7 +37,7 @@ class HomeTopBar extends StatelessWidget {
               Text(
                 firstName == null || firstName.isEmpty
                     ? 'Hi there.'
-                    : 'Hi, $firstName.',
+                    : '$firstName.',
                 style: context.styles.bodyL,
               ),
             ],

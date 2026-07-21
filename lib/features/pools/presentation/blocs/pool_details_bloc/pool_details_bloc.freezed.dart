@@ -15,61 +15,30 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$PoolDetailsEvent {
 
- String get poolId;
-/// Create a copy of PoolDetailsEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$PoolDetailsEventCopyWith<PoolDetailsEvent> get copyWith => _$PoolDetailsEventCopyWithImpl<PoolDetailsEvent>(this as PoolDetailsEvent, _$identity);
+
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PoolDetailsEvent&&(identical(other.poolId, poolId) || other.poolId == poolId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PoolDetailsEvent);
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,poolId);
+int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'PoolDetailsEvent(poolId: $poolId)';
+  return 'PoolDetailsEvent()';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $PoolDetailsEventCopyWith<$Res>  {
-  factory $PoolDetailsEventCopyWith(PoolDetailsEvent value, $Res Function(PoolDetailsEvent) _then) = _$PoolDetailsEventCopyWithImpl;
-@useResult
-$Res call({
- String poolId
-});
-
-
-
-
-}
-/// @nodoc
-class _$PoolDetailsEventCopyWithImpl<$Res>
-    implements $PoolDetailsEventCopyWith<$Res> {
-  _$PoolDetailsEventCopyWithImpl(this._self, this._then);
-
-  final PoolDetailsEvent _self;
-  final $Res Function(PoolDetailsEvent) _then;
-
-/// Create a copy of PoolDetailsEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? poolId = null,}) {
-  return _then(PoolDetailsEvent.fetchRequested(
-null == poolId ? _self.poolId : poolId // ignore: cast_nullable_to_non_nullable
-as String,
-  ));
-}
-
+class $PoolDetailsEventCopyWith<$Res>  {
+$PoolDetailsEventCopyWith(PoolDetailsEvent _, $Res Function(PoolDetailsEvent) __);
 }
 
 
@@ -87,11 +56,13 @@ extension PoolDetailsEventPatterns on PoolDetailsEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( PoolDetailsFetchRequested value)?  fetchRequested,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( PoolDetailsFetchRequested value)?  fetchRequested,TResult Function( PoolDetailsSocketStarted value)?  socketStarted,TResult Function( PoolDetailsSocketUpdateReceived value)?  socketUpdateReceived,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case PoolDetailsFetchRequested() when fetchRequested != null:
-return fetchRequested(_that);case _:
+return fetchRequested(_that);case PoolDetailsSocketStarted() when socketStarted != null:
+return socketStarted(_that);case PoolDetailsSocketUpdateReceived() when socketUpdateReceived != null:
+return socketUpdateReceived(_that);case _:
   return orElse();
 
 }
@@ -109,11 +80,13 @@ return fetchRequested(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( PoolDetailsFetchRequested value)  fetchRequested,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( PoolDetailsFetchRequested value)  fetchRequested,required TResult Function( PoolDetailsSocketStarted value)  socketStarted,required TResult Function( PoolDetailsSocketUpdateReceived value)  socketUpdateReceived,}){
 final _that = this;
 switch (_that) {
 case PoolDetailsFetchRequested():
-return fetchRequested(_that);}
+return fetchRequested(_that);case PoolDetailsSocketStarted():
+return socketStarted(_that);case PoolDetailsSocketUpdateReceived():
+return socketUpdateReceived(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -127,11 +100,13 @@ return fetchRequested(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( PoolDetailsFetchRequested value)?  fetchRequested,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( PoolDetailsFetchRequested value)?  fetchRequested,TResult? Function( PoolDetailsSocketStarted value)?  socketStarted,TResult? Function( PoolDetailsSocketUpdateReceived value)?  socketUpdateReceived,}){
 final _that = this;
 switch (_that) {
 case PoolDetailsFetchRequested() when fetchRequested != null:
-return fetchRequested(_that);case _:
+return fetchRequested(_that);case PoolDetailsSocketStarted() when socketStarted != null:
+return socketStarted(_that);case PoolDetailsSocketUpdateReceived() when socketUpdateReceived != null:
+return socketUpdateReceived(_that);case _:
   return null;
 
 }
@@ -148,10 +123,12 @@ return fetchRequested(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String poolId)?  fetchRequested,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String poolId)?  fetchRequested,TResult Function( String poolId)?  socketStarted,TResult Function()?  socketUpdateReceived,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case PoolDetailsFetchRequested() when fetchRequested != null:
-return fetchRequested(_that.poolId);case _:
+return fetchRequested(_that.poolId);case PoolDetailsSocketStarted() when socketStarted != null:
+return socketStarted(_that.poolId);case PoolDetailsSocketUpdateReceived() when socketUpdateReceived != null:
+return socketUpdateReceived();case _:
   return orElse();
 
 }
@@ -169,10 +146,12 @@ return fetchRequested(_that.poolId);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String poolId)  fetchRequested,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String poolId)  fetchRequested,required TResult Function( String poolId)  socketStarted,required TResult Function()  socketUpdateReceived,}) {final _that = this;
 switch (_that) {
 case PoolDetailsFetchRequested():
-return fetchRequested(_that.poolId);}
+return fetchRequested(_that.poolId);case PoolDetailsSocketStarted():
+return socketStarted(_that.poolId);case PoolDetailsSocketUpdateReceived():
+return socketUpdateReceived();}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -186,10 +165,12 @@ return fetchRequested(_that.poolId);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String poolId)?  fetchRequested,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String poolId)?  fetchRequested,TResult? Function( String poolId)?  socketStarted,TResult? Function()?  socketUpdateReceived,}) {final _that = this;
 switch (_that) {
 case PoolDetailsFetchRequested() when fetchRequested != null:
-return fetchRequested(_that.poolId);case _:
+return fetchRequested(_that.poolId);case PoolDetailsSocketStarted() when socketStarted != null:
+return socketStarted(_that.poolId);case PoolDetailsSocketUpdateReceived() when socketUpdateReceived != null:
+return socketUpdateReceived();case _:
   return null;
 
 }
@@ -204,11 +185,11 @@ class PoolDetailsFetchRequested implements PoolDetailsEvent {
   const PoolDetailsFetchRequested(this.poolId);
   
 
-@override final  String poolId;
+ final  String poolId;
 
 /// Create a copy of PoolDetailsEvent
 /// with the given fields replaced by the non-null parameter values.
-@override @JsonKey(includeFromJson: false, includeToJson: false)
+@JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
 $PoolDetailsFetchRequestedCopyWith<PoolDetailsFetchRequested> get copyWith => _$PoolDetailsFetchRequestedCopyWithImpl<PoolDetailsFetchRequested>(this, _$identity);
 
@@ -234,7 +215,7 @@ String toString() {
 /// @nodoc
 abstract mixin class $PoolDetailsFetchRequestedCopyWith<$Res> implements $PoolDetailsEventCopyWith<$Res> {
   factory $PoolDetailsFetchRequestedCopyWith(PoolDetailsFetchRequested value, $Res Function(PoolDetailsFetchRequested) _then) = _$PoolDetailsFetchRequestedCopyWithImpl;
-@override @useResult
+@useResult
 $Res call({
  String poolId
 });
@@ -253,7 +234,7 @@ class _$PoolDetailsFetchRequestedCopyWithImpl<$Res>
 
 /// Create a copy of PoolDetailsEvent
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? poolId = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? poolId = null,}) {
   return _then(PoolDetailsFetchRequested(
 null == poolId ? _self.poolId : poolId // ignore: cast_nullable_to_non_nullable
 as String,
@@ -262,6 +243,104 @@ as String,
 
 
 }
+
+/// @nodoc
+
+
+class PoolDetailsSocketStarted implements PoolDetailsEvent {
+  const PoolDetailsSocketStarted(this.poolId);
+  
+
+ final  String poolId;
+
+/// Create a copy of PoolDetailsEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$PoolDetailsSocketStartedCopyWith<PoolDetailsSocketStarted> get copyWith => _$PoolDetailsSocketStartedCopyWithImpl<PoolDetailsSocketStarted>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PoolDetailsSocketStarted&&(identical(other.poolId, poolId) || other.poolId == poolId));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,poolId);
+
+@override
+String toString() {
+  return 'PoolDetailsEvent.socketStarted(poolId: $poolId)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $PoolDetailsSocketStartedCopyWith<$Res> implements $PoolDetailsEventCopyWith<$Res> {
+  factory $PoolDetailsSocketStartedCopyWith(PoolDetailsSocketStarted value, $Res Function(PoolDetailsSocketStarted) _then) = _$PoolDetailsSocketStartedCopyWithImpl;
+@useResult
+$Res call({
+ String poolId
+});
+
+
+
+
+}
+/// @nodoc
+class _$PoolDetailsSocketStartedCopyWithImpl<$Res>
+    implements $PoolDetailsSocketStartedCopyWith<$Res> {
+  _$PoolDetailsSocketStartedCopyWithImpl(this._self, this._then);
+
+  final PoolDetailsSocketStarted _self;
+  final $Res Function(PoolDetailsSocketStarted) _then;
+
+/// Create a copy of PoolDetailsEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? poolId = null,}) {
+  return _then(PoolDetailsSocketStarted(
+null == poolId ? _self.poolId : poolId // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class PoolDetailsSocketUpdateReceived implements PoolDetailsEvent {
+  const PoolDetailsSocketUpdateReceived();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PoolDetailsSocketUpdateReceived);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'PoolDetailsEvent.socketUpdateReceived()';
+}
+
+
+}
+
+
+
 
 /// @nodoc
 mixin _$PoolDetailsState {

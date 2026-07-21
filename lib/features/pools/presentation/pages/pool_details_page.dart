@@ -69,7 +69,8 @@ class PoolDetailsPage extends StatelessWidget {
         BlocProvider(
           create: (_) =>
               getIt<PoolDetailsBloc>()
-                ..add(PoolDetailsEvent.fetchRequested(poolId)),
+                ..add(PoolDetailsEvent.fetchRequested(poolId))
+                ..add(PoolDetailsEvent.socketStarted(poolId)),
         ),
         BlocProvider(create: (_) => getIt<PoolPaymentBloc>()),
       ],

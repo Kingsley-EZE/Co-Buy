@@ -1,3 +1,4 @@
+import 'package:co_buy/core/network/sockets/socket_service.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
@@ -40,6 +41,7 @@ class AuthRepositoryImpl implements AuthRepository {
         access: dto.data.accessToken,
         refresh: dto.data.refreshToken,
       );
+      SocketService.instance.connect(dto.data.accessToken);
       return Right(dto.data.user.toEntity());
     } on DioException catch (e) {
       return Left(mapDioException(e));
