@@ -302,7 +302,6 @@ mixin $PaymentCheckoutRoute on GoRouteData {
       PaymentCheckoutRoute(
         poolId: state.pathParameters['poolId']!,
         checkoutUrl: state.uri.queryParameters['checkout-url']!,
-        redirectUrl: state.uri.queryParameters['redirect-url']!,
       );
 
   PaymentCheckoutRoute get _self => this as PaymentCheckoutRoute;
@@ -310,10 +309,7 @@ mixin $PaymentCheckoutRoute on GoRouteData {
   @override
   String get location => GoRouteData.$location(
     '/home/pool/${Uri.encodeComponent(_self.poolId)}/pay',
-    queryParams: {
-      'checkout-url': _self.checkoutUrl,
-      'redirect-url': _self.redirectUrl,
-    },
+    queryParams: {'checkout-url': _self.checkoutUrl},
   );
 
   @override

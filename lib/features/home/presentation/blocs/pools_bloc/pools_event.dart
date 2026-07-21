@@ -9,4 +9,11 @@ sealed class PoolsEvent with _$PoolsEvent {
   /// Switches the feed to [filter] and refetches server-side.
   const factory PoolsEvent.filterChanged(PoolFilter filter) =
       PoolsFilterChanged;
+
+  /// Starts real-time updates via WebSocket. Call once after fetchRequested.
+  const factory PoolsEvent.socketStarted() = PoolsSocketStarted;
+
+  /// Internal: the socket pushed a pool:update — triggers a silent background
+  /// refetch of the current filtered feed.
+  const factory PoolsEvent.socketUpdateReceived() = PoolsSocketUpdateReceived;
 }

@@ -15,6 +15,7 @@ import 'package:co_buy/features/pools/presentation/widgets/pool_member_tile.dart
 import 'package:co_buy/features/pools/presentation/widgets/pool_raised_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 /// Full-screen details for one pool: what's being raised, where the money
 /// goes and who holds each slot. Pool and members load from two independent
@@ -41,7 +42,6 @@ class PoolDetailsPage extends StatelessWidget {
         await PaymentCheckoutRoute(
           poolId: poolId,
           checkoutUrl: payment.checkoutUrl,
-          redirectUrl: 'https://www.avenyhq.com',//payment.redirectUrl,
         ).push<bool>(context);
         if (context.mounted) {
           context.read<PoolDetailsBloc>().add(
@@ -56,6 +56,9 @@ class PoolDetailsPage extends StatelessWidget {
         context.read<PoolPaymentBloc>().add(
           const PoolPaymentEvent.stateCleared(),
         );
+      case PoolPaymentRequestStatus.confirmed:
+        context.read<PoolPaymentBloc>().add(const PoolPaymentEvent.stateCleared());
+        if (GoRouter.of(context).canPop()) GoRouter.of(context).pop();
       case PoolPaymentRequestStatus.initial:
       case PoolPaymentRequestStatus.loading:
         break;
@@ -165,7 +168,7 @@ class _DetailsContent extends StatelessWidget {
         BlocSelector<AuthBloc, AuthState, String?>(
           selector: (auth) => auth is AuthAuthenticated ? auth.user.id : null,
           builder: (context, userId) {
-            if (!state.canJoin(userId)) return const SizedBox.shrink();
+            if (!state.canJoin(userId) && !state.canPayExisting(userId)) return const SizedBox.shrink();
             final hasUnpaidSlot = state.hasUnpaidSlot(userId);
             return Padding(
               padding: const EdgeInsets.fromLTRB(

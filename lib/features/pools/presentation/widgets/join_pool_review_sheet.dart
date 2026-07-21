@@ -41,6 +41,8 @@ class JoinPoolReviewSheet extends StatelessWidget {
     return showModalBottomSheet<bool>(
       context: context,
       isScrollControlled: true,
+      isDismissible: false,
+      enableDrag: false,
       // The sheet paints its own themed surface; a transparent modal keeps
       // the default Material from poking out behind the rounded corners.
       backgroundColor: Colors.transparent,

@@ -1,7 +1,7 @@
 part of 'pool_payment_bloc.dart';
 
 /// Lifecycle of the payment-initiation request.
-enum PoolPaymentRequestStatus { initial, loading, success, failure }
+enum PoolPaymentRequestStatus { initial, loading, success, failure, confirmed }
 
 @freezed
 abstract class PoolPaymentState with _$PoolPaymentState {

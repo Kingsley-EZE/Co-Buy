@@ -61,4 +61,19 @@ abstract class PoolDetailsState with _$PoolDetailsState {
     final membership = members.where((m) => m.userId == userId);
     return membership.isNotEmpty && !membership.first.hasPaid;
   }
+
+  /// Whether [userId] can still complete payment on a CLOSED (filled) pool.
+  /// The pool is no longer OPEN so [canJoin] returns false, but an existing
+  /// member with an unpaid slot can still pay as long as the deadline hasn't
+  /// passed.
+  bool canPayExisting(String? userId) {
+    if (userId == null) return false;
+    if (membersStatus != PoolDetailsRequestStatus.success) return false;
+    final d = details;
+    if (d == null) return false;
+    if (d.status != PoolStatus.filled) return false;
+    if (d.deadlineAt.isBefore(DateTime.now())) return false;
+    final membership = members.where((m) => m.userId == userId);
+    return membership.isNotEmpty && !membership.first.hasPaid;
+  }
 }
