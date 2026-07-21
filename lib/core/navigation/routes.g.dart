@@ -196,6 +196,11 @@ RouteBase get $dashboardShellRoute => StatefulShellRouteData.$route(
                   parentNavigatorKey: PaymentCheckoutRoute.$parentNavigatorKey,
                   factory: $PaymentCheckoutRoute._fromState,
                 ),
+                GoRouteData.$route(
+                  path: 'transactions',
+                  parentNavigatorKey: PoolTransactionsRoute.$parentNavigatorKey,
+                  factory: $PoolTransactionsRoute._fromState,
+                ),
               ],
             ),
           ],
@@ -310,6 +315,31 @@ mixin $PaymentCheckoutRoute on GoRouteData {
   String get location => GoRouteData.$location(
     '/home/pool/${Uri.encodeComponent(_self.poolId)}/pay',
     queryParams: {'checkout-url': _self.checkoutUrl},
+  );
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+mixin $PoolTransactionsRoute on GoRouteData {
+  static PoolTransactionsRoute _fromState(GoRouterState state) =>
+      PoolTransactionsRoute(poolId: state.pathParameters['poolId']!);
+
+  PoolTransactionsRoute get _self => this as PoolTransactionsRoute;
+
+  @override
+  String get location => GoRouteData.$location(
+    '/home/pool/${Uri.encodeComponent(_self.poolId)}/transactions',
   );
 
   @override

@@ -4,8 +4,10 @@ import 'package:co_buy/features/home/domain/entities/pool.dart';
 import 'package:co_buy/features/pools/data/datasources/pool_details_data_source.dart';
 import 'package:co_buy/features/pools/data/dtos/pool_details_dto.dart';
 import 'package:co_buy/features/pools/data/dtos/pool_member_dto.dart';
+import 'package:co_buy/features/pools/data/dtos/pool_transaction_dto.dart';
 import 'package:co_buy/features/pools/data/repositories/pool_details_repository_impl.dart';
 import 'package:co_buy/features/pools/domain/entities/pool_member.dart';
+import 'package:co_buy/features/pools/domain/entities/pool_transaction.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -155,6 +157,82 @@ void main() {
         expect(members[1].state, PoolMemberState.pending);
         expect(members[1].hasPaid, false);
       });
+    },
+  );
+
+  test(
+    'getPoolTransactions maps PAID and PENDING rows and nested member names',
+    () async {
+      when(() => remote.getPoolTransactions(any())).thenAnswer(
+        (_) async => const PoolTransactionsResponseDto(
+          success: true,
+          data: PoolTransactionsDataDto(
+            transactions: [
+              PoolTransactionDto(
+                id: 'tx1',
+                poolId: 'p1',
+                membershipId: 'm1',
+                paymentReference: 'CB-ref-1',
+                monnifyTransactionReference: 'MNFY|1',
+                amountExpected: 9000,
+                amountPaid: 9000,
+                state: 'PAID',
+                paidAt: '2026-07-21T10:29:00.385Z',
+                createdAt: '2026-07-21T09:28:36.131Z',
+                updatedAt: '2026-07-21T09:29:00.662Z',
+                membership: PoolTransactionMembershipDto(
+                  id: 'm1',
+                  userId: 'u1',
+                  state: 'PAID',
+                  user: PoolMemberUserDto(
+                    id: 'u1',
+                    firstName: 'Faith',
+                    lastName: 'Shin',
+                    email: 'ifeoma@yopmail.com',
+                  ),
+                ),
+              ),
+              PoolTransactionDto(
+                id: 'tx2',
+                poolId: 'p1',
+                membershipId: 'm2',
+                paymentReference: 'CB-ref-2',
+                amountExpected: 9000,
+                state: 'PENDING',
+                createdAt: '2026-07-21T09:13:34.186Z',
+                updatedAt: '2026-07-21T09:13:34.186Z',
+                membership: PoolTransactionMembershipDto(
+                  id: 'm2',
+                  userId: 'u2',
+                  state: 'PAID',
+                  user: PoolMemberUserDto(
+                    id: 'u2',
+                    firstName: 'Mary',
+                    lastName: 'Supreme',
+                    email: 'okon@yopmail.com',
+                  ),
+                ),
+              ),
+            ],
+          ),
+          message: 'Pool transactions retrieved successfully',
+        ),
+      );
+
+      final result = await repo.getPoolTransactions('p1');
+
+      result.fold((f) => fail('expected Right, got $f'), (transactions) {
+        expect(transactions, hasLength(2));
+        expect(transactions[0].memberName, 'Faith Shin');
+        expect(transactions[0].state, PoolTransactionState.paid);
+        expect(transactions[0].displayAmount, 9000);
+        expect(transactions[0].paidAt, isNotNull);
+        expect(transactions[1].memberName, 'Mary Supreme');
+        expect(transactions[1].state, PoolTransactionState.pending);
+        expect(transactions[1].amountPaid, isNull);
+        expect(transactions[1].displayAmount, 9000);
+      });
+      verify(() => remote.getPoolTransactions('p1')).called(1);
     },
   );
 

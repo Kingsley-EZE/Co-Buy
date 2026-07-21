@@ -150,6 +150,36 @@ class _DetailsContent extends StatelessWidget {
               _PoolHeader(details: details),
               const SizedBox(height: AppSpacing.s16),
               PoolRaisedCard(details: details),
+              BlocSelector<AuthBloc, AuthState, String?>(
+                selector: (auth) =>
+                    auth is AuthAuthenticated ? auth.user.id : null,
+                builder: (context, userId) {
+                  if (!state.isMember(userId)) return const SizedBox.shrink();
+                  return Padding(
+                    padding: const EdgeInsets.only(top: AppSpacing.s8),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: TextButton(
+                        onPressed: () => PoolTransactionsRoute(
+                          poolId: poolId,
+                        ).push(context),
+                        style: TextButton.styleFrom(
+                          foregroundColor: AppPalette.primaryBase,
+                          padding: EdgeInsets.zero,
+                          minimumSize: Size.zero,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
+                        child: Text(
+                          'View Transactions',
+                          style: context.styles.bodyM.semibold.copyWith(
+                            color: AppPalette.primaryBase,
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
               const SizedBox(height: AppSpacing.s24),
               const _SectionHeader('DESTINATION INFORMATION'),
               const SizedBox(height: AppSpacing.s12),
@@ -168,7 +198,9 @@ class _DetailsContent extends StatelessWidget {
         BlocSelector<AuthBloc, AuthState, String?>(
           selector: (auth) => auth is AuthAuthenticated ? auth.user.id : null,
           builder: (context, userId) {
-            if (!state.canJoin(userId) && !state.canPayExisting(userId)) return const SizedBox.shrink();
+            if (!state.canJoin(userId) && !state.canPayExisting(userId)) {
+              return const SizedBox.shrink();
+            }
             final hasUnpaidSlot = state.hasUnpaidSlot(userId);
             return Padding(
               padding: const EdgeInsets.fromLTRB(

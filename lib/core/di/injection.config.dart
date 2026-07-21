@@ -94,6 +94,8 @@ import '../../features/pools/domain/usecases/get_pool_details_usecase.dart'
     as _i547;
 import '../../features/pools/domain/usecases/get_pool_members_usecase.dart'
     as _i410;
+import '../../features/pools/domain/usecases/get_pool_transactions_usecase.dart'
+    as _i114;
 import '../../features/pools/domain/usecases/join_pool_usecase.dart' as _i370;
 import '../../features/pools/domain/usecases/pay_for_pool_usecase.dart'
     as _i717;
@@ -105,6 +107,8 @@ import '../../features/pools/presentation/blocs/pool_details_bloc/pool_details_b
     as _i1015;
 import '../../features/pools/presentation/blocs/pool_payment_bloc/pool_payment_bloc.dart'
     as _i851;
+import '../../features/pools/presentation/blocs/pool_transactions_bloc/pool_transactions_bloc.dart'
+    as _i827;
 import '../config/env/env.dart' as _i513;
 import '../navigation/app_navigator.dart' as _i397;
 import '../navigation/go_router_navigator.dart' as _i489;
@@ -287,11 +291,17 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i410.GetPoolMembersUseCase>(
       () => _i410.GetPoolMembersUseCase(gh<_i402.PoolDetailsRepository>()),
     );
+    gh.factory<_i114.GetPoolTransactionsUseCase>(
+      () => _i114.GetPoolTransactionsUseCase(gh<_i402.PoolDetailsRepository>()),
+    );
     gh.factory<_i1015.PoolDetailsBloc>(
       () => _i1015.PoolDetailsBloc(
         gh<_i547.GetPoolDetailsUseCase>(),
         gh<_i410.GetPoolMembersUseCase>(),
       ),
+    );
+    gh.factory<_i827.PoolTransactionsBloc>(
+      () => _i827.PoolTransactionsBloc(gh<_i114.GetPoolTransactionsUseCase>()),
     );
     gh.lazySingleton<_i350.CreatePoolBloc>(
       () => _i350.CreatePoolBloc(

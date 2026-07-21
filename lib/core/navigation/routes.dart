@@ -14,6 +14,7 @@ import '../../features/pools/presentation/pages/join_pool_page.dart';
 import '../../features/pools/presentation/pages/my_pools_page.dart';
 import '../../features/pools/presentation/pages/payment_checkout_page.dart';
 import '../../features/pools/presentation/pages/pool_details_page.dart';
+import '../../features/pools/presentation/pages/pool_transactions_page.dart';
 import '../../features/profile/presentation/pages/profile_page.dart';
 
 part 'routes.g.dart';
@@ -115,6 +116,7 @@ class CreatePoolRoute extends GoRouteData with $CreatePoolRoute {
               routes: <TypedRoute<RouteData>>[
                 TypedGoRoute<JoinPoolRoute>(path: 'join'),
                 TypedGoRoute<PaymentCheckoutRoute>(path: 'pay'),
+                TypedGoRoute<PoolTransactionsRoute>(path: 'transactions'),
               ],
             ),
           ],
@@ -232,6 +234,21 @@ class PaymentCheckoutRoute extends GoRouteData with $PaymentCheckoutRoute {
   @override
   Widget build(BuildContext context, GoRouterState state) =>
       PaymentCheckoutPage(checkoutUrl: checkoutUrl);
+}
+
+/// Pool transaction history, nested under pool details so the pool stays in
+/// the back stack when deep-linked. Parented to the root navigator so it
+/// covers the dashboard shell (no bottom bar).
+class PoolTransactionsRoute extends GoRouteData with $PoolTransactionsRoute {
+  const PoolTransactionsRoute({required this.poolId});
+
+  final String poolId;
+
+  static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) =>
+      PoolTransactionsPage(poolId: poolId);
 }
 
 class MyPoolsRoute extends GoRouteData with $MyPoolsRoute {
