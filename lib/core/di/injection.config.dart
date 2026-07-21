@@ -76,22 +76,29 @@ import '../../features/home/presentation/blocs/pools_bloc/pools_bloc.dart'
     as _i148;
 import '../../features/pools/data/datasources/join_pool_data_source.dart'
     as _i1065;
+import '../../features/pools/data/datasources/my_pools_data_source.dart' as _i6;
 import '../../features/pools/data/datasources/pool_details_data_source.dart'
     as _i313;
 import '../../features/pools/data/datasources/pool_payment_data_source.dart'
     as _i255;
 import '../../features/pools/data/repositories/join_pool_repository_impl.dart'
     as _i283;
+import '../../features/pools/data/repositories/my_pools_repository_impl.dart'
+    as _i146;
 import '../../features/pools/data/repositories/pool_details_repository_impl.dart'
     as _i1035;
 import '../../features/pools/data/repositories/pool_payment_repository_impl.dart'
     as _i975;
 import '../../features/pools/domain/repositories/join_pool_repository.dart'
     as _i274;
+import '../../features/pools/domain/repositories/my_pools_repository.dart'
+    as _i113;
 import '../../features/pools/domain/repositories/pool_details_repository.dart'
     as _i402;
 import '../../features/pools/domain/repositories/pool_payment_repository.dart'
     as _i343;
+import '../../features/pools/domain/usecases/get_my_pools_usecase.dart'
+    as _i1015;
 import '../../features/pools/domain/usecases/get_pool_details_usecase.dart'
     as _i547;
 import '../../features/pools/domain/usecases/get_pool_members_usecase.dart'
@@ -105,8 +112,10 @@ import '../../features/pools/presentation/blocs/join_pool_bloc/join_pool_bloc.da
     as _i778;
 import '../../features/pools/presentation/blocs/join_pool_form_bloc/join_pool_form_bloc.dart'
     as _i575;
+import '../../features/pools/presentation/blocs/my_pools_bloc/my_pools_bloc.dart'
+    as _i631;
 import '../../features/pools/presentation/blocs/pool_details_bloc/pool_details_bloc.dart'
-    as _i1015;
+    as _i1016;
 import '../../features/pools/presentation/blocs/pool_payment_bloc/pool_payment_bloc.dart'
     as _i851;
 import '../../features/pools/presentation/blocs/pool_transactions_bloc/pool_transactions_bloc.dart'
@@ -201,6 +210,11 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i361.Dio>(instanceName: 'appDio'),
       ),
     );
+    gh.lazySingleton<_i6.MyPoolsDataSource>(
+      () => serviceModule.myPoolsDataSource(
+        gh<_i361.Dio>(instanceName: 'appDio'),
+      ),
+    );
     gh.lazySingleton<_i1062.PoolsRepository>(
       () => _i590.PoolsRepositoryImpl(gh<_i694.PoolsDataSource>()),
     );
@@ -253,6 +267,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i162.GetPoolsUseCase>(
       () => _i162.GetPoolsUseCase(gh<_i1062.PoolsRepository>()),
     );
+    gh.lazySingleton<_i113.MyPoolsRepository>(
+      () => _i146.MyPoolsRepositoryImpl(gh<_i6.MyPoolsDataSource>()),
+    );
     gh.factory<_i370.JoinPoolUseCase>(
       () => _i370.JoinPoolUseCase(gh<_i274.JoinPoolRepository>()),
     );
@@ -264,6 +281,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i851.PoolPaymentBloc>(
       () => _i851.PoolPaymentBloc(gh<_i717.PayForPoolUseCase>()),
+    );
+    gh.factory<_i1015.GetMyPoolsUseCase>(
+      () => _i1015.GetMyPoolsUseCase(gh<_i113.MyPoolsRepository>()),
     );
     gh.lazySingleton<_i768.NotificationsBloc>(
       () => _i768.NotificationsBloc(
@@ -299,6 +319,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i922.LookupAccountNameUseCase>(
       () => _i922.LookupAccountNameUseCase(gh<_i742.CreatePoolRepository>()),
     );
+    gh.factory<_i631.MyPoolsBloc>(
+      () => _i631.MyPoolsBloc(gh<_i1015.GetMyPoolsUseCase>()),
+    );
     gh.factory<_i547.GetPoolDetailsUseCase>(
       () => _i547.GetPoolDetailsUseCase(gh<_i402.PoolDetailsRepository>()),
     );
@@ -308,8 +331,8 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i114.GetPoolTransactionsUseCase>(
       () => _i114.GetPoolTransactionsUseCase(gh<_i402.PoolDetailsRepository>()),
     );
-    gh.factory<_i1015.PoolDetailsBloc>(
-      () => _i1015.PoolDetailsBloc(
+    gh.factory<_i1016.PoolDetailsBloc>(
+      () => _i1016.PoolDetailsBloc(
         gh<_i547.GetPoolDetailsUseCase>(),
         gh<_i410.GetPoolMembersUseCase>(),
       ),
