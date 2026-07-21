@@ -8,6 +8,7 @@ import 'package:co_buy/core/navigation/app_router.dart';
 import 'package:co_buy/features/auth/domain/usecases/forgot_password_usecase.dart';
 import 'package:co_buy/features/auth/domain/usecases/login_usecase.dart';
 import 'package:co_buy/features/auth/domain/usecases/logout_usecase.dart';
+import 'package:co_buy/features/auth/domain/usecases/resend_otp_usecase.dart';
 import 'package:co_buy/features/auth/domain/usecases/reset_password_usecase.dart';
 import 'package:co_buy/features/auth/domain/usecases/signup_usecase.dart';
 import 'package:co_buy/features/auth/domain/usecases/verify_email_usecase.dart';
@@ -23,6 +24,8 @@ class _MockLoginUseCase extends Mock implements LoginUseCase {}
 class _MockSignupUseCase extends Mock implements SignupUseCase {}
 
 class _MockVerifyEmailUseCase extends Mock implements VerifyEmailUseCase {}
+
+class _MockResendOtpUseCase extends Mock implements ResendOtpUseCase {}
 
 class _MockForgotPasswordUseCase extends Mock
     implements ForgotPasswordUseCase {}
@@ -42,6 +45,7 @@ void main() {
         _MockLoginUseCase(),
         _MockSignupUseCase(),
         _MockVerifyEmailUseCase(),
+        _MockResendOtpUseCase(),
         _MockForgotPasswordUseCase(),
         _MockResetPasswordUseCase(),
         _MockLogoutUseCase(),

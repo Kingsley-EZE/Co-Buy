@@ -68,6 +68,10 @@ class _ConfirmOtpSheetState extends State<ConfirmOtpSheet> {
 
   String? _errorMessage;
 
+  bool _isResending = false;
+  String? _resendMessage;
+  bool _resendFailed = false;
+
   @override
   void initState() {
     super.initState();
@@ -93,6 +97,16 @@ class _ConfirmOtpSheetState extends State<ConfirmOtpSheet> {
 
   void _onResendPressed() {
     widget.onResend?.call();
+
+    if (widget.onSubmit != null) {
+      // Bloc-driven: hold the cooldown until AuthResendOtpSuccess confirms
+      // the code was actually sent (see _onAuthStateChanged).
+      setState(() {
+        _isResending = true;
+        _resendMessage = null;
+      });
+      return;
+    }
     setState(_startCooldown);
   }
 
@@ -121,6 +135,22 @@ class _ConfirmOtpSheetState extends State<ConfirmOtpSheet> {
     }
     if (state case AuthSuccess()) {
       Navigator.of(context).pop(_controller.text);
+    }
+    if (state case AuthResendOtpSuccess()) {
+      setState(() {
+        _isResending = false;
+        _resendFailed = false;
+        _resendMessage = 'A new code has been sent';
+        _startCooldown();
+      });
+    }
+    if (state case AuthResendOtpFailure(:final message)) {
+      // Leave the cooldown at zero so the user can retry straight away.
+      setState(() {
+        _isResending = false;
+        _resendFailed = true;
+        _resendMessage = message;
+      });
     }
   }
 
@@ -198,8 +228,20 @@ class _ConfirmOtpSheetState extends State<ConfirmOtpSheet> {
                   const SizedBox(height: AppSpacing.s16),
                   _ResendText(
                     secondsLeft: _secondsLeft,
+                    isResending: _isResending,
                     onResend: _onResendPressed,
                   ),
+                  if (_resendMessage != null) ...[
+                    const SizedBox(height: AppSpacing.s8),
+                    Text(
+                      _resendMessage!,
+                      style: context.styles.bodyS.copyWith(
+                        color: _resendFailed
+                            ? context.colors.state.errorBase
+                            : context.colors.state.successBase,
+                      ),
+                    ),
+                  ],
                   const SizedBox(height: AppSpacing.s32),
                   AppButton(
                     label: 'Continue',
@@ -355,13 +397,40 @@ class _BlinkingCursorState extends State<_BlinkingCursor>
 }
 
 class _ResendText extends StatelessWidget {
-  const _ResendText({required this.secondsLeft, required this.onResend});
+  const _ResendText({
+    required this.secondsLeft,
+    required this.isResending,
+    required this.onResend,
+  });
 
   final int secondsLeft;
+  final bool isResending;
   final VoidCallback onResend;
 
   @override
   Widget build(BuildContext context) {
+    if (isResending) {
+      return Row(
+        children: [
+          SizedBox(
+            width: AppSpacing.s16,
+            height: AppSpacing.s16,
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              color: AppPalette.primaryBase,
+            ),
+          ),
+          const SizedBox(width: AppSpacing.s8),
+          Text(
+            'Sending a new code…',
+            style: context.styles.bodyM.copyWith(
+              color: context.colors.text.subtle,
+            ),
+          ),
+        ],
+      );
+    }
+
     if (secondsLeft > 0) {
       return Text(
         'Resend in ${secondsLeft}s.',

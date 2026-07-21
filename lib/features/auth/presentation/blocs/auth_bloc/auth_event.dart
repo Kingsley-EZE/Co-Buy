@@ -19,6 +19,9 @@ sealed class AuthEvent with _$AuthEvent {
     required String otp,
   }) = AuthVerifyEmailRequested;
 
+  const factory AuthEvent.resendOtpRequested({required String email}) =
+      AuthResendOtpRequested;
+
   const factory AuthEvent.forgotPasswordRequested({required String email}) =
       AuthForgotPasswordRequested;
 

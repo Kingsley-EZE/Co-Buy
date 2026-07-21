@@ -10,6 +10,7 @@ import 'package:co_buy/features/auth/domain/entities/verify_email_request.dart';
 import 'package:co_buy/features/auth/domain/usecases/forgot_password_usecase.dart';
 import 'package:co_buy/features/auth/domain/usecases/login_usecase.dart';
 import 'package:co_buy/features/auth/domain/usecases/logout_usecase.dart';
+import 'package:co_buy/features/auth/domain/usecases/resend_otp_usecase.dart';
 import 'package:co_buy/features/auth/domain/usecases/reset_password_usecase.dart';
 import 'package:co_buy/features/auth/domain/usecases/signup_usecase.dart';
 import 'package:co_buy/features/auth/domain/usecases/verify_email_usecase.dart';
@@ -32,6 +33,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     this._loginUseCase,
     this._signupUseCase,
     this._verifyEmailUseCase,
+    this._resendOtpUseCase,
     this._forgotPasswordUseCase,
     this._resetPasswordUseCase,
     this._logoutUseCase,
@@ -39,6 +41,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthLoginRequested>(_onLoginRequested);
     on<AuthSignupRequested>(_onSignupRequested);
     on<AuthVerifyEmailRequested>(_onVerifyEmailRequested);
+    on<AuthResendOtpRequested>(_onResendOtpRequested);
     on<AuthForgotPasswordRequested>(_onForgotPasswordRequested);
     on<AuthResetPasswordRequested>(_onResetPasswordRequested);
     on<AuthLogoutRequested>(_onLogoutRequested);
@@ -47,6 +50,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final LoginUseCase _loginUseCase;
   final SignupUseCase _signupUseCase;
   final VerifyEmailUseCase _verifyEmailUseCase;
+  final ResendOtpUseCase _resendOtpUseCase;
   final ForgotPasswordUseCase _forgotPasswordUseCase;
   final ResetPasswordUseCase _resetPasswordUseCase;
   final LogoutUseCase _logoutUseCase;
@@ -108,6 +112,18 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     result.fold(
       (failure) => emit(AuthState.failure(failure.message)),
       (_) => emit(const AuthState.success()),
+    );
+  }
+
+  Future<void> _onResendOtpRequested(
+    AuthResendOtpRequested event,
+    Emitter<AuthState> emit,
+  ) async {
+    final result = await _resendOtpUseCase(event.email);
+
+    result.fold(
+      (failure) => emit(AuthState.resendOtpFailure(failure.message)),
+      (_) => emit(const AuthState.resendOtpSuccess()),
     );
   }
 
