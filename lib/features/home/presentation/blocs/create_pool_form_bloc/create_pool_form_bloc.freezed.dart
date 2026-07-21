@@ -56,14 +56,13 @@ extension CreatePoolFormEventPatterns on CreatePoolFormEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( CreatePoolTitleChanged value)?  titleChanged,TResult Function( CreatePoolDescriptionChanged value)?  descriptionChanged,TResult Function( CreatePoolCategoryChanged value)?  categoryChanged,TResult Function( CreatePoolEvenContributionChanged value)?  evenContributionChanged,TResult Function( CreatePoolTargetAmountChanged value)?  targetAmountChanged,TResult Function( CreatePoolSlotsChanged value)?  slotsChanged,TResult Function( CreatePoolDeadlineChanged value)?  deadlineChanged,TResult Function( CreatePoolBankChanged value)?  bankChanged,TResult Function( CreatePoolAccountNumberChanged value)?  accountNumberChanged,TResult Function( CreatePoolAccountLookupResultChanged value)?  accountLookupResultChanged,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( CreatePoolTitleChanged value)?  titleChanged,TResult Function( CreatePoolDescriptionChanged value)?  descriptionChanged,TResult Function( CreatePoolCategoryChanged value)?  categoryChanged,TResult Function( CreatePoolTargetAmountChanged value)?  targetAmountChanged,TResult Function( CreatePoolSlotsChanged value)?  slotsChanged,TResult Function( CreatePoolDeadlineChanged value)?  deadlineChanged,TResult Function( CreatePoolBankChanged value)?  bankChanged,TResult Function( CreatePoolAccountNumberChanged value)?  accountNumberChanged,TResult Function( CreatePoolAccountLookupResultChanged value)?  accountLookupResultChanged,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case CreatePoolTitleChanged() when titleChanged != null:
 return titleChanged(_that);case CreatePoolDescriptionChanged() when descriptionChanged != null:
 return descriptionChanged(_that);case CreatePoolCategoryChanged() when categoryChanged != null:
-return categoryChanged(_that);case CreatePoolEvenContributionChanged() when evenContributionChanged != null:
-return evenContributionChanged(_that);case CreatePoolTargetAmountChanged() when targetAmountChanged != null:
+return categoryChanged(_that);case CreatePoolTargetAmountChanged() when targetAmountChanged != null:
 return targetAmountChanged(_that);case CreatePoolSlotsChanged() when slotsChanged != null:
 return slotsChanged(_that);case CreatePoolDeadlineChanged() when deadlineChanged != null:
 return deadlineChanged(_that);case CreatePoolBankChanged() when bankChanged != null:
@@ -87,14 +86,13 @@ return accountLookupResultChanged(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( CreatePoolTitleChanged value)  titleChanged,required TResult Function( CreatePoolDescriptionChanged value)  descriptionChanged,required TResult Function( CreatePoolCategoryChanged value)  categoryChanged,required TResult Function( CreatePoolEvenContributionChanged value)  evenContributionChanged,required TResult Function( CreatePoolTargetAmountChanged value)  targetAmountChanged,required TResult Function( CreatePoolSlotsChanged value)  slotsChanged,required TResult Function( CreatePoolDeadlineChanged value)  deadlineChanged,required TResult Function( CreatePoolBankChanged value)  bankChanged,required TResult Function( CreatePoolAccountNumberChanged value)  accountNumberChanged,required TResult Function( CreatePoolAccountLookupResultChanged value)  accountLookupResultChanged,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( CreatePoolTitleChanged value)  titleChanged,required TResult Function( CreatePoolDescriptionChanged value)  descriptionChanged,required TResult Function( CreatePoolCategoryChanged value)  categoryChanged,required TResult Function( CreatePoolTargetAmountChanged value)  targetAmountChanged,required TResult Function( CreatePoolSlotsChanged value)  slotsChanged,required TResult Function( CreatePoolDeadlineChanged value)  deadlineChanged,required TResult Function( CreatePoolBankChanged value)  bankChanged,required TResult Function( CreatePoolAccountNumberChanged value)  accountNumberChanged,required TResult Function( CreatePoolAccountLookupResultChanged value)  accountLookupResultChanged,}){
 final _that = this;
 switch (_that) {
 case CreatePoolTitleChanged():
 return titleChanged(_that);case CreatePoolDescriptionChanged():
 return descriptionChanged(_that);case CreatePoolCategoryChanged():
-return categoryChanged(_that);case CreatePoolEvenContributionChanged():
-return evenContributionChanged(_that);case CreatePoolTargetAmountChanged():
+return categoryChanged(_that);case CreatePoolTargetAmountChanged():
 return targetAmountChanged(_that);case CreatePoolSlotsChanged():
 return slotsChanged(_that);case CreatePoolDeadlineChanged():
 return deadlineChanged(_that);case CreatePoolBankChanged():
@@ -114,14 +112,13 @@ return accountLookupResultChanged(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( CreatePoolTitleChanged value)?  titleChanged,TResult? Function( CreatePoolDescriptionChanged value)?  descriptionChanged,TResult? Function( CreatePoolCategoryChanged value)?  categoryChanged,TResult? Function( CreatePoolEvenContributionChanged value)?  evenContributionChanged,TResult? Function( CreatePoolTargetAmountChanged value)?  targetAmountChanged,TResult? Function( CreatePoolSlotsChanged value)?  slotsChanged,TResult? Function( CreatePoolDeadlineChanged value)?  deadlineChanged,TResult? Function( CreatePoolBankChanged value)?  bankChanged,TResult? Function( CreatePoolAccountNumberChanged value)?  accountNumberChanged,TResult? Function( CreatePoolAccountLookupResultChanged value)?  accountLookupResultChanged,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( CreatePoolTitleChanged value)?  titleChanged,TResult? Function( CreatePoolDescriptionChanged value)?  descriptionChanged,TResult? Function( CreatePoolCategoryChanged value)?  categoryChanged,TResult? Function( CreatePoolTargetAmountChanged value)?  targetAmountChanged,TResult? Function( CreatePoolSlotsChanged value)?  slotsChanged,TResult? Function( CreatePoolDeadlineChanged value)?  deadlineChanged,TResult? Function( CreatePoolBankChanged value)?  bankChanged,TResult? Function( CreatePoolAccountNumberChanged value)?  accountNumberChanged,TResult? Function( CreatePoolAccountLookupResultChanged value)?  accountLookupResultChanged,}){
 final _that = this;
 switch (_that) {
 case CreatePoolTitleChanged() when titleChanged != null:
 return titleChanged(_that);case CreatePoolDescriptionChanged() when descriptionChanged != null:
 return descriptionChanged(_that);case CreatePoolCategoryChanged() when categoryChanged != null:
-return categoryChanged(_that);case CreatePoolEvenContributionChanged() when evenContributionChanged != null:
-return evenContributionChanged(_that);case CreatePoolTargetAmountChanged() when targetAmountChanged != null:
+return categoryChanged(_that);case CreatePoolTargetAmountChanged() when targetAmountChanged != null:
 return targetAmountChanged(_that);case CreatePoolSlotsChanged() when slotsChanged != null:
 return slotsChanged(_that);case CreatePoolDeadlineChanged() when deadlineChanged != null:
 return deadlineChanged(_that);case CreatePoolBankChanged() when bankChanged != null:
@@ -144,13 +141,12 @@ return accountLookupResultChanged(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String title)?  titleChanged,TResult Function( String description)?  descriptionChanged,TResult Function( PoolCategory category)?  categoryChanged,TResult Function( bool evenContribution)?  evenContributionChanged,TResult Function( String amount)?  targetAmountChanged,TResult Function( String slots)?  slotsChanged,TResult Function( DateTime deadline)?  deadlineChanged,TResult Function( Bank bank)?  bankChanged,TResult Function( String accountNumber)?  accountNumberChanged,TResult Function( BankAccount? account)?  accountLookupResultChanged,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String title)?  titleChanged,TResult Function( String description)?  descriptionChanged,TResult Function( PoolCategory category)?  categoryChanged,TResult Function( String amount)?  targetAmountChanged,TResult Function( String slots)?  slotsChanged,TResult Function( DateTime deadline)?  deadlineChanged,TResult Function( Bank bank)?  bankChanged,TResult Function( String accountNumber)?  accountNumberChanged,TResult Function( BankAccount? account)?  accountLookupResultChanged,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case CreatePoolTitleChanged() when titleChanged != null:
 return titleChanged(_that.title);case CreatePoolDescriptionChanged() when descriptionChanged != null:
 return descriptionChanged(_that.description);case CreatePoolCategoryChanged() when categoryChanged != null:
-return categoryChanged(_that.category);case CreatePoolEvenContributionChanged() when evenContributionChanged != null:
-return evenContributionChanged(_that.evenContribution);case CreatePoolTargetAmountChanged() when targetAmountChanged != null:
+return categoryChanged(_that.category);case CreatePoolTargetAmountChanged() when targetAmountChanged != null:
 return targetAmountChanged(_that.amount);case CreatePoolSlotsChanged() when slotsChanged != null:
 return slotsChanged(_that.slots);case CreatePoolDeadlineChanged() when deadlineChanged != null:
 return deadlineChanged(_that.deadline);case CreatePoolBankChanged() when bankChanged != null:
@@ -174,13 +170,12 @@ return accountLookupResultChanged(_that.account);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String title)  titleChanged,required TResult Function( String description)  descriptionChanged,required TResult Function( PoolCategory category)  categoryChanged,required TResult Function( bool evenContribution)  evenContributionChanged,required TResult Function( String amount)  targetAmountChanged,required TResult Function( String slots)  slotsChanged,required TResult Function( DateTime deadline)  deadlineChanged,required TResult Function( Bank bank)  bankChanged,required TResult Function( String accountNumber)  accountNumberChanged,required TResult Function( BankAccount? account)  accountLookupResultChanged,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String title)  titleChanged,required TResult Function( String description)  descriptionChanged,required TResult Function( PoolCategory category)  categoryChanged,required TResult Function( String amount)  targetAmountChanged,required TResult Function( String slots)  slotsChanged,required TResult Function( DateTime deadline)  deadlineChanged,required TResult Function( Bank bank)  bankChanged,required TResult Function( String accountNumber)  accountNumberChanged,required TResult Function( BankAccount? account)  accountLookupResultChanged,}) {final _that = this;
 switch (_that) {
 case CreatePoolTitleChanged():
 return titleChanged(_that.title);case CreatePoolDescriptionChanged():
 return descriptionChanged(_that.description);case CreatePoolCategoryChanged():
-return categoryChanged(_that.category);case CreatePoolEvenContributionChanged():
-return evenContributionChanged(_that.evenContribution);case CreatePoolTargetAmountChanged():
+return categoryChanged(_that.category);case CreatePoolTargetAmountChanged():
 return targetAmountChanged(_that.amount);case CreatePoolSlotsChanged():
 return slotsChanged(_that.slots);case CreatePoolDeadlineChanged():
 return deadlineChanged(_that.deadline);case CreatePoolBankChanged():
@@ -200,13 +195,12 @@ return accountLookupResultChanged(_that.account);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String title)?  titleChanged,TResult? Function( String description)?  descriptionChanged,TResult? Function( PoolCategory category)?  categoryChanged,TResult? Function( bool evenContribution)?  evenContributionChanged,TResult? Function( String amount)?  targetAmountChanged,TResult? Function( String slots)?  slotsChanged,TResult? Function( DateTime deadline)?  deadlineChanged,TResult? Function( Bank bank)?  bankChanged,TResult? Function( String accountNumber)?  accountNumberChanged,TResult? Function( BankAccount? account)?  accountLookupResultChanged,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String title)?  titleChanged,TResult? Function( String description)?  descriptionChanged,TResult? Function( PoolCategory category)?  categoryChanged,TResult? Function( String amount)?  targetAmountChanged,TResult? Function( String slots)?  slotsChanged,TResult? Function( DateTime deadline)?  deadlineChanged,TResult? Function( Bank bank)?  bankChanged,TResult? Function( String accountNumber)?  accountNumberChanged,TResult? Function( BankAccount? account)?  accountLookupResultChanged,}) {final _that = this;
 switch (_that) {
 case CreatePoolTitleChanged() when titleChanged != null:
 return titleChanged(_that.title);case CreatePoolDescriptionChanged() when descriptionChanged != null:
 return descriptionChanged(_that.description);case CreatePoolCategoryChanged() when categoryChanged != null:
-return categoryChanged(_that.category);case CreatePoolEvenContributionChanged() when evenContributionChanged != null:
-return evenContributionChanged(_that.evenContribution);case CreatePoolTargetAmountChanged() when targetAmountChanged != null:
+return categoryChanged(_that.category);case CreatePoolTargetAmountChanged() when targetAmountChanged != null:
 return targetAmountChanged(_that.amount);case CreatePoolSlotsChanged() when slotsChanged != null:
 return slotsChanged(_that.slots);case CreatePoolDeadlineChanged() when deadlineChanged != null:
 return deadlineChanged(_that.deadline);case CreatePoolBankChanged() when bankChanged != null:
@@ -412,72 +406,6 @@ class _$CreatePoolCategoryChangedCopyWithImpl<$Res>
   return _then(CreatePoolCategoryChanged(
 null == category ? _self.category : category // ignore: cast_nullable_to_non_nullable
 as PoolCategory,
-  ));
-}
-
-
-}
-
-/// @nodoc
-
-
-class CreatePoolEvenContributionChanged implements CreatePoolFormEvent {
-  const CreatePoolEvenContributionChanged(this.evenContribution);
-  
-
- final  bool evenContribution;
-
-/// Create a copy of CreatePoolFormEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$CreatePoolEvenContributionChangedCopyWith<CreatePoolEvenContributionChanged> get copyWith => _$CreatePoolEvenContributionChangedCopyWithImpl<CreatePoolEvenContributionChanged>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CreatePoolEvenContributionChanged&&(identical(other.evenContribution, evenContribution) || other.evenContribution == evenContribution));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,evenContribution);
-
-@override
-String toString() {
-  return 'CreatePoolFormEvent.evenContributionChanged(evenContribution: $evenContribution)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class $CreatePoolEvenContributionChangedCopyWith<$Res> implements $CreatePoolFormEventCopyWith<$Res> {
-  factory $CreatePoolEvenContributionChangedCopyWith(CreatePoolEvenContributionChanged value, $Res Function(CreatePoolEvenContributionChanged) _then) = _$CreatePoolEvenContributionChangedCopyWithImpl;
-@useResult
-$Res call({
- bool evenContribution
-});
-
-
-
-
-}
-/// @nodoc
-class _$CreatePoolEvenContributionChangedCopyWithImpl<$Res>
-    implements $CreatePoolEvenContributionChangedCopyWith<$Res> {
-  _$CreatePoolEvenContributionChangedCopyWithImpl(this._self, this._then);
-
-  final CreatePoolEvenContributionChanged _self;
-  final $Res Function(CreatePoolEvenContributionChanged) _then;
-
-/// Create a copy of CreatePoolFormEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? evenContribution = null,}) {
-  return _then(CreatePoolEvenContributionChanged(
-null == evenContribution ? _self.evenContribution : evenContribution // ignore: cast_nullable_to_non_nullable
-as bool,
   ));
 }
 
@@ -885,9 +813,9 @@ mixin _$CreatePoolFormState {
 
  String get title; String get description;/// The whole entity (not just a display name) so the category id is on
 /// hand for submission.
- PoolCategory? get category;/// Whether every member contributes the same amount. Null renders the
-/// "defaults to Equal slot" hint; treat null as `true` at submission.
- bool? get evenContribution; String get targetAmount; String get slots; DateTime? get deadline;/// The whole entity (not just a display name) so the bank code is on hand
+ PoolCategory? get category;/// Whether every member contributes the same amount. Defaults to `true`
+/// (equal slots) — the form no longer exposes a control to change it.
+ bool get evenContribution; String get targetAmount; String get slots; DateTime? get deadline;/// The whole entity (not just a display name) so the bank code is on hand
 /// for the account name enquiry and submission.
  Bank? get bank; String get accountNumber;/// The account the bank name enquiry resolved, mirrored in from
 /// [CreatePoolBloc] by the page so [canSubmit] can require verification.
@@ -922,7 +850,7 @@ abstract mixin class $CreatePoolFormStateCopyWith<$Res>  {
   factory $CreatePoolFormStateCopyWith(CreatePoolFormState value, $Res Function(CreatePoolFormState) _then) = _$CreatePoolFormStateCopyWithImpl;
 @useResult
 $Res call({
- String title, String description, PoolCategory? category, bool? evenContribution, String targetAmount, String slots, DateTime? deadline, Bank? bank, String accountNumber, BankAccount? resolvedAccount
+ String title, String description, PoolCategory? category, bool evenContribution, String targetAmount, String slots, DateTime? deadline, Bank? bank, String accountNumber, BankAccount? resolvedAccount
 });
 
 
@@ -939,13 +867,13 @@ class _$CreatePoolFormStateCopyWithImpl<$Res>
 
 /// Create a copy of CreatePoolFormState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? title = null,Object? description = null,Object? category = freezed,Object? evenContribution = freezed,Object? targetAmount = null,Object? slots = null,Object? deadline = freezed,Object? bank = freezed,Object? accountNumber = null,Object? resolvedAccount = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? title = null,Object? description = null,Object? category = freezed,Object? evenContribution = null,Object? targetAmount = null,Object? slots = null,Object? deadline = freezed,Object? bank = freezed,Object? accountNumber = null,Object? resolvedAccount = freezed,}) {
   return _then(CreatePoolFormState(
 title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String,category: freezed == category ? _self.category : category // ignore: cast_nullable_to_non_nullable
-as PoolCategory?,evenContribution: freezed == evenContribution ? _self.evenContribution : evenContribution // ignore: cast_nullable_to_non_nullable
-as bool?,targetAmount: null == targetAmount ? _self.targetAmount : targetAmount // ignore: cast_nullable_to_non_nullable
+as PoolCategory?,evenContribution: null == evenContribution ? _self.evenContribution : evenContribution // ignore: cast_nullable_to_non_nullable
+as bool,targetAmount: null == targetAmount ? _self.targetAmount : targetAmount // ignore: cast_nullable_to_non_nullable
 as String,slots: null == slots ? _self.slots : slots // ignore: cast_nullable_to_non_nullable
 as String,deadline: freezed == deadline ? _self.deadline : deadline // ignore: cast_nullable_to_non_nullable
 as DateTime?,bank: freezed == bank ? _self.bank : bank // ignore: cast_nullable_to_non_nullable
@@ -1036,7 +964,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String title,  String description,  PoolCategory? category,  bool? evenContribution,  String targetAmount,  String slots,  DateTime? deadline,  Bank? bank,  String accountNumber,  BankAccount? resolvedAccount)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String title,  String description,  PoolCategory? category,  bool evenContribution,  String targetAmount,  String slots,  DateTime? deadline,  Bank? bank,  String accountNumber,  BankAccount? resolvedAccount)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CreatePoolFormState() when $default != null:
 return $default(_that.title,_that.description,_that.category,_that.evenContribution,_that.targetAmount,_that.slots,_that.deadline,_that.bank,_that.accountNumber,_that.resolvedAccount);case _:
@@ -1057,7 +985,7 @@ return $default(_that.title,_that.description,_that.category,_that.evenContribut
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String title,  String description,  PoolCategory? category,  bool? evenContribution,  String targetAmount,  String slots,  DateTime? deadline,  Bank? bank,  String accountNumber,  BankAccount? resolvedAccount)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String title,  String description,  PoolCategory? category,  bool evenContribution,  String targetAmount,  String slots,  DateTime? deadline,  Bank? bank,  String accountNumber,  BankAccount? resolvedAccount)  $default,) {final _that = this;
 switch (_that) {
 case _CreatePoolFormState():
 return $default(_that.title,_that.description,_that.category,_that.evenContribution,_that.targetAmount,_that.slots,_that.deadline,_that.bank,_that.accountNumber,_that.resolvedAccount);case _:
@@ -1077,7 +1005,7 @@ return $default(_that.title,_that.description,_that.category,_that.evenContribut
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String title,  String description,  PoolCategory? category,  bool? evenContribution,  String targetAmount,  String slots,  DateTime? deadline,  Bank? bank,  String accountNumber,  BankAccount? resolvedAccount)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String title,  String description,  PoolCategory? category,  bool evenContribution,  String targetAmount,  String slots,  DateTime? deadline,  Bank? bank,  String accountNumber,  BankAccount? resolvedAccount)?  $default,) {final _that = this;
 switch (_that) {
 case _CreatePoolFormState() when $default != null:
 return $default(_that.title,_that.description,_that.category,_that.evenContribution,_that.targetAmount,_that.slots,_that.deadline,_that.bank,_that.accountNumber,_that.resolvedAccount);case _:
@@ -1092,7 +1020,7 @@ return $default(_that.title,_that.description,_that.category,_that.evenContribut
 
 
 class _CreatePoolFormState extends CreatePoolFormState {
-  const _CreatePoolFormState({this.title = '', this.description = '', this.category, this.evenContribution, this.targetAmount = '', this.slots = '', this.deadline, this.bank, this.accountNumber = '', this.resolvedAccount}): super._();
+  const _CreatePoolFormState({this.title = '', this.description = '', this.category, this.evenContribution = true, this.targetAmount = '', this.slots = '', this.deadline, this.bank, this.accountNumber = '', this.resolvedAccount}): super._();
   
 
 @override@JsonKey() final  String title;
@@ -1100,9 +1028,9 @@ class _CreatePoolFormState extends CreatePoolFormState {
 /// The whole entity (not just a display name) so the category id is on
 /// hand for submission.
 @override final  PoolCategory? category;
-/// Whether every member contributes the same amount. Null renders the
-/// "defaults to Equal slot" hint; treat null as `true` at submission.
-@override final  bool? evenContribution;
+/// Whether every member contributes the same amount. Defaults to `true`
+/// (equal slots) — the form no longer exposes a control to change it.
+@override@JsonKey() final  bool evenContribution;
 @override@JsonKey() final  String targetAmount;
 @override@JsonKey() final  String slots;
 @override final  DateTime? deadline;
@@ -1144,7 +1072,7 @@ abstract mixin class _$CreatePoolFormStateCopyWith<$Res> implements $CreatePoolF
   factory _$CreatePoolFormStateCopyWith(_CreatePoolFormState value, $Res Function(_CreatePoolFormState) _then) = __$CreatePoolFormStateCopyWithImpl;
 @override @useResult
 $Res call({
- String title, String description, PoolCategory? category, bool? evenContribution, String targetAmount, String slots, DateTime? deadline, Bank? bank, String accountNumber, BankAccount? resolvedAccount
+ String title, String description, PoolCategory? category, bool evenContribution, String targetAmount, String slots, DateTime? deadline, Bank? bank, String accountNumber, BankAccount? resolvedAccount
 });
 
 
@@ -1161,13 +1089,13 @@ class __$CreatePoolFormStateCopyWithImpl<$Res>
 
 /// Create a copy of CreatePoolFormState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? title = null,Object? description = null,Object? category = freezed,Object? evenContribution = freezed,Object? targetAmount = null,Object? slots = null,Object? deadline = freezed,Object? bank = freezed,Object? accountNumber = null,Object? resolvedAccount = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? title = null,Object? description = null,Object? category = freezed,Object? evenContribution = null,Object? targetAmount = null,Object? slots = null,Object? deadline = freezed,Object? bank = freezed,Object? accountNumber = null,Object? resolvedAccount = freezed,}) {
   return _then(_CreatePoolFormState(
 title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String,category: freezed == category ? _self.category : category // ignore: cast_nullable_to_non_nullable
-as PoolCategory?,evenContribution: freezed == evenContribution ? _self.evenContribution : evenContribution // ignore: cast_nullable_to_non_nullable
-as bool?,targetAmount: null == targetAmount ? _self.targetAmount : targetAmount // ignore: cast_nullable_to_non_nullable
+as PoolCategory?,evenContribution: null == evenContribution ? _self.evenContribution : evenContribution // ignore: cast_nullable_to_non_nullable
+as bool,targetAmount: null == targetAmount ? _self.targetAmount : targetAmount // ignore: cast_nullable_to_non_nullable
 as String,slots: null == slots ? _self.slots : slots // ignore: cast_nullable_to_non_nullable
 as String,deadline: freezed == deadline ? _self.deadline : deadline // ignore: cast_nullable_to_non_nullable
 as DateTime?,bank: freezed == bank ? _self.bank : bank // ignore: cast_nullable_to_non_nullable

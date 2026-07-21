@@ -147,18 +147,6 @@ void main() {
     },
   );
 
-  test('an uneven split sends no per-member share amount', () async {
-    fillFormCompletely();
-    bloc.add(const CreatePoolFormEvent.accountLookupResultChanged(account));
-    bloc.add(const CreatePoolFormEvent.evenContributionChanged(false));
-    await Future<void>.delayed(Duration.zero);
-
-    final request = bloc.state.toCreatePoolRequest();
-
-    expect(request.splitEven, isFalse);
-    expect(request.memberShareAmount, 0);
-  });
-
   test('a null lookup result clears verification', () async {
     fillFormCompletely();
     bloc.add(const CreatePoolFormEvent.accountLookupResultChanged(account));

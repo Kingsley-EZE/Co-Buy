@@ -18,9 +18,9 @@ abstract class CreatePoolFormState with _$CreatePoolFormState {
     /// hand for submission.
     PoolCategory? category,
 
-    /// Whether every member contributes the same amount. Null renders the
-    /// "defaults to Equal slot" hint; treat null as `true` at submission.
-    bool? evenContribution,
+    /// Whether every member contributes the same amount. Defaults to `true`
+    /// (equal slots) — the form no longer exposes a control to change it.
+    @Default(true) bool evenContribution,
     @Default('') String targetAmount,
     @Default('') String slots,
     DateTime? deadline,
@@ -93,8 +93,7 @@ abstract class CreatePoolFormState with _$CreatePoolFormState {
   CreatePoolRequest toCreatePoolRequest() {
     final double amount = double.parse(targetAmount);
     final int members = int.parse(slots);
-    // Null means the user left the "defaults to Equal slot" hint as-is.
-    final bool splitEven = evenContribution ?? true;
+    final bool splitEven = evenContribution;
 
     return CreatePoolRequest(
       name: title,

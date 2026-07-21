@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../features/alerts/data/datasources/notifications_data_source.dart';
 import '../../features/auth/data/datasources/auth_remote_data_source.dart';
 import '../../features/home/data/datasources/create_pool_data_source.dart';
 import '../../features/home/data/datasources/pools_data_source.dart';
@@ -45,4 +46,8 @@ abstract class ServiceModule {
   @lazySingleton
   PoolPaymentDataSource poolPaymentDataSource(@Named('appDio') Dio dio) =>
       PoolPaymentDataSource(dio);
+
+  @lazySingleton
+  NotificationsDataSource notificationsDataSource(@Named('appDio') Dio dio) =>
+      NotificationsDataSource(dio);
 }

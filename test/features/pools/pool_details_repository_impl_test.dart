@@ -73,6 +73,48 @@ void main() {
   });
 
   test(
+    'getPoolDetails maps a non-open lifecycle status (REFUNDING) to a '
+    'non-open status so the join/pay CTA stays hidden',
+    () async {
+      const refundingDto = PoolDetailsDto(
+        id: '156d36f4-21f7-4026-86a4-221bd6232ac6',
+        leaderId: 'u-leader',
+        name: 'Pepper soup',
+        description: null,
+        category: null,
+        targetAmount: 10000,
+        amountRaised: 0,
+        amountPerSlot: 5000,
+        maxMembers: 2,
+        splitEven: true,
+        beneficiaryAccountNumber: '0126377889',
+        beneficiaryAccountName: 'UGWUTA NWABUEZE KINGSLEY',
+        beneficiaryBankName: 'Union bank',
+        shareLink: 'https://example.com/join/t2',
+        deadlineAt: '2026-07-20T22:40:00.000Z',
+        status: 'REFUNDING',
+        slotsRemaining: 1,
+      );
+      when(() => remote.getPoolDetails(any())).thenAnswer(
+        (_) async => const PoolDetailsResponseDto(
+          success: true,
+          data: refundingDto,
+          message: 'Pool retrieved successfully',
+        ),
+      );
+
+      final result = await repo.getPoolDetails('156d36f4');
+
+      result.fold((f) => fail('expected Right, got $f'), (details) {
+        expect(details.status, isNot(PoolStatus.open));
+        // canJoin only clears for a non-open status; a slot still remains,
+        // so this pins the fix that keeps REFUNDING out of the joinable path.
+        expect(details.status, PoolStatus.expired);
+      });
+    },
+  );
+
+  test(
     'getPoolMembers maps PAID members and degrades unknown states to pending',
     () async {
       when(() => remote.getPoolMembers(any())).thenAnswer(

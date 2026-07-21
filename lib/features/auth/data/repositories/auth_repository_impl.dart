@@ -33,9 +33,13 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       final dto = await _remote.loginUser(body: request.toDto());
       // Persist so AuthInterceptor attaches the token to every subsequent
-      // request — the tokens never leave this layer.
-      // TODO: pass refresh once the backend adds refreshToken to the response.
-      await _tokenStorage.saveTokens(access: dto.data.accessToken);
+      // request — the tokens never leave this layer. refreshToken is nullable
+      // until the backend ships it; saveTokens leaves any stored value
+      // untouched when it's absent.
+      await _tokenStorage.saveTokens(
+        access: dto.data.accessToken,
+        refresh: dto.data.refreshToken,
+      );
       return Right(dto.data.user.toEntity());
     } on DioException catch (e) {
       return Left(mapDioException(e));

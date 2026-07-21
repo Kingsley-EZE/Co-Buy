@@ -15,6 +15,16 @@ import 'package:get_it/get_it.dart' as _i174;
 import 'package:go_router/go_router.dart' as _i583;
 import 'package:injectable/injectable.dart' as _i526;
 
+import '../../features/alerts/data/datasources/notifications_data_source.dart'
+    as _i60;
+import '../../features/alerts/data/repositories/notifications_repository_impl.dart'
+    as _i35;
+import '../../features/alerts/domain/repositories/notifications_repository.dart'
+    as _i110;
+import '../../features/alerts/domain/usecases/get_notifications_usecase.dart'
+    as _i187;
+import '../../features/alerts/presentation/blocs/notifications_bloc/notifications_bloc.dart'
+    as _i768;
 import '../../features/auth/data/datasources/auth_remote_data_source.dart'
     as _i107;
 import '../../features/auth/data/repositories/auth_repository_impl.dart'
@@ -178,6 +188,11 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i361.Dio>(instanceName: 'appDio'),
       ),
     );
+    gh.lazySingleton<_i60.NotificationsDataSource>(
+      () => serviceModule.notificationsDataSource(
+        gh<_i361.Dio>(instanceName: 'appDio'),
+      ),
+    );
     gh.lazySingleton<_i787.AuthRepository>(
       () => _i153.AuthRepositoryImpl(
         gh<_i107.AuthRemoteDataSource>(),
@@ -190,8 +205,15 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i343.PoolPaymentRepository>(
       () => _i975.PoolPaymentRepositoryImpl(gh<_i255.PoolPaymentDataSource>()),
     );
+    gh.lazySingleton<_i110.NotificationsRepository>(
+      () =>
+          _i35.NotificationsRepositoryImpl(gh<_i60.NotificationsDataSource>()),
+    );
     gh.lazySingleton<_i274.JoinPoolRepository>(
       () => _i283.JoinPoolRepositoryImpl(gh<_i1065.JoinPoolDataSource>()),
+    );
+    gh.factory<_i187.GetNotificationsUseCase>(
+      () => _i187.GetNotificationsUseCase(gh<_i110.NotificationsRepository>()),
     );
     gh.factory<_i560.ForgotPasswordUseCase>(
       () => _i560.ForgotPasswordUseCase(gh<_i787.AuthRepository>()),
@@ -216,6 +238,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i162.GetPoolsUseCase>(
       () => _i162.GetPoolsUseCase(gh<_i1062.PoolsRepository>()),
+    );
+    gh.factory<_i768.NotificationsBloc>(
+      () => _i768.NotificationsBloc(gh<_i187.GetNotificationsUseCase>()),
     );
     gh.factory<_i370.JoinPoolUseCase>(
       () => _i370.JoinPoolUseCase(gh<_i274.JoinPoolRepository>()),
