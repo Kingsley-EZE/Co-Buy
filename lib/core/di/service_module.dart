@@ -7,6 +7,7 @@ import '../../features/auth/data/datasources/auth_remote_data_source.dart';
 import '../../features/home/data/datasources/create_pool_data_source.dart';
 import '../../features/home/data/datasources/pools_data_source.dart';
 import '../../features/pools/data/datasources/join_pool_data_source.dart';
+import '../../features/pools/data/datasources/my_pools_data_source.dart';
 import '../../features/pools/data/datasources/pool_details_data_source.dart';
 import '../../features/pools/data/datasources/pool_payment_data_source.dart';
 import '../config/app_config.dart';
@@ -57,4 +58,8 @@ abstract class ServiceModule {
   @lazySingleton
   NotificationsDataSource notificationsDataSource(@Named('appDio') Dio dio) =>
       NotificationsDataSource(dio);
+
+  @lazySingleton
+  MyPoolsDataSource myPoolsDataSource(@Named('appDio') Dio dio) =>
+      MyPoolsDataSource(dio);
 }
