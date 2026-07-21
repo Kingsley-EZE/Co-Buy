@@ -11,6 +11,7 @@ import '../../features/pools/data/datasources/pool_details_data_source.dart';
 import '../../features/pools/data/datasources/pool_payment_data_source.dart';
 import '../config/app_config.dart';
 import '../config/env/env.dart';
+import '../network/sockets/socket_service.dart';
 
 /// Registers third-party types and Retrofit services that injectable cannot
 /// construct from annotations alone.
@@ -22,6 +23,12 @@ abstract class ServiceModule {
 
   @lazySingleton
   FlutterSecureStorage get secureStorage => const FlutterSecureStorage();
+
+  /// The app-wide socket singleton, exposed through DI so consumers (e.g.
+  /// [AuthRepositoryImpl]) can depend on it explicitly and mock it in tests
+  /// instead of reaching for `SocketService.instance`.
+  @lazySingleton
+  SocketService get socketService => SocketService.instance;
 
   @lazySingleton
   AuthRemoteDataSource authRemoteDataSource(@Named('appDio') Dio dio) =>

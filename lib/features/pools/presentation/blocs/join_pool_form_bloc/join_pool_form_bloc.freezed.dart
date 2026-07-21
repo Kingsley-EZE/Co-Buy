@@ -379,10 +379,7 @@ as BankAccount?,
 /// @nodoc
 mixin _$JoinPoolFormState {
 
-/// The whole entity (not just a display name) so the bank code is on hand
-/// for the account name enquiry and submission.
- Bank? get bank; String get accountNumber;/// The account the bank name enquiry resolved, mirrored in from
-/// [JoinPoolBloc] by the page so [canSubmit] can require verification.
+ Bank? get bank; String get accountNumber;/// Mirrored from [JoinPoolBloc] by the page for [canSubmit].
  BankAccount? get resolvedAccount;
 /// Create a copy of JoinPoolFormState
 /// with the given fields replaced by the non-null parameter values.
@@ -580,12 +577,9 @@ class _JoinPoolFormState extends JoinPoolFormState {
   const _JoinPoolFormState({this.bank, this.accountNumber = '', this.resolvedAccount}): super._();
   
 
-/// The whole entity (not just a display name) so the bank code is on hand
-/// for the account name enquiry and submission.
 @override final  Bank? bank;
 @override@JsonKey() final  String accountNumber;
-/// The account the bank name enquiry resolved, mirrored in from
-/// [JoinPoolBloc] by the page so [canSubmit] can require verification.
+/// Mirrored from [JoinPoolBloc] by the page for [canSubmit].
 @override final  BankAccount? resolvedAccount;
 
 /// Create a copy of JoinPoolFormState

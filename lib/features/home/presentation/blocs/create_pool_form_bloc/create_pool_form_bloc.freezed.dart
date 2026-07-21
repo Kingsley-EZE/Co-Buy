@@ -811,14 +811,7 @@ as BankAccount?,
 /// @nodoc
 mixin _$CreatePoolFormState {
 
- String get title; String get description;/// The whole entity (not just a display name) so the category id is on
-/// hand for submission.
- PoolCategory? get category;/// Whether every member contributes the same amount. Defaults to `true`
-/// (equal slots) — the form no longer exposes a control to change it.
- bool get evenContribution; String get targetAmount; String get slots; DateTime? get deadline;/// The whole entity (not just a display name) so the bank code is on hand
-/// for the account name enquiry and submission.
- Bank? get bank; String get accountNumber;/// The account the bank name enquiry resolved, mirrored in from
-/// [CreatePoolBloc] by the page so [canSubmit] can require verification.
+ String get title; String get description; PoolCategory? get category; bool get evenContribution; String get targetAmount; String get slots; DateTime? get deadline; Bank? get bank; String get accountNumber;/// Mirrored from [CreatePoolBloc] by the page for [canSubmit].
  BankAccount? get resolvedAccount;
 /// Create a copy of CreatePoolFormState
 /// with the given fields replaced by the non-null parameter values.
@@ -1025,21 +1018,14 @@ class _CreatePoolFormState extends CreatePoolFormState {
 
 @override@JsonKey() final  String title;
 @override@JsonKey() final  String description;
-/// The whole entity (not just a display name) so the category id is on
-/// hand for submission.
 @override final  PoolCategory? category;
-/// Whether every member contributes the same amount. Defaults to `true`
-/// (equal slots) — the form no longer exposes a control to change it.
 @override@JsonKey() final  bool evenContribution;
 @override@JsonKey() final  String targetAmount;
 @override@JsonKey() final  String slots;
 @override final  DateTime? deadline;
-/// The whole entity (not just a display name) so the bank code is on hand
-/// for the account name enquiry and submission.
 @override final  Bank? bank;
 @override@JsonKey() final  String accountNumber;
-/// The account the bank name enquiry resolved, mirrored in from
-/// [CreatePoolBloc] by the page so [canSubmit] can require verification.
+/// Mirrored from [CreatePoolBloc] by the page for [canSubmit].
 @override final  BankAccount? resolvedAccount;
 
 /// Create a copy of CreatePoolFormState

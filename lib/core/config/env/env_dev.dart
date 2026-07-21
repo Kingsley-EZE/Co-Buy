@@ -12,10 +12,6 @@ final class EnvDev implements Env {
   final String baseUrl = _EnvDev.baseUrl;
 
   @override
-  @EnviedField(varName: 'API_KEY', obfuscate: true)
-  final String apiKey = _EnvDev.apiKey;
-
-  @override
   @EnviedField(varName: 'SOCKET_BASE_URL', obfuscate: true)
   final String socketBaseUrl = _EnvDev.socketBaseUrl;
 }

@@ -311,8 +311,7 @@ String toString() {
 /// @nodoc
 mixin _$PoolPaymentState {
 
- PoolPaymentRequestStatus get status;/// The initiated payment — set exactly while [status] is success.
- PoolPayment? get payment; String? get error;
+ PoolPaymentRequestStatus get status; PoolPayment? get payment; String? get error;
 /// Create a copy of PoolPaymentState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -510,7 +509,6 @@ class _PoolPaymentState implements PoolPaymentState {
   
 
 @override@JsonKey() final  PoolPaymentRequestStatus status;
-/// The initiated payment — set exactly while [status] is success.
 @override final  PoolPayment? payment;
 @override final  String? error;
 

@@ -8,7 +8,4 @@ abstract interface class Env {
   /// Base URL for the REST API (used by the Dio/Retrofit client).
   String get baseUrl;
   String get socketBaseUrl;
-
-  /// API key / client secret for the backend.
-  String get apiKey;
 }
